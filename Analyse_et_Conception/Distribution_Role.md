@@ -4,7 +4,7 @@ Xavier:
 
 Hichem:
 - Document d'analyse
-
+- ReadME
 Eric: 
 - Diagramme de cas d'utilisation
 - Modèle relationnel SQL Server 
