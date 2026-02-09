@@ -18,4 +18,9 @@
 ## Clients
 
 - S'enregistrer dans le système
-- Faire des requetes au système
+- Faire des requetes au système()
+
+
+Fonctionnalité possible : 
+Creer un groupe d'utilisateur dont les permissions auront été fait au prealable
+Le client est relié à un dossiers contenants des documents. 
