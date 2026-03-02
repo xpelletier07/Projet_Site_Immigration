@@ -18,7 +18,7 @@ async function createTBL_admin() {
 			table.string("courriel").notNullable();
 			table.integer("telephone").notNullable();
 			table.string("MDP").notNullable();
-			table.date("date_creation").notNullable();
+			table.date("date_creation").notNullable().defaultTo(db.fn.now());
 		});
 		console.log('Table "admin" created successfully.');
 	}
@@ -34,7 +34,7 @@ async function createTBL_utilisateur() {
 			table.string("courriel").notNullable();
 			table.integer("telephone").notNullable();
 			table.string("MDP").notNullable();
-			table.date("date_creation").notNullable();
+			table.date("date_creation").notNullable().defaultTo(db.fn.now());;
 		});
 		console.log('Table "utilisateur" created successfully.');
 	}
@@ -50,7 +50,7 @@ async function createTBL_client() {
 			table.string("courriel").notNullable();
 			table.integer("telephone").notNullable();
 			table.string("MDP").notNullable();
-			table.date("date_creation").notNullable();
+			table.date("date_creation").notNullable().defaultTo(db.fn.now());;
 		});
 		console.log('Table "client" created successfully.');
 	}
