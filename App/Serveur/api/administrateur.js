@@ -9,7 +9,7 @@ const multer = require("multer");
 
 
 // Routes pour la modification des données d'un administrateur
-route.update("/administrateur/:id" ,midleware(), updateadmin())
+route.update("api/update_administrateur/:id" ,midleware(), updateadmin())
 
 
 
