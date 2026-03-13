@@ -101,6 +101,11 @@ async function updatedocument(req, res) {
         return res.status(400).json({ error: "L'ID du dossier est requis." });
     }
     
+    const dossierExiste = await db('dossier').where({ id_dossier }).first();
+    if (!dossierExiste) {
+        return res.status(404).json({ error: "Dossier introuvable ou non existant" });
+    }
+
     const data ={
         nom_document: nom_document,
         type_document: type_document,
