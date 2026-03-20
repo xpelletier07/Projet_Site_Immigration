@@ -15,6 +15,5 @@ route.update("/update_administrateur/:id" ,midleware(), updateadmin())
 
 
 
-
 module.exports = {route}
 
