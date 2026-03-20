@@ -8,9 +8,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Importer les routes
 const {route: administrateurRoutes} = require("./api/administrateur.js");
+const {route: utilisateurRoutes} = require("./api/utilisateur.js");
+const {route: documentRoutes} = require("./api/document.js");
 
 // Utiliser les routes
 app.use("/api", administrateurRoutes);
+app.use("/api", utilisateurRoutes);
+app.use("/api", documentRoutes);
 
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/../Client/index.html");
