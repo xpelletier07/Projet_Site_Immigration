@@ -1,5 +1,5 @@
 const express = require("express")
-import {db} from "../db/db.js"
+import {db} from "../../db/db.js"
 const multer = require("multer");
 const upload = multer();
 

@@ -1,7 +1,7 @@
 const express = require("express")
 const route = express.Router()
 import {db} from "../db/db.js"
-import {midleware} from "../controller/midleware.js"
+import {midleware} from "./midleware.js"
 import {updateadmin} from "../controller/update.js"
 const multer = require("multer");
 

@@ -1,6 +1,6 @@
 import express from "express"; 
 import bcrypt from "bcrypt";   // pour hacher le mot de passe
-import { db } from "../db/db.js";
+import { db } from "../../db/db.js";
 
 const app = express();
 app.use(express.json());
