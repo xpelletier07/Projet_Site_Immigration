@@ -1,157 +1,160 @@
-import express from "express"; 
-import bcrypt from "bcrypt";   // pour hacher le mot de passe
-import { db } from "../../db/db.js";
+const bcrypt = require("bcrypt");
+const { db } = require("../../db/db.js");
 
-const app = express();
-app.use(express.json());
 
-//Route POST : ajouter une nouvelle inscription d'un client
-app.post('/api/inscriptions/client', async (req, res) => {
+// Fonction pour inscrire un nouveau client et créer automatiquement son dossier
+async function inscrireClient(req, res) {
     const { nom, prenom, courriel, telephone, MDP } = req.body;
 
     if (!nom || !prenom || !courriel || !telephone || !MDP) {
-        return res.status(400).json({ message: "Veuillez remplir tous les champs obligatoires." });
+        return res.status(400).json({ error: "Tous les champs sont requis." });
     }
 
     try {
-        // Vérifier si le client existe déjà
+        // Vérifier si un client existe déjà avec ce courriel
         const existant = await db('client').where({ courriel }).first();
         if (existant) {
-            return res.status(409).json({ message: "Un client existe déjà avec ce courriel." });
+            return res.status(409).json({ error: "Un client existe déjà avec ce courriel." });
         }
-
-        // Hachage du mot de passe
-        const mdpHache = await bcrypt.hash(MDP, 10);
-
-        // Insertion du client
-        const [id_client] = await db('client').insert({
-            nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache
-        });
-
-        console.log(`Nouveau client créé (ID: ${id_client})`);
-
-        // Création automatique du dossier associé
-        const id_dossier = await addDossier(id_client);
-
-        res.status(201).json({
-            message: "Client inscrit et dossier créé avec succès !",
-            id_client,
-            id_dossier
-        });
-
-    } catch (erreur) {
-        console.error("Erreur (Client) :", erreur);
-        res.status(500).json({ message: "Erreur interne du serveur." });
+    } catch (error) {
+        return res.status(500).json({ error: "Erreur lors de la vérification du courriel." });
     }
-});
+
+    // Hachage sécurisé du mot de passe avant insertion
+    const mdpHache = await bcrypt.hash(MDP, 10);
+
+    // Insertion du nouveau client puis création de son dossier
+    await db('client')
+        .insert({ nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache })
+        .then(async ([id_client]) => {
+            console.log(`Nouveau client créé (ID: ${id_client})`);
+
+            // Création automatique du dossier associé au client
+            const id_dossier = await addDossier(id_client);
+
+            res.status(201).json({
+                message: "Client inscrit et dossier créé avec succès !",
+                id_client,
+                id_dossier
+            });
+        })
+        .catch((error) => {
+            console.error("Erreur lors de l'inscription du client :", error);
+            res.status(500).json({ error: "Une erreur est survenue lors de l'inscription du client." });
+        });
+}
 
 
-//Route POST : ajouter une nouvelle inscription d'un utilisateur
-app.post('/api/inscriptions/utilisateur', async (req, res) => {
+// Fonction pour inscrire un nouvel utilisateur (employé / admin)
+async function inscrireUtilisateur(req, res) {
     const { nom, prenom, courriel, telephone, MDP } = req.body;
 
     if (!nom || !prenom || !courriel || !telephone || !MDP) {
-        return res.status(400).json({ message: "Veuillez remplir tous les champs obligatoires." });
+        return res.status(400).json({ error: "Tous les champs sont requis." });
     }
 
     try {
+        // Vérifier si un utilisateur existe déjà avec ce courriel
         const existant = await db('utilisateur').where({ courriel }).first();
         if (existant) {
-            return res.status(409).json({ message: "Un utilisateur existe déjà avec ce courriel." });
+            return res.status(409).json({ error: "Un utilisateur existe déjà avec ce courriel." });
         }
-
-        const mdpHache = await bcrypt.hash(MDP, 10);
-
-        const [id_utilisateur] = await db('utilisateur').insert({
-            nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache
-        });
-
-        console.log(`Nouvel utilisateur créé (ID: ${id_utilisateur})`);
-
-        res.status(201).json({
-            message: "Utilisateur inscrit avec succès !",
-            id_utilisateur
-        });
-
-    } catch (erreur) {
-        console.error("Erreur (Utilisateur) :", erreur);
-        res.status(500).json({ message: "Erreur interne du serveur." });
+    } catch (error) {
+        return res.status(500).json({ error: "Erreur lors de la vérification du courriel." });
     }
-});
+
+    // Hachage sécurisé du mot de passe avant insertion
+    const mdpHache = await bcrypt.hash(MDP, 10);
+
+    // Insertion du nouvel utilisateur dans la base de données
+    await db('utilisateur')
+        .insert({ nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache })
+        .then(([id_utilisateur]) => {
+            console.log(`Nouvel utilisateur créé (ID: ${id_utilisateur})`);
+            res.status(201).json({
+                message: "Utilisateur inscrit avec succès !",
+                id_utilisateur
+            });
+        })
+        .catch((error) => {
+            console.error("Erreur lors de l'inscription de l'utilisateur :", error);
+            res.status(500).json({ error: "Une erreur est survenue lors de l'inscription de l'utilisateur." });
+        });
+}
 
 
-//Route POST : Création d'un DOSSIER pour un client
-app.post('/api/dossiers', async (req, res) => {
+// Fonction pour créer un dossier pour un client existant
+async function creerDossier(req, res) {
     const { id_client } = req.body;
 
-    // on vérifie à qui appartient le Dossier
     if (!id_client) {
-        return res.status(400).json({ message: "L'ID du client est obligatoire." });
+        return res.status(400).json({ error: "L'ID du client est obligatoire." });
     }
 
     try {
-        // on Vérifier si le client existe réellement dans la base de données
+        // Vérifier que le client existe bien dans la base de données
         const clientExiste = await db('client').where({ id_client }).first();
         if (!clientExiste) {
-            return res.status(404).json({ message: "Client introuvable." });
+            return res.status(404).json({ error: "Client introuvable." });
         }
-
-        // Création du dossier
-        const [id_dossier] = await db('dossier').insert({ 
-            id_client: id_client 
-        });
-
-        console.log(`Nouveau dossier créé (ID: ${id_dossier}) pour le client ${id_client}`);
-
-        res.status(201).json({
-            message: "Dossier créé avec succès !",
-            id_dossier: id_dossier,
-            id_client: id_client
-        });
-
-    } catch (erreur) {
-        console.error("Erreur lors de la création du dossier :", erreur);
-        res.status(500).json({ message: "Erreur interne du serveur." });
+    } catch (error) {
+        return res.status(500).json({ error: "Erreur lors de la vérification du client." });
     }
-});
 
-app.post('/api/documents', async (req, res) => {
-    // On s'attend à ce que 'contenuBase64' soit une chaîne de caractères envoyée par le frontend
+    // Insertion du nouveau dossier lié au client
+    await db('dossier')
+        .insert({ id_client })
+        .then(([id_dossier]) => {
+            console.log(`Nouveau dossier créé (ID: ${id_dossier}) pour le client ${id_client}`);
+            res.status(201).json({
+                message: "Dossier créé avec succès !",
+                id_dossier,
+                id_client
+            });
+        })
+        .catch((error) => {
+            console.error("Erreur lors de la création du dossier :", error);
+            res.status(500).json({ error: "Une erreur est survenue lors de la création du dossier." });
+        });
+}
+
+
+// Fonction pour ajouter un document (encodé en Base64) dans un dossier existant
+async function ajouterDocument(req, res) {
     const { nom_document, type_document, contenuBase64, id_dossier } = req.body;
 
-    // Validation de base
     if (!nom_document || !type_document || !contenuBase64 || !id_dossier) {
-        return res.status(400).json({ message: "Tous les champs (nom, type, contenu, id_dossier) sont obligatoires." });
+        return res.status(400).json({ error: "Tous les champs sont requis." });
     }
 
     try {
-        // on Vérifier si le dossier existe
+        // Vérifier que le dossier cible existe bien dans la base de données
         const dossierExiste = await db('dossier').where({ id_dossier }).first();
         if (!dossierExiste) {
-            return res.status(404).json({ message: "Dossier introuvable." });
+            return res.status(404).json({ error: "Dossier introuvable." });
         }
-
-        // 3. Conversion : Transformer la chaîne Base64 en données binaires (Buffer)
-        // C'est ce que SQLite attend pour une colonne "binary"
-        const bufferContenu = Buffer.from(contenuBase64, 'base64');
-
-        // 4. Insertion dans la base de données
-        const [id_document] = await db('documents').insert({
-            nom_document: nom_document,
-            type_document: type_document,       // ex: "application/pdf" ou "image/png"
-            contenu: bufferContenu,             // Les données binaires
-            id_dossier: id_dossier
-        });
-
-        console.log(`Document '${nom_document}' ajouté au dossier ${id_dossier}`);
-
-        res.status(201).json({
-            message: "Document sauvegardé avec succès !",
-            id_document: id_document
-        });
-
-    } catch (erreur) {
-        console.error("Erreur lors de l'ajout du document :", erreur);
-        res.status(500).json({ message: "Erreur interne du serveur." });
+    } catch (error) {
+        return res.status(500).json({ error: "Erreur lors de la vérification du dossier." });
     }
-});
+
+    // Conversion du contenu Base64 en Buffer binaire pour le stockage en BD
+    const bufferContenu = Buffer.from(contenuBase64, 'base64');
+
+    // Insertion du document dans la base de données
+    await db('documents')
+        .insert({ nom_document, type_document, contenu: bufferContenu, id_dossier })
+        .then(([id_document]) => {
+            console.log(`Document '${nom_document}' ajouté au dossier ${id_dossier}`);
+            res.status(201).json({
+                message: "Document sauvegardé avec succès !",
+                id_document
+            });
+        })
+        .catch((error) => {
+            console.error("Erreur lors de l'ajout du document :", error);
+            res.status(500).json({ error: "Une erreur est survenue lors de l'ajout du document." });
+        });
+}
+
+
+module.exports = { inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument };

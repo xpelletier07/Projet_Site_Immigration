@@ -4,6 +4,7 @@ import {db} from "../db/db.js"
 import {midleware} from "./midleware.js"
 import {updateadmin} from "../controller/update.js"
 const multer = require("multer");
+const {inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument} = require("../api/POST/post.js");
 
 
 
