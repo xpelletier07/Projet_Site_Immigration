@@ -8,11 +8,8 @@ const upload = multer();
 
 
 
-
 // Routes pour la modification des données d'un administrateur
 route.update("/update_administrateur/:id" ,midleware(), updateadmin())
-
-
 
 
 module.exports = {route}
