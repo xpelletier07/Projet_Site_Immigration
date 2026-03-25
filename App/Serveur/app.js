@@ -1,6 +1,8 @@
-const app = require("express");
-const port = 3000
-import {db, initializeDatabase} from "./db/db.js"
+const express = require("express");
+const app = express();
+const port = 3000;
+const { initializeDatabase } = require("./db/db.js");
+const authRouter = require("./api/auth.js");
 
 app.use(express.json());
 app.use(express.static(__dirname + "/../Client"));
@@ -15,6 +17,7 @@ const {route: documentRoutes} = require("./api/document.js");
 app.use("/api", administrateurRoutes);
 app.use("/api", utilisateurRoutes);
 app.use("/api", documentRoutes);
+app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/../Client/index.html");

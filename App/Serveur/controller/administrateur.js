@@ -1,18 +1,15 @@
 const express = require("express")
 const route = express.Router()
 import {db} from "../db/db.js"
-import {midleware} from "../api/authentification/midleware.js"
-import {updateadmin} from "./update.js"
+
+import {midleware} from "./midleware.js"
+import {updateadmin} from "../controller/update.js"
 const multer = require("multer");
-const upload = multer();
-
-
+const {inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument} = require("../api/POST/post.js");
 
 
 // Routes pour la modification des données d'un administrateur
 route.update("/update_administrateur/:id" ,midleware(), updateadmin())
-
-
 
 
 module.exports = {route}
