@@ -24,3 +24,5 @@ async function updateclient(req, res) {
         res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour du client." });
     }
 }
+
+module.exports = {updateclient}

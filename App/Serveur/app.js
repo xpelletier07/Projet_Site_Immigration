@@ -2,22 +2,22 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const { initializeDatabase } = require("./db/db.js");
-const authRouter = require("./api/auth.js");
+// const authRouter = require("./api/auth.js");
 
 app.use(express.json());
 app.use(express.static(__dirname + "/../Client"));
 app.use(express.urlencoded({ extended: true }));
 
 // Importer les routes
-const {route: administrateurRoutes} = require("./api/administrateur.js");
-const {route: utilisateurRoutes} = require("./api/utilisateur.js");
-const {route: documentRoutes} = require("./api/document.js");
+const {route: administrateurRoutes} = require("./controller/administrateur.js");
+const {route: utilisateurRoutes} = require("./controller/document.js");
+const {route: documentRoutes} = require("./controller/document.js");
 
 // Utiliser les routes
 app.use("/api", administrateurRoutes);
 app.use("/api", utilisateurRoutes);
 app.use("/api", documentRoutes);
-app.use("/auth", authRouter);
+// app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/../Client/index.html");
