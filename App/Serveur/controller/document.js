@@ -7,7 +7,7 @@ const multer = require("multer");
 const upload = multer();
 
 // Routes pour la modification des données d'un document
-route.update("/update_document/:id" ,midleware(), upload.single("document"), updatedocument())
+route.put("/update_document/:id" ,midleware(), upload.single("document"), updatedocument())
 
 
 module.exports = {route}

@@ -8,7 +8,7 @@ const upload = multer();
 
 
 // Routes pour la modification des données d'un utilisateur
-route.update("/update_utilisateur/:id" ,midleware(), updateutilisateur())
+route.put("/update_utilisateur/:id" ,midleware(), updateutilisateur())
 
 
 module.exports = {route}
