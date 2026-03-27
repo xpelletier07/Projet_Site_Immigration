@@ -1,26 +1,39 @@
+const jwt = require("jsonwebtoken");
+const JWT = "";
 
-const jwt = require("jsonwebtoken")
-const JWT = ""
+function VerifyToken(req, res, next) {
+	const authHeader = req.headers["authorization"];
+	const token = authHeader && authHeader.split(" ")[1];
 
-function middleware(req, res, next) {
-    console.log("je suis un midleware")
+	if (!token) {
+		return res
+			.status(401)
+			.json({
+				message:
+					"Vous devez être connecté pour accéder à cette ressource.",
+			});
+	}
 
-    const authHeader = req.headers["authorization"]
+	try {
+		const decoded = jwt.verify(token, JWT);
+		req.user = decoded;
+	} catch (err) {
+		return res.status(401).json({ message: "Token invalide." });
+	}
 
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (!token) {
-        return res.status(401).json({ message: "Vous devez être connecté pour accéder à cette ressource." })
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT)
-        req.user = decoded
-    } catch (err) {
-        return res.status(401).json({ message: "Token invalide." })
-    }
-
-    next()
+	next();
 }
 
-module.exports = {middleware}
+const VerifyRole = (...roles) => {
+	return (req, res, next) => {
+		VerifyToken(req, res, () => {
+			if (!roles.includes(req.user.role))
+				return res
+					.status(403)
+					.json({ error: "Accès interdit pour ce rôle." });
+			next();
+		});
+	};
+};
+
+module.exports = { VerifyToken, VerifyRole };
