@@ -1,7 +1,7 @@
 const express = require("express")
 const route = express.Router()
 const {db} = require("../db/db.js")
-const {VerifyToken} = require("../api/authentification/middleware.js")
+const {VerifyRole} = require("../api/authentification/middleware.js")
 const {updateuser} = require("../api/PUT/index.js")
 const multer = require("multer");
 const upload = multer();
@@ -9,7 +9,7 @@ const {inscrireClient, creerDossier, ajouterDocument} = require("../api/POST/pos
 
 
 // Routes pour la modification des données d'un utilisateur
-route.put("/update_utilisateur/:id" ,VerifyToken, updateuser)
+route.put("/update_utilisateur/:id" ,VerifyRole("administrateur"), updateuser)
 
 
 module.exports = {route}

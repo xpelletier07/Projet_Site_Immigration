@@ -1,14 +1,14 @@
-export * from "./getClient.js"
+export * from "./getClientById.js"
 export * from "./getClients.js"
 
-export * from "./getUtilisateur.js"
+export * from "./getUtilisateurById.js"
 export * from "./getUtilisateurs.js"
 
-export * from "./getDocument.js"
+export * from "./getDocumentById.js"
 
-export * from "./getDossier.js"
+export * from "./getDossierById.js"
 export * from "./getDossiers.js"
 
-export * from "./getFacture.js"
-export * from "./getNote.js"
-export * from "./getType_Demande.js"
+export * from "./getFactureById.js"
+export * from "./getNoteById.js"
+export * from "./getType_DemandeById.js"
