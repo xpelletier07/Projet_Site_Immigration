@@ -10,5 +10,13 @@ const {inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument} = req
 // Routes pour la modification des données d'un administrateur
 route.update("/administrateur/:id" ,midleware(), updateadmin())
 
+// Routes POST
+router.post('/api/inscriptions/client',      inscrireClient);
+router.post('/api/inscriptions/utilisateur', inscrireUtilisateur);
+router.post('/api/dossiers',                 creerDossier);
+router.post('/api/documents',                ajouterDocument);
+
+module.exports = router;
+
 module.exports = {route}
 
