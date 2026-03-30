@@ -1,4 +1,4 @@
-const knex = require("knex");
+import knex from "knex";
 
 const db = knex({
 	client: "sqlite3",
@@ -153,4 +153,4 @@ async function initializeDatabase() {
 	console.log("All tables created successfully.");
 }
 
-module.exports = { db, initializeDatabase };
+export default { db, initializeDatabase };
