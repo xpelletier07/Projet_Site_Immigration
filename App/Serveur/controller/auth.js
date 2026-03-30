@@ -16,9 +16,9 @@ function isValidEmail(courriel) {
 	return typeof courriel === "string" && /.+@.+\..+/.test(courriel);
 }
 
-async function createAccount(req, res, forcedType) {
+export const createAccount = async (req, res, forcedType) => {
 	const type = normalizeType(forcedType || req.params.type);
-	const { nom, prenom, courriel, telephone, MDP } = req.body;
+	const { nom, prenom, courriel, telephone, MDP } = req.body || {};
 
 	if (!ALLOWED_TYPES.has(type)) {
 		return res.status(400).json({ message: "Type invalide. Utiliser client ou utilisateur." });

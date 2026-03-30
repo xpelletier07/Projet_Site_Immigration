@@ -1,5 +1,5 @@
-const bcrypt = require("bcrypt");
-const { db } = require("../../db/db.js");
+import bcrypt from "bcrypt";
+import { db } from "../../db/db.js";
 
 
 // Fonction pour inscrire un nouveau client et créer automatiquement son dossier
@@ -157,4 +157,4 @@ async function ajouterDocument(req, res) {
 }
 
 
-module.exports = { inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument };
+export { inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument };

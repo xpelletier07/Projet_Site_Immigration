@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { db } from "../db/db.js";
 
+import { createAccount } from '../controller/auth.js';
+
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
 const ALLOWED_TYPES = new Set(["client", "utilisateur"]);

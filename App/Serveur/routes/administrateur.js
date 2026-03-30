@@ -1,11 +1,12 @@
-const {db} = require("../db/db.js")
-const {VerifyRole} = require("../api/authentification/middleware.js")
-const {updateadmin} = require("../api/PUT/index.js")
+import {db} from("../db/db.js")
+import {verifyRole} from("../api/authentification/middleware.js")
+import {updateadmin} from("../api/PUT/index.js")
 
-const express = require("express")
+import express from("express")
+
 const route = express.Router()
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+import multer from("multer");
+import {inscrireClient, inscrireUtilisateur, creerDossier, ajouterDocument} from("../api/POST/post.js");
 
 // Routes pour la modification des données d'un administrateur
 route.put("/administrateur/:id" ,verifyRole("admin"), updateadmin())
