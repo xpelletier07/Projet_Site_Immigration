@@ -1,4 +1,3 @@
-
 // Fonction pour inscrire un nouvel utilisateur (employé / admin)
 export async function inscrireUtilisateur(req, res) {
     const { nom, prenom, courriel, telephone, MDP } = req.body;
@@ -37,36 +36,18 @@ export async function inscrireUtilisateur(req, res) {
 }
 
 // fonction pour supprimer un admin
-
-export async function deleteAdminById(id_admin) {
+async function deleteAdminById(req, res) {
+    try{
+        const deleted = await db("admin")
+                    .where({ id_admin : req.params.id })
+                    .delete();
+                if (!deleted)
+                    return res.status(404).json({ error: "Administrateur introuvable." });
+                res.json({ message: "Administrateur supprimé." });
     return await db("admin").where({ id_admin }).del();
-}
-
-
-// Fonction pour mettre à jour les données d'un administrateur
-
-export async function updateAdmin(req, res) {
-    try {
-    const { id_admin } = req.params;
-    const { nom, prenom, courriel, telephone, MDP } = req.body;
-
-    if (!id_admin || !nom || !prenom || !courriel || !telephone || !MDP) {
-        return res.status(400).json({ error: "Tous les champs sont requis." });
-    }
-
-    const data = { nom, prenom, courriel, telephone, MDP };
-    await db("admin")
-        .where({ id_admin })
-        .update(data)
-        .then(() => {
-            res.status(200).json({ message: "Administrateur mis à jour avec succès." });
-        })
-        .catch((error) => {
-            console.error("Erreur lors de la mise à jour de l'administrateur:", error);
-            res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour de l'administrateur." });
-        });
     } catch (error) {
-        console.error("Erreur lors de la mise à jour de l'administrateur:", error);
-        res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour de l'administrateur." });
+        console.error("Erreur lors de la suppression de l'administrateur:", error);
+        throw new Error("Une erreur est survenue lors de la suppression de l'administrateur.");
     }
 }
+
