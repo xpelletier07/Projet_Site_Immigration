@@ -1,7 +1,5 @@
-const { db } = require("../../db/db.js");
+import { db } from "../../db/db.js";
 
-async function deleteDossierById(id_dossier) {
+export async function deleteDossierById(id_dossier) {
     return await db("dossier").where({ id_dossier }).del();
 }
-
-module.exports = { deleteDossierById };

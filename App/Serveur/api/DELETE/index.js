@@ -1,10 +1,8 @@
-module.exports = {
-    ...require("./deleteAdminById.js"),
-    ...require("./deleteClientById.js"),
-    ...require("./deleteUtilisateurById.js"),
-    ...require("./deleteDossierById.js"),
-    ...require("./deleteDocumentById.js"),
-    ...require("./deleteFactureById.js"),
-    ...require("./deleteNoteById.js"),
-    ...require("./deleteTypeDemandeById.js"),
-};
+export { deleteAdminById } from "./deleteAdminById.js";
+export { deleteClientById } from "./deleteClientById.js";
+export { deleteUtilisateurById } from "./deleteUtilisateurById.js";
+export { deleteDossierById } from "./deleteDossierById.js";
+export { deleteDocumentById } from "./deleteDocumentById.js";
+export { deleteFactureById } from "./deleteFactureById.js";
+export { deleteNoteById } from "./deleteNoteById.js";
+export { deleteTypeDemandeById } from "./deleteTypeDemandeById.js";
