@@ -1,5 +1,5 @@
 // Champs réels : description, montant, date_emission, date_echeance, statut, id_dossier
-import { db } from "../db.js";
+import { db } from "../db/db.js";
 
 // GET /factures/dossier/:idDossier
 export const getFacturesByDossier = async (req, res) => {

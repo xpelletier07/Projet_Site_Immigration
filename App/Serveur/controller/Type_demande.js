@@ -1,4 +1,4 @@
-import { db } from "../db.js";
+import { db } from "../db/db.js";
 
 // GET /type-demandes/dossier/:idDossier
 export const getTypeDemandesByDossier = async (req, res) => {

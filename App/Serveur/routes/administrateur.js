@@ -1,19 +1,14 @@
-import db from "../db/db.js"
-import {createAccount} from "../api/auth.js"
-import {VerifyRole} from "../api/authentification/middleware.js"
-import { deleteAdminById, updateAdmin, inscrireUtilisateur } from "../api/administrateur.js" 
-import {inscrireClient, deleteClient} from "../api/Client.js"
-import {createDossier, deleteDossier} from "../api/dossier.js"
-import {addDocument, deleteDocument} from "../api/document.js"
+const {db} = require("../db/db.js")
+const {VerifyRole} = require("../api/authentification/middleware.js")
+const {updateadmin} = require("../api/PUT/index.js")
 
-import express from "express"
-
+const express = require("express")
 const route = express.Router()
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
 // Routes pour la modification des données d'un administrateur
-route.put("/administrateur/:id" ,VerifyRole("admin"), updateadmin())
+route.put("/administrateur/:id" ,verifyRole("admin"), updateadmin())
 
 /**************
 // Routes POST
@@ -59,6 +54,24 @@ route.delete("/document/:id", VerifyRole("admin"), deleteDocument)
  * Routes GET
  * 
  ********************/
+
+// Route pour obtenir tous les clients
+route.get("/clients", VerifyRole("admin"), getAllClients)
+
+// Route pour obtenir un client par ID
+route.get("/clients/:id", VerifyRole("admin"), getClientById)
+
+// Route pour obtenir tous les dossiers
+route.get("/dossiers", VerifyRole("admin"), getAllDossiers)
+
+// Route pour obtenir un dossier par ID
+route.get("/dossiers/:id", VerifyRole("admin"), getDossierById)
+
+// Route pour obtenir tous les documents
+route.get("/documents", VerifyRole("admin"), getAllDocuments)
+
+// Route pour obtenir un document par ID
+route.get("/documents/:id", VerifyRole("admin"), getDocumentById)
 
 
 
