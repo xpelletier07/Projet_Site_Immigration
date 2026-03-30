@@ -1,8 +1,8 @@
 // Champs réels : description, montant, date_emission, date_echeance, statut, id_dossier
-const { db } = require("../db.js");
+import { db } from "../db.js";
 
 // GET /factures/dossier/:idDossier
-const getFacturesByDossier = async (req, res) => {
+export const getFacturesByDossier = async (req, res) => {
 	try {
 		const factures = await db("facture").where({
 			id_dossier: req.params.idDossier,
@@ -14,7 +14,7 @@ const getFacturesByDossier = async (req, res) => {
 };
 
 // GET /factures/:id
-const getFactureById = async (req, res) => {
+export const getFactureById = async (req, res) => {
 	try {
 		const facture = await db("facture")
 			.where({ id_facture: req.params.id })
@@ -28,7 +28,7 @@ const getFactureById = async (req, res) => {
 };
 
 // POST /factures
-const createFacture = async (req, res) => {
+export const createFacture = async (req, res) => {
 	const {
 		id_dossier,
 		description,
@@ -67,7 +67,7 @@ const createFacture = async (req, res) => {
 };
 
 // PUT /factures/:id
-const updateFacture = async (req, res) => {
+export const updateFacture = async (req, res) => {
 	const { description, montant, date_emission, date_echeance, statut } =
 		req.body;
 	try {
@@ -89,7 +89,7 @@ const updateFacture = async (req, res) => {
 };
 
 // DELETE /factures/:id
-const deleteFacture = async (req, res) => {
+export const deleteFacture = async (req, res) => {
 	try {
 		const deleted = await db("facture")
 			.where({ id_facture: req.params.id })
@@ -102,10 +102,3 @@ const deleteFacture = async (req, res) => {
 	}
 };
 
-module.exports = {
-    getFacturesByDossier,
-    getFactureById,
-    createFacture,
-    updateFacture,
-    deleteFacture
-};
