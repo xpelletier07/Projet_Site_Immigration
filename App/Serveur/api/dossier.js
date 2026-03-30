@@ -1,7 +1,7 @@
-const { db } = require("../db.js");
+import  { db } from "../db.js";
 
 // GET /dossiers
-const getAllDossiers = async (req, res) => {
+export const getAllDossiers = async (req, res) => {
 	try {
 		const dossiers = await db("dossier")
 			.join("client", "dossier.id_client", "client.id_client")
@@ -18,7 +18,7 @@ const getAllDossiers = async (req, res) => {
 };
 
 // GET /dossiers/:id — dossier complet avec toutes ses relations
-const getDossierById = async (req, res) => {
+export const getDossierById = async (req, res) => {
 	const id = req.params.id;
 	try {
 		const dossier = await db("dossier").where({ id_dossier: id }).first();
@@ -46,7 +46,7 @@ const getDossierById = async (req, res) => {
 };
 
 // GET /dossiers/client/:idClient
-const getDossiersByClient = async (req, res) => {
+export const getDossiersByClient = async (req, res) => {
 	try {
 		const dossiers = await db("dossier").where({
 			id_client: req.params.idClient,
@@ -58,7 +58,7 @@ const getDossiersByClient = async (req, res) => {
 };
 
 // POST /dossiers
-const createDossier = async (req, res) => {
+export const createDossier = async (req, res) => {
 	const { id_client } = req.body;
 	if (!id_client)
 		return res.status(400).json({ error: "id_client est requis." });
@@ -72,7 +72,7 @@ const createDossier = async (req, res) => {
 };
 
 // DELETE /dossiers/:id
-const deleteDossier = async (req, res) => {
+export const deleteDossier = async (req, res) => {
 	try {
 		const deleted = await db("dossier")
 			.where({ id_dossier: req.params.id })
@@ -83,12 +83,4 @@ const deleteDossier = async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
-};
-
-module.exports = {
-    getAllDossiers,
-    getDossierById, 
-    getDossiersByClient,
-    createDossier,
-    deleteDossier
 };

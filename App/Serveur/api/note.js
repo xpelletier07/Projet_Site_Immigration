@@ -1,6 +1,6 @@
-const { db } = require("../db.js");
+import { db } from "../db.js";
 
-const getNotesByDossier = async (req, res) => {
+export const getNotesByDossier = async (req, res) => {
 	try {
 		const notes = await db("note").where({
 			id_dossier: req.params.idDossier,
@@ -12,7 +12,7 @@ const getNotesByDossier = async (req, res) => {
 };
 
 // GET /notes/:id
-const getNoteById = async (req, res) => {
+export const getNoteById = async (req, res) => {
 	try {
 		const note = await db("note").where({ id_note: req.params.id }).first();
 		if (!note) return res.status(404).json({ error: "Note introuvable." });
@@ -23,7 +23,7 @@ const getNoteById = async (req, res) => {
 };
 
 // POST /notes
-const createNote = async (req, res) => {
+export const createNote = async (req, res) => {
 	const { id_dossier, note } = req.body;
 	if (!id_dossier || !note)
 		return res
@@ -39,7 +39,7 @@ const createNote = async (req, res) => {
 };
 
 // PUT /notes/:id
-const updateNote = async (req, res) => {
+export const updateNote = async (req, res) => {
 	const { note } = req.body;
 	try {
 		const updated = await db("note")
@@ -54,7 +54,7 @@ const updateNote = async (req, res) => {
 };
 
 // DELETE /notes/:id
-const deleteNote = async (req, res) => {
+export const deleteNote = async (req, res) => {
 	try {
 		const deleted = await db("note")
 			.where({ id_note: req.params.id })
@@ -65,12 +65,4 @@ const deleteNote = async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
-};
-
-module.exports = {
-    getNotesByDossier,
-    getNoteById,
-    createNote,
-    updateNote,
-    deleteNote
 };

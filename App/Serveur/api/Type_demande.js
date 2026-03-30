@@ -1,7 +1,7 @@
-const { db } = require("../db.js");
+import { db } from "../db.js";
 
 // GET /type-demandes/dossier/:idDossier
-const getTypeDemandesByDossier = async (req, res) => {
+export const getTypeDemandesByDossier = async (req, res) => {
 	try {
 		const types = await db("type_demande").where({
 			id_dossier: req.params.idDossier,
@@ -13,7 +13,7 @@ const getTypeDemandesByDossier = async (req, res) => {
 };
 
 // GET /type-demandes/:id
-const getTypeDemandeById = async (req, res) => {
+export const getTypeDemandeById = async (req, res) => {
 	try {
 		const type = await db("type_demande")
 			.where({ id_demande: req.params.id })
@@ -29,7 +29,7 @@ const getTypeDemandeById = async (req, res) => {
 };
 
 // POST /type-demandes
-const createTypeDemande = async (req, res) => {
+export const createTypeDemande = async (req, res) => {
 	const { id_dossier, Type_Demande } = req.body;
 	if (!id_dossier || !Type_Demande)
 		return res
@@ -48,7 +48,7 @@ const createTypeDemande = async (req, res) => {
 };
 
 // PUT /type-demandes/:id
-const updateTypeDemande = async (req, res) => {
+export const updateTypeDemande = async (req, res) => {
 	const { Type_Demande } = req.body;
 	try {
 		const updated = await db("type_demande")
@@ -65,7 +65,7 @@ const updateTypeDemande = async (req, res) => {
 };
 
 // DELETE /type-demandes/:id
-const deleteTypeDemande = async (req, res) => {
+export const deleteTypeDemande = async (req, res) => {
 	try {
 		const deleted = await db("type_demande")
 			.where({ id_demande: req.params.id })
@@ -78,12 +78,4 @@ const deleteTypeDemande = async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
-};
-
-module.exports = {
-    getTypeDemandesByDossier,
-    getTypeDemandeById,
-    createTypeDemande,
-    updateTypeDemande,
-    deleteTypeDemande
 };
