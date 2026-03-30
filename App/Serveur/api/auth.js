@@ -1,7 +1,7 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { db } = require("../db/db.js");
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { db } from "../db/db.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
@@ -149,4 +149,4 @@ router.delete("/delete", async (req, res) => {
 	}
 });
 
-module.exports = router;
+export default router;
