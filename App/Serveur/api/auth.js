@@ -16,7 +16,7 @@ function isValidEmail(courriel) {
 	return typeof courriel === "string" && /.+@.+\..+/.test(courriel);
 }
 
-async function createAccount(req, res, forcedType) {
+export async function createAccount(req, res, forcedType) {
 	const type = normalizeType(forcedType || req.params.type);
 	const { nom, prenom, courriel, telephone, MDP } = req.body;
 
@@ -61,11 +61,8 @@ async function createAccount(req, res, forcedType) {
 	}
 }
 
-router.post("/create/:type", async (req, res) => createAccount(req, res));
-router.post("/createClient", async (req, res) => createAccount(req, res, "client"));
-router.post("/createUtilisateur", async (req, res) => createAccount(req, res, "utilisateur"));
 
-router.post("/login", async (req, res) => {
+export async function login(req, res) {
 	const { courriel, MDP } = req.body;
 	const requestedType = normalizeType(req.body.type);
 
@@ -111,42 +108,4 @@ router.post("/login", async (req, res) => {
 		console.error("Erreur login auth:", error);
 		return res.status(500).json({ message: "Erreur interne du serveur." });
 	}
-});
-
-router.delete("/delete", async (req, res) => {
-	const type = normalizeType(req.body.type);
-	const id = req.body.id;
-	const courriel = req.body.courriel;
-
-	if (!ALLOWED_TYPES.has(type)) {
-		return res.status(400).json({ message: "Type invalide. Utiliser client ou utilisateur." });
-	}
-
-	if (!id && !courriel) {
-		return res.status(400).json({ message: "Fournir id ou courriel pour supprimer le compte." });
-	}
-
-	try {
-		const idField = type === "client" ? "id_client" : "id_utilisateur";
-		const query = db(type);
-
-		if (id) {
-			query.where({ [idField]: id });
-		} else {
-			query.where({ courriel });
-		}
-
-		const deletedCount = await query.del();
-
-		if (!deletedCount) {
-			return res.status(404).json({ message: "Compte introuvable." });
-		}
-
-		return res.status(200).json({ message: "Compte supprime avec succes." });
-	} catch (error) {
-		console.error("Erreur delete auth:", error);
-		return res.status(500).json({ message: "Erreur interne du serveur." });
-	}
-});
-
-export default router;
+}

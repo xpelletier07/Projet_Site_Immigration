@@ -10,6 +10,7 @@ const SAFE_COLS = [
 	"date_creation",
 ];
 
+
 // GET /clients
 export const getAllClients = async (req, res) => {
 	try {
