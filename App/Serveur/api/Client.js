@@ -1,4 +1,5 @@
-const { db } = require("../db.js");
+// controllers/clientController.js
+import { db } from "../db.js";
 
 const SAFE_COLS = [
 	"id_client",
@@ -10,7 +11,7 @@ const SAFE_COLS = [
 ];
 
 // GET /clients
-const getAllClients = async (req, res) => {
+export const getAllClients = async (req, res) => {
 	try {
 		const clients = await db("client").select(SAFE_COLS);
 		res.json(clients);
@@ -20,7 +21,7 @@ const getAllClients = async (req, res) => {
 };
 
 // GET /clients/:id
-const getClientById = async (req, res) => {
+export const getClientById = async (req, res) => {
 	try {
 		const client = await db("client")
 			.select(SAFE_COLS)
@@ -35,7 +36,7 @@ const getClientById = async (req, res) => {
 };
 
 // PUT /clients/:id
-const updateClient = async (req, res) => {
+export const updateClient = async (req, res) => {
 	const { nom, prenom, courriel, telephone } = req.body;
 	try {
 		const updated = await db("client")
@@ -50,7 +51,7 @@ const updateClient = async (req, res) => {
 };
 
 // DELETE /clients/:id
-const deleteClient = async (req, res) => {
+export const deleteClient = async (req, res) => {
 	try {
 		const deleted = await db("client")
 			.where({ id_client: req.params.id })
@@ -61,11 +62,4 @@ const deleteClient = async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
-};
-
-module.exports = {
-    getAllClients,
-    getClientById,
-    updateClient,
-    deleteClient
 };

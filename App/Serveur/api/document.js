@@ -1,7 +1,6 @@
-const { db } = require("../db.js");
-const { updatedocument } = require("./UPDATE/updateDocument.js");
+import { db } from "../db.js";
 
-const getDocumentsByDossier = async (req, res) => {
+export const getDocumentsByDossier = async (req, res) => {
 	try {
 		const docs = await db("documents")
 			.select(
@@ -17,7 +16,7 @@ const getDocumentsByDossier = async (req, res) => {
 	}
 };
 
-const getDocumentById = async (req, res) => {
+export const getDocumentById = async (req, res) => {
 	try {
 		const doc = await db("documents")
 			.select(
@@ -37,7 +36,7 @@ const getDocumentById = async (req, res) => {
 };
 
 // GET /documents/:id/telecharger — retourne le fichier brut
-const downloadDocument = async (req, res) => {
+export const downloadDocument = async (req, res) => {
 	try {
 		const doc = await db("documents")
 			.where({ id_document: req.params.id })
@@ -50,14 +49,14 @@ const downloadDocument = async (req, res) => {
 			"Content-Disposition",
 			`attachment; filename="${doc.nom_document}"`,
 		);
-		res.send(doc.contenu); 
+		res.send(doc.contenu);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
 };
 
 // POST /documents — upload via multer (req.file)
-const addDocument = async (req, res) => {
+export const addDocument = async (req, res) => {
 	const { id_dossier } = req.body;
 	if (!id_dossier || !req.file)
 		return res
@@ -69,7 +68,7 @@ const addDocument = async (req, res) => {
 			id_dossier,
 			nom_document: req.file.originalname,
 			type_document: req.file.mimetype,
-			contenu: req.file.buffer, 
+			contenu: req.file.buffer,
 		});
 		res.status(201).json({
 			id_document,
@@ -80,8 +79,7 @@ const addDocument = async (req, res) => {
 	}
 };
 
-
-const deleteDocument = async (req, res) => {
+export const deleteDocument = async (req, res) => {
 	try {
 		const deleted = await db("documents")
 			.where({ id_document: req.params.id })
@@ -94,11 +92,57 @@ const deleteDocument = async (req, res) => {
 	}
 };
 
-modules.exports = {
-    getDocumentsByDossier,
-    getDocumentById,
-    downloadDocument,
-    addDocument,
-    deleteDocument,
-    updatedocument
+export const updatedocument = async (req, res) => {
+	try {
+		const fichier = req.file;
+		const id_document = req.params.id;
+		const { id_dossier, type_document, nom_document } = req.body;
+
+		if (!id_document) {
+			return res
+				.status(400)
+				.json({ error: "L'ID du document est requis." });
+		}
+
+		if (!id_dossier) {
+			return res
+				.status(400)
+				.json({ error: "L'ID du dossier est requis." });
+		}
+
+		const dossierExiste = await db("dossier").where({ id_dossier }).first();
+		if (!dossierExiste) {
+			return res
+				.status(404)
+				.json({ error: "Dossier introuvable ou non existant" });
+		}
+
+		const data = {
+			nom_document: nom_document,
+			type_document: type_document,
+			id_dossier: id_dossier,
+		};
+
+		if (fichier) {
+			data.nom_document = fichier.originalname;
+			data.type_document = fichier.mimetype;
+			data.contenu = fichier.buffer;
+		}
+
+		await db("documents")
+			.where({ id_document })
+			.update(data)
+			.then(() => {
+				res.status(200).json({
+					message: "Document mis à jour avec succès.",
+				});
+			});
+
+		res.json({ message: "Document enregistré" });
+	} catch (error) {
+		console.error("Erreur lors de la mise à jour du document:", error);
+		res.status(500).json({
+			error: "Une erreur est survenue lors de la mise à jour du document.",
+		});
+	}
 };
