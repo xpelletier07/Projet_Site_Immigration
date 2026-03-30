@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const JWT = "";
 
-function VerifyToken(req, res, next) {
+function verifyToken(req, res, next) {
 	const authHeader = req.headers["authorization"];
 	const token = authHeader && authHeader.split(" ")[1];
 
@@ -24,9 +24,9 @@ function VerifyToken(req, res, next) {
 	next();
 }
 
-const VerifyRole = (...roles) => {
+const verifyRole = (...roles) => {
 	return (req, res, next) => {
-		VerifyToken(req, res, () => {
+		verifyToken(req, res, () => {
 			if (!roles.includes(req.user.role))
 				return res
 					.status(403)
@@ -36,4 +36,4 @@ const VerifyRole = (...roles) => {
 	};
 };
 
-module.exports = { VerifyToken, VerifyRole };
+module.exports = { verifyToken, verifyRole };

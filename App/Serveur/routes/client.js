@@ -5,7 +5,7 @@ import {
 	getClientById,
 	updateClient,
 	deleteClient,
-} from "../controllers/clientController.js";
+} from "../controller/Client.js";
 import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
 
 const router = Router();

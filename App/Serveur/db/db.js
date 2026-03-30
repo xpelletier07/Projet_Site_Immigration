@@ -153,4 +153,4 @@ async function initializeDatabase() {
 	console.log("All tables created successfully.");
 }
 
-export default { db, initializeDatabase };
+export { db, initializeDatabase };

@@ -1,4 +1,4 @@
-import  { db } from "../db.js";
+import  { db } from "../db/db.js";
 
 // GET /dossiers
 export const getAllDossiers = async (req, res) => {

@@ -1,5 +1,5 @@
 // controllers/clientController.js
-import { db } from "../db.js";
+import { db } from "../db/db.js";
 
 const SAFE_COLS = [
 	"id_client",

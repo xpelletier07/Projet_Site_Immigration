@@ -1,4 +1,4 @@
-import { db } from "../db.js";
+import { db } from "../db/db.js";
 
 export const getNotesByDossier = async (req, res) => {
 	try {
