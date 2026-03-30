@@ -1,14 +1,14 @@
 // routes/documentRoutes.js
-const { Router } = require("express");
-const multer = require("multer");
-const {
+import { Router } from "express";
+import multer from "multer";
+import {
 	getDocumentsByDossier,
 	getDocumentById,
 	downloadDocument,
 	addDocument,
 	deleteDocument,
-} = require("../api/document.js");
-const { verifyToken, verifyRole } = require("../middleware/authMiddleware.js");
+} from "../controller/document.js";
+import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
 
 // Stockage en mémoire — le Buffer est passé directement à SQLite
 const upload = multer({
@@ -33,4 +33,4 @@ router.post("/", verifyToken, upload.single("fichier"), addDocument);
 // Suppression — employés seulement
 router.delete("/:id", verifyRole("utilisateur"), deleteDocument);
 
-module.exports = { router };
+export default router;

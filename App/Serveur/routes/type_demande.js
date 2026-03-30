@@ -1,11 +1,12 @@
-const { Router } = require("express");
-const {
+// routes/typeDemandeRoutes.js
+import { Router } from "express";
+import {
 	getTypeDemandesByDossier,
 	getTypeDemandeById,
 	createTypeDemande,
 	updateTypeDemande,
 	deleteTypeDemande,
-} = require("../api/Type_demande.js");
+} from "../controller/Type_demande.js";
 
 const router = Router();
 
@@ -15,4 +16,4 @@ router.post("/", createTypeDemande); // POST   /type-demandes
 router.put("/:id", updateTypeDemande); // PUT    /type-demandes/:id
 router.delete("/:id", deleteTypeDemande); // DELETE /type-demandes/:id
 
-module.exports = { router };
+export default router;

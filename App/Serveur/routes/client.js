@@ -1,10 +1,25 @@
-const express = require("express")
-const route = express.Router()
-const {db} = require("../db/db.js")
-const {VerifyToken} = require("../api/authentification/middleware.js")
-const {updateclient} = require("../api/PUT/index.js")
-const multer = require("multer");
-const upload = multer();
+// routes/clientRoutes.js
+import { Router } from "express";
+import {
+	getAllClients,
+	getClientById,
+	updateClient,
+	deleteClient,
+} from "../controllers/clientController.js";
+import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
 
-// Route pour la modification des données d'un client
-route.put("/update_client/:id" ,VerifyToken, updateclient)
+const router = Router();
+
+// Liste complète – employés seulement
+router.get("/", verifyRole("utilisateur"), getAllClients);
+
+// Un client peut consulter son propre profil ; un employé peut voir n'importe lequel
+router.get("/:id", verifyToken, getClientById);
+
+// Modification du profil – client ou employé
+router.put("/:id", verifyToken, updateClient);
+
+// Suppression – employés seulement
+router.delete("/:id", verifyRole("utilisateur"), deleteClient);
+
+export default router;
