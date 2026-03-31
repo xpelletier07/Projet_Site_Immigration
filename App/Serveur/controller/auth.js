@@ -54,4 +54,50 @@ export const createAccount = async (req, res, forcedType) => {
 	}
 }
 
+export async function login(req, res) {
+	const { courriel, MDP } = req.body;
+	const requestedType = normalizeType(req.body.type);
 
+	if (!courriel || !MDP) {
+		return res.status(400).json({ message: "Courriel et mot de passe sont obligatoires." });
+	}
+
+	if (!isValidEmail(courriel)) {
+		return res.status(400).json({ message: "Courriel invalide." });
+	}
+
+	const lookupTypes = requestedType && ALLOWED_TYPES.has(requestedType)
+		? [requestedType]
+		: ["utilisateur", "client"];
+
+	try {
+		for (const type of lookupTypes) {
+			const account = await db(type).where({ courriel }).first();
+			if (!account) continue;
+
+			const isPasswordValid = await bcrypt.compare(MDP, account.MDP);
+			if (!isPasswordValid) {
+				return res.status(401).json({ message: "Identifiants invalides." });
+			}
+
+			const idField = type === "client" ? "id_client" : "id_utilisateur";
+			const token = jwt.sign(
+				{ id: account[idField], type, courriel: account.courriel },
+				JWT_SECRET,
+				{ expiresIn: "24h" }
+			);
+
+			return res.status(200).json({
+				message: "Connexion reussie.",
+				token,
+				type,
+				id: account[idField],
+			});
+		}
+
+		return res.status(401).json({ message: "Identifiants invalides." });
+	} catch (error) {
+		console.error("Erreur login auth:", error);
+		return res.status(500).json({ message: "Erreur interne du serveur." });
+	}
+}
