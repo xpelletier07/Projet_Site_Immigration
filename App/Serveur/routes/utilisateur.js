@@ -14,6 +14,7 @@ const router = Router();
 router.get("/", verifyRole("utilisateur"), getAllUtilisateurs);
 router.get("/:id", verifyRole("utilisateur"), getUtilisateurById);
 router.put("/:id", verifyRole("utilisateur"), updateUtilisateur);
-router.delete("/:id", verifyRole("utilisateur"), deleteUtilisateur);
+router.delete("/:id", verifyRole("admin"), deleteUtilisateur);
+router.post("/administrateur", verifyRole("admin"), inscrireUtilisateur)
 
 export default router;
