@@ -1,4 +1,5 @@
 import knex from "knex";
+import bcrypt from "bcrypt";
 
 const db = knex({
 	client: "sqlite3",
@@ -23,6 +24,21 @@ async function createTBL_admin() {
 		console.log('Table "admin" created successfully.');
 	}
 }
+
+async function create_admin() {
+	const exists = await db("admin").where({ courriel: "admin@cmaisonneuve.com" }).first();
+	if (!exists) {
+		await db("admin").insert({
+			nom: "Admin",
+			prenom: "Super",
+			courriel: "admin@cmaisonneuve.com",
+			telephone: "1234567890",
+			MDP: await bcrypt.hash("password", 10),
+		});
+		console.log('Admin account created successfully.');
+	}
+}
+
 
 async function createTBL_utilisateur() {
 	const exists = await db.schema.hasTable("utilisateur");
@@ -143,6 +159,7 @@ async function createTBL_Documents() {
 
 async function initializeDatabase() {
 	await createTBL_admin();
+	await create_admin();
 	await createTBL_utilisateur();
 	await createTBL_client();
 	await createTBL_dossier();
