@@ -3,6 +3,7 @@ import cors from "cors";
 import { db , initializeDatabase } from "./db/db.js";
 
 // Import des routes (contrôleurs)
+import adminRoutes from "./routes/administrateur.js";
 import authRoutes from "./routes/auth.js";
 import clientRoutes from "./routes/client.js";
 import utilisateurRoutes from "./routes/utilisateur.js";
@@ -29,7 +30,7 @@ app.use("/notes", noteRoutes);
 app.use("/factures", factureRoutes);
 app.use("/documents", documentRoutes);
 app.use("/type-demandes", typeDemandeRoutes);
-
+app.use("/administrateurs", adminRoutes);
 // Route de base
 app.get("/", (req, res) => {
 	res.json({ message: "API Immigration - Opérationnelle" });

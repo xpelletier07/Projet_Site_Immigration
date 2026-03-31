@@ -5,7 +5,7 @@
 Xavier a beaucoup travaillé sur la base du backend: organisation des routes et des contrôleurs, mise en place des routes GET/POST, et la stabilisation du serveur. Il a aussi fait plusieurs correctifs de debug.
 
 ## Éric Gouife A Djiben
-Éric a contribué aux parties UPDATE et POST. Il a travaillé sur les mises à jour, le contrôleur administrateur, et certains éléments d'authentification. Il a aussi participé à la modélisation (diagramme entité-relation) et aux ajustements des fichiers du projet.
+Éric a contribué aux parties PUT et POST. Il a travaillé sur les mises à jour, le contrôleur administrateur, et certains éléments d'authentification. Il a aussi participé à la modélisation (diagramme entité-relation) et aux ajustements des fichiers du projet.
 
 ## Glodie
 Glodie a contribué sur des ajustements backend, en autres les routes POST ainsi que les tests de chaque route pour s'assurer de leur bon fonctionnement. 
