@@ -1,39 +1,35 @@
 import jwt from "jsonwebtoken";
-const JWT = "";
+
+const JWT = process.env.JWT_SECRET || "dev_secret_change_me";
 
 export function verifyToken(req, res, next) {
-	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1];
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
-	if (!token) {
-		return res
-			.status(401)
-			.json({
-				message:
-					"Vous devez être connecté pour accéder à cette ressource.",
-			});
-	}
+    if (!token) {
+        return res.status(401).json({
+            message: "Vous devez être connecté pour accéder à cette ressource.",
+        });
+    }
 
-	try {
-		const decoded = jwt.verify(token, JWT);
-		req.user = decoded;
-	} catch (err) {
-		return res.status(401).json({ message: "Token invalide." });
-	}
+    try {
+        const decoded = jwt.verify(token, JWT);
+        req.user = decoded;
+    } catch (err) {
+        return res.status(401).json({ message: "Token invalide." });
+    }
 
-	next();
+    next();
 }
 
 export const verifyRole = (...roles) => {
-	return (req, res, next) => {
-		verifyToken(req, res, () => {
-			if (!roles.includes(req.user.role))
-				return res
-					.status(403)
-					.json({ error: "Accès interdit pour ce rôle." });
-			next();
-		});
-	};
+    return (req, res, next) => {
+        verifyToken(req, res, () => {
+            // Vérifier le type de l'utilisateur au lieu du role
+            if (!roles.includes(req.user.type)) {
+                return res.status(403).json({ error: "Accès interdit pour ce rôle." });
+            }
+            next();
+        });
+    };
 };
-
-//export default { verifyToken, verifyRole };
