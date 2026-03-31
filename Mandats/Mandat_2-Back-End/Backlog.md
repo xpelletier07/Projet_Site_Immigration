@@ -13,6 +13,25 @@ Glodie a contribué sur des ajustements backend, en autres les routes POST ainsi
 ## Hichem Khederi
 J'ai surtout travaillé sur la partie DELETE et l'authentification liée, avec la suppression de plusieurs entités (client, admin, document, dossier, facture, note, type de demande, utilisateur) ainsi que sur la documentation du projet.
 
+L'authentification a été fait par : Hichem Khederi
+
+La base de données (db.js) a été faite par : Xavier Pelletier (création et ajustements)
+
+Les routes DELETE ont été faites par : Hichem Khederi
+
+Les routes GET ont été faites par : Xavier Pelletier
+
+Les routes POST ont été faites par : Xavier Pelletier, Éric Gouife A Djiben et Glodie
+
+Les routes PUT/UPDATE ont été faites par : Éric Gouife A Djiben
+
+Le contrôleur administrateur a été fait par : Éric Gouife A Djiben
+
+Le diagramme entité-relation a été fait par : Éric Gouife A Djiben
+
+La documentation du projet a été faite par : Hichem Khederi
+
+
 ---
 
 # État du projet
