@@ -6,10 +6,10 @@ import express from("express")
 const route = express.Router()
 
 // Routes pour la modification des données d'un administrateur
-route.put("/administrateur/:id" ,verifyRole("admin"), updateAdmin())
+route.put("/update/:id" ,verifyRole("admin"), updateAdmin())
 
 // Route pour supprimer un administrateur
-route.delete("/administrateur/:id", verifyRole("admin"), deleteAdminById)
+route.delete("/delete/:id", verifyRole("admin"), deleteAdminById)
 
 
 export default route;

@@ -15,7 +15,7 @@ const router = Router();
 router.get("/dossier/:idDossier", verifyRole("utilisateur"), getNotesByDossier);
 router.get("/:id", verifyRole("utilisateur"), getNoteById);
 router.post("/", verifyRole("utilisateur"), createNote);
-router.put("/:id", verifyRole("utilisateur"), updateNote);
-router.delete("/:id", verifyRole("utilisateur"), deleteNote);
+router.put("/update/:id", verifyRole("utilisateur"), updateNote);
+router.delete("/delete/:id", verifyRole("utilisateur"), deleteNote);
 
 export default router;

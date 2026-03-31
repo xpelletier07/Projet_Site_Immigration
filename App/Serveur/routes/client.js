@@ -17,9 +17,9 @@ router.get("/", verifyRole("utilisateur"), getAllClients);
 router.get("/:id", verifyToken, getClientById);
 
 // Modification du profil – client ou employé
-router.put("/:id", verifyToken, updateClient);
+router.put("/update/:id", verifyToken, updateClient);
 
 // Suppression – employés seulement
-router.delete("/:id", verifyRole("utilisateur"), deleteClient);
+router.delete("/delete/:id", verifyRole("utilisateur"), deleteClient);
 
 export default router;

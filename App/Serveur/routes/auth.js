@@ -17,7 +17,7 @@ router.post("/create/:type", async (req, res) => createAccount(req, res));
 router.post("/createClient", async (req, res) => createAccount(req, res, "client"));
 
 // Route pour créer spécifiquement un utilisateur
-router.post("/createUtilisateur", async (req, res) => createAccount(req, res, "utilisateur"));
+router.post("/createUtilisateur", async (req, res) => createAccount(req, res, "admin"));
 
 // Route pour se connecter
 router.post("/login", async(req,res) => login(req, res));

@@ -17,7 +17,7 @@ router.get("/:id", verifyToken, getFactureById);
 
 // Seuls les employés créent, modifient, suppriment
 router.post("/", verifyRole("utilisateur"), createFacture);
-router.put("/:id", verifyRole("utilisateur"), updateFacture);
-router.delete("/:id", verifyRole("utilisateur"), deleteFacture);
+router.put("/update/:id", verifyRole("utilisateur"), updateFacture);
+router.delete("/delete/:id", verifyRole("utilisateur"), deleteFacture);
 
 export default router;

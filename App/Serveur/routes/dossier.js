@@ -21,7 +21,7 @@ router.get("/client/:idClient", verifyToken, getDossiersByClient);
 router.get("/:id", verifyToken, getDossierById);
 
 // Employés seulement – création et suppression
-router.post("/", verifyRole("utilisateur"), createDossier);
-router.delete("/:id", verifyRole("utilisateur"), deleteDossier);
+router.post("/create", verifyRole("utilisateur"), createDossier);
+router.delete("/delete/:id", verifyRole("utilisateur"), deleteDossier);
 
 export default router;

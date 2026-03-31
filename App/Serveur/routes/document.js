@@ -31,6 +31,6 @@ router.get("/:id/telecharger", verifyToken, downloadDocument);
 router.post("/", verifyToken, upload.single("fichier"), addDocument);
 
 // Suppression — employés seulement
-router.delete("/:id", verifyRole("utilisateur"), deleteDocument);
+router.delete("/delete/:id", verifyRole("utilisateur"), deleteDocument);
 
 export default router;
