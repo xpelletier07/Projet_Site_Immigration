@@ -25,7 +25,7 @@ async function inscrireClient(req, res) {
 
     // Insertion du nouveau client puis création de son dossier
     await db('client')
-        .insert({ nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache })
+        .insert({ nom, prenom, courriel, telephone: telephone, MDP: mdpHache })
         .then(async ([id_client]) => {
             console.log(`Nouveau client créé (ID: ${id_client})`);
 
@@ -68,7 +68,7 @@ async function inscrireUtilisateur(req, res) {
 
     // Insertion du nouvel utilisateur dans la base de données
     await db('utilisateur')
-        .insert({ nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache })
+        .insert({ nom, prenom, courriel, telephone: telephone, MDP: mdpHache })
         .then(([id_utilisateur]) => {
             console.log(`Nouvel utilisateur créé (ID: ${id_utilisateur})`);
             res.status(201).json({

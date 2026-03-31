@@ -2,19 +2,12 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { db } from "../db/db.js";
+import { isValidEmail, normalizeType } from "../api/authentification/authUtils.js";
 
-const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
 const ALLOWED_TYPES = new Set(["client", "utilisateur"]);
 
-function normalizeType(value) {
-	if (!value) return null;
-	return String(value).trim().toLowerCase();
-}
 
-function isValidEmail(courriel) {
-	return typeof courriel === "string" && /.+@.+\..+/.test(courriel);
-}
 
 export const createAccount = async (req, res, forcedType) => {
 	const type = normalizeType(forcedType || req.params.type);
@@ -42,10 +35,10 @@ export const createAccount = async (req, res, forcedType) => {
 		const idColumn = type === "client" ? "id_client" : "id_utilisateur";
 
 		const insertPayload = {
-			nom,
-			prenom,
-			courriel,
-			telephone: parseInt(telephone, 10),
+			nom: nom.trim(),
+			prenom: prenom.trim(),
+			courriel: courriel.trim(),
+			telephone: telephone.trim(),
 			MDP: hashedPassword,
 		};
 
