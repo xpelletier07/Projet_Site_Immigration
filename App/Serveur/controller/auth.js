@@ -68,7 +68,7 @@ export async function login(req, res) {
 
 	const lookupTypes = requestedType && ALLOWED_TYPES.has(requestedType)
 		? [requestedType]
-		: ["utilisateur", "client"];
+		: ["utilisateur", "client","admin"];
 
 	try {
 		for (const type of lookupTypes) {
@@ -80,7 +80,7 @@ export async function login(req, res) {
 				return res.status(401).json({ message: "Identifiants invalides." });
 			}
 
-			const idField = type === "client" ? "id_client" : "id_utilisateur";
+			const idField = type === "client" ? "id_client" : type === "utilisateur" ? "id_utilisateur" : "id_admin";
 			const token = jwt.sign(
 				{ id: account[idField], type, courriel: account.courriel },
 				JWT_SECRET,
