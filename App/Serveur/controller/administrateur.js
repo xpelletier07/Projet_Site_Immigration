@@ -22,7 +22,7 @@ export async function inscrireUtilisateur(req, res) {
 
     // Insertion du nouvel utilisateur dans la base de données
     await db('utilisateur')
-        .insert({ nom, prenom, courriel, telephone: parseInt(telephone), MDP: mdpHache })
+        .insert({ nom, prenom, courriel, telephone: telephone, MDP: mdpHache })
         .then(([id_utilisateur]) => {
             console.log(`Nouvel utilisateur créé (ID: ${id_utilisateur})`);
             res.status(201).json({
