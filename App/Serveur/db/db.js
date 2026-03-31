@@ -26,12 +26,12 @@ async function createTBL_admin() {
 }
 
 async function create_admin() {
-	const exists = await db("admin").where({ courriel: "admin@cmaisonneuve.com" }).first();
+	const exists = await db("admin").where({ courriel: "admin@cmaisonneuve.qc.ca" }).first();
 	if (!exists) {
 		await db("admin").insert({
 			nom: "Admin",
 			prenom: "Super",
-			courriel: "admin@cmaisonneuve.com",
+			courriel: "admin@cmaisonneuve.qc.ca",
 			telephone: "1234567890",
 			MDP: await bcrypt.hash("password", 10),
 		});
