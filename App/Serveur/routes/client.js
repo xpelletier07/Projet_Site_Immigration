@@ -6,7 +6,7 @@ import {
 	updateClient,
 	deleteClient,
 } from "../controller/Client.js";
-import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
+import { verifyClientOwnership ,verifyToken, verifyRole } from "../api/authentification/middleware.js";
 
 const router = Router();
 
@@ -17,7 +17,7 @@ router.get("/", verifyRole("utilisateur"), getAllClients);
 router.get("/:id", verifyToken, getClientById);
 
 // Modification du profil – client ou employé
-router.put("/update/:id", verifyToken, updateClient);
+router.put("/update/:id", verifyClientOwnership("client"), updateClient);
 
 // Suppression – employés seulement
 router.delete("/delete/:id", verifyRole("utilisateur"), deleteClient);

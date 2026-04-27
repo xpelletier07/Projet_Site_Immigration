@@ -8,7 +8,8 @@ import {
 	addDocument,
 	deleteDocument,
 } from "../controller/document.js";
-import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
+import { verifyClientOwnership ,verifyToken, verifyRole }
+ from "../api/authentification/middleware.js";
 
 // Stockage en mémoire — le Buffer est passé directement à SQLite
 const upload = multer({

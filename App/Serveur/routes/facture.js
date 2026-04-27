@@ -7,7 +7,8 @@ import {
 	updateFacture,
 	deleteFacture,
 } from "../controller/facture.js";
-import { verifyToken, verifyRole } from "../api/authentification/middleware.js";
+import { verifyClientOwnership ,verifyToken, verifyRole }
+ from "../api/authentification/middleware.js";
 
 const router = Router();
 

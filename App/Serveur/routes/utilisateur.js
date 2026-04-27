@@ -12,9 +12,9 @@ import { verifyRole } from "../api/authentification/middleware.js";
 const router = Router();
 
 // Gestion des employés – réservée aux employés authentifiés (idéalement admin)
-router.get("/", verifyRole("utilisateur"), getAllUtilisateurs);
-router.get("/:id", verifyRole("utilisateur"), getUtilisateurById);
-router.put("/update/:id", verifyRole("utilisateur"), updateUtilisateur);
+router.get("/", verifyRole("admin"), getAllUtilisateurs);
+router.get("/:id", verifyRole("admin"), getUtilisateurById);
+router.put("/update/:id", verifyRole("admin"), updateUtilisateur);
 router.delete("/delete/:id", verifyRole("admin"), deleteUtilisateur);
 //router.post("/", verifyRole("admin"), inscrireUtilisateur)
 
