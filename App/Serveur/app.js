@@ -12,7 +12,7 @@ import noteRoutes from "./routes/note.js";
 import factureRoutes from "./routes/facture.js";
 import documentRoutes from "./routes/document.js";
 import typeDemandeRoutes from "./routes/type_demande.js";
-import swaggerRouter from "./documentation_Swagger/swagger.routes.js";
+import swaggerRouter from "./documentation/Swagger/swagger.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
