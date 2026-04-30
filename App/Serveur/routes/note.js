@@ -7,15 +7,15 @@ import {
 	updateNote,
 	deleteNote,
 } from "../controller/note.js";
-import { verifyRole } from "../api/authentification/middleware.js";
+import { verifyRole, verifyEmploye } from "../api/authentification/middleware.js";
 
 const router = Router();
 
 // Notes – réservées aux employés (internes)
-router.get("/dossier/:idDossier", verifyRole("utilisateur"), getNotesByDossier);
-router.get("/:id", verifyRole("utilisateur"), getNoteById);
-router.post("/", verifyRole("utilisateur"), createNote);
-router.put("/update/:id", verifyRole("utilisateur"), updateNote);
-router.delete("/delete/:id", verifyRole("utilisateur"), deleteNote);
+router.get("/dossier/:idDossier", verifyEmploye, getNotesByDossier);
+router.get("/:id", verifyEmploye, getNoteById);
+router.post("/", verifyEmploye, createNote);
+router.put("/update/:id", verifyEmploye, updateNote);
+router.delete("/delete/:id", verifyEmploye, deleteNote);
 
 export default router;
