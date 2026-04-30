@@ -23,17 +23,51 @@ export function verifyToken(req, res, next) {
     next();
 }
 
+// verifyRole — garde l'admin toujours autorisé, vérifie les autres rôles
+// Correction : la condition était inversée (|| au lieu de &&, et ! manquant)
 export const verifyRole = (...roles) => {
     return (req, res, next) => {
         verifyToken(req, res, () => {
-            // Vérifier le type de l'utilisateur au lieu du role
-            if ((req.user.type === "admin") || roles.includes(req.user.type)) {
+            if (req.user.type !== "admin" && !roles.includes(req.user.type)) {
                 return res.status(403).json({ error: "Accès interdit pour ce rôle." });
             }
             next();
         });
     };
 };
+
+// verifyAdmin — admin seulement (ex: gestion des employés)
+export function verifyAdmin(req, res, next) {
+    verifyToken(req, res, () => {
+        if (req.user.type !== "admin") {
+            return res.status(403).json({ error: "Accès réservé aux administrateurs." });
+        }
+        next();
+    });
+}
+
+// verifyEmploye — utilisateur ou admin (ex: gérer clients, notes, factures)
+// Correction : remplace l'appel à _extractToken() inexistant par verifyToken()
+export function verifyEmploye(req, res, next) {
+    verifyToken(req, res, () => {
+        if (req.user.type !== "utilisateur" && req.user.type !== "admin") {
+            return res.status(403).json({ error: "Accès réservé aux employés." });
+        }
+        next();
+    });
+}
+
+// verifyClientOrEmploye — client, utilisateur ou admin (ex: faire une demande)
+// Correction : remplace l'appel à _extractToken() inexistant par verifyToken()
+export function verifyClientOrEmploye(req, res, next) {
+    verifyToken(req, res, () => {
+        const allowed = ["client", "utilisateur", "admin"];
+        if (!allowed.includes(req.user.type)) {
+            return res.status(403).json({ error: "Accès interdit." });
+        }
+        next();
+    });
+}
 
 export const verifyClientOwnership = (resourceType) => {
     const resourceConfig = {
@@ -81,3 +115,18 @@ export const verifyClientOwnership = (resourceType) => {
         });
     };
 };
+
+export const verifyClientOwnsDossier = verifyClientOwnership('dossier');
+
+// Middlewares spécifiques pour les permissions de routes
+export function verifyConnected(req, res, next) {
+    return verifyToken(req, res, next);
+}
+
+export function verifyAdminOnly(req, res, next) {
+    return verifyAdmin(req, res, next);
+}
+
+export function verifyEmployeOrAdmin(req, res, next) {
+    return verifyEmploye(req, res, next);
+}

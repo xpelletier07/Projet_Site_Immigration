@@ -40,6 +40,8 @@ export const createTypeDemande = async (req, res) => {
 		const [id_demande] = await db("type_demande").insert({
 			id_dossier,
 			Type_Demande,
+			Description: req.body.Description || "",
+			Statut: req.body.Statut || "En attente",
 		});
 		res.status(201).json({ id_demande });
 	} catch (err) {
@@ -49,11 +51,11 @@ export const createTypeDemande = async (req, res) => {
 
 // PUT /type-demandes/:id
 export const updateTypeDemande = async (req, res) => {
-	const { Type_Demande } = req.body;
+	const { Type_Demande, Description, Statut } = req.body;
 	try {
 		const updated = await db("type_demande")
 			.where({ id_demande: req.params.id })
-			.update({ Type_Demande });
+			.update({ Type_Demande, Description, Statut });
 		if (!updated)
 			return res
 				.status(404)

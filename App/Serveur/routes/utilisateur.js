@@ -7,15 +7,15 @@ import {
 	deleteUtilisateur,
 } from "../controller/Utilisateur.js";
 //import { inscrireUtilisateur } from "../controller/administrateur.js";
-import { verifyRole } from "../api/authentification/middleware.js";
+import { verifyRole , verifyAdmin} from "../api/authentification/middleware.js";
 
 const router = Router();
 
 // Gestion des employés – réservée aux employés authentifiés (idéalement admin)
-router.get("/", verifyRole("admin"), getAllUtilisateurs);
-router.get("/:id", verifyRole("admin"), getUtilisateurById);
-router.put("/update/:id", verifyRole("admin"), updateUtilisateur);
-router.delete("/delete/:id", verifyRole("admin"), deleteUtilisateur);
-//router.post("/", verifyRole("admin"), inscrireUtilisateur)
+router.get("/", verifyAdmin, getAllUtilisateurs);
+router.get("/:id", verifyAdmin, getUtilisateurById);
+router.put("/update/:id", verifyAdmin, updateUtilisateur);
+router.delete("/delete/:id", verifyAdmin, deleteUtilisateur);
+//router.post("/", verifyAdmin, inscrireUtilisateur)
 
 export default router;

@@ -93,6 +93,8 @@ async function createTBL_Type_Demande() {
 		await db.schema.createTable("type_demande", (table) => {
 			table.increments("id_demande").primary();
 			table.string("Type_Demande").notNullable();
+			table.string("Description").notNullable();
+			table.string("Statut").notNullable();
 			table
 				.integer("id_dossier")
 				.unsigned()

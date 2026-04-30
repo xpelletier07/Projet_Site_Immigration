@@ -5,7 +5,7 @@ import { db } from "../db/db.js";
 
 import {  createAccount, login } from '../controller/auth.js';
 import { isValidEmail, normalizeType } from '../api/authentification/authUtils.js';
-import { verifyRole } from '../api/authentification/middleware.js';
+import { verifyAdmin, verifyRole } from '../api/authentification/middleware.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
@@ -18,7 +18,7 @@ const ALLOWED_TYPES = new Set(["client", "utilisateur"]);
 router.post("/create/Client", async (req, res) => createAccount(req, res, "client"));
 
 // Route pour créer spécifiquement un utilisateur
-router.post("/create/Utilisateur", verifyRole("admin") ,async (req, res) => createAccount(req, res, "utilisateur"));
+router.post("/create/Utilisateur", verifyAdmin ,async (req, res) => createAccount(req, res, "utilisateur"));
 
 // Route pour se connecter
 router.post("/login", async(req,res) => login(req, res));
