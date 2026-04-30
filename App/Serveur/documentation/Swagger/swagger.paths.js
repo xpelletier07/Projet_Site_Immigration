@@ -1,35 +1,13 @@
 // swagger/swagger.paths.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Définition de toutes les routes de l'API (équivalent des fichiers routes/).
-// Chaque section correspond à un fichier dans routes/ ou controller/.
-// ─────────────────────────────────────────────────────────────────────────────
-
-import { request, response } from "express";
-
+// Voir fichier complet ci-dessous
 export const swaggerPaths = {
-	// ══════════════════════════════════════════════════════════════════════════
-	// AUTH — routes/auth.js
-	// ══════════════════════════════════════════════════════════════════════════
-
-	"/auth/create/{type}": {
+	"/auth/create/client": {
 		post: {
 			tags: ["🔐 Auth"],
-			summary: "Créer un compte",
-			description: `Route unique pour la création de compte.
-- \`/auth/create/client\` → crée un client
-- \`/auth/create/utilisateur\` → crée un employé
-
-Le type est validé côté serveur (400 si invalide).`,
-			security: [], // pas de token requis
-			parameters: [
-				{
-					name: "type",
-					in: "path",
-					required: true,
-					schema: { type: "string", enum: ["client", "utilisateur"] },
-					description: "Type de compte à créer",
-				},
-			],
+			summary: "Créer un compte client",
+			description:
+				"🌐 **Public** — aucun token requis.\n\nLa matrice autorise les non-connectés à créer un compte client.",
+			security: [],
 			requestBody: {
 				required: true,
 				content: {
@@ -37,34 +15,33 @@ Le type est validé côté serveur (400 si invalide).`,
 						schema: {
 							$ref: "#/components/schemas/CreateAccountBody",
 						},
+						example: {
+							nom: "Tremblay",
+							prenom: "Alice",
+							courriel: "alice@exemple.com",
+							telephone: "5141234567",
+							MDP: "MotDePasse123!",
+						},
 					},
 				},
 			},
 			responses: {
 				201: {
-					description: "Compte créé avec succès",
+					description: "Compte client créé",
 					content: {
 						"application/json": {
 							schema: {
 								type: "object",
 								properties: {
 									message: { type: "string" },
-									id_client: {
-										type: "integer",
-										description: "Présent si type = client",
-									},
-									id_utilisateur: {
-										type: "integer",
-										description:
-											"Présent si type = utilisateur",
-									},
+									id_client: { type: "integer", example: 4 },
 								},
 							},
 						},
 					},
 				},
 				400: {
-					description: "Type invalide ou champs manquants",
+					description: "Champs manquants ou courriel invalide",
 					content: {
 						"application/json": {
 							schema: { $ref: "#/components/schemas/Error400" },
@@ -82,98 +59,105 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-    "/auth/create/Client": {
-        post: {
-            tags: ["🔐 Auth"],
-            summary: "Créer un compte client",
-            description: "Route pour créer un compte de type client.",
-        },
-        security: [], // pas de token requis
-        requestBody: {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/CreateAccountBody" },
-                },
-            },
-        },
-        responses: {
-            201: {
-                description: "Compte client créé avec succès",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "object",
-                            properties: {
-                                message: { type: "string" },
-                                id_client: {
-                                    type: "integer",
-                                    description: "ID du nouveau client",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            400: { description: "Champs manquants ou invalides" },
-            409: {
-                description: "Courriel déjà utilisé",
-                content: {
-                    "application/json": {
-                        schema: { $ref: "#/components/schemas/Error409" },
-                    },
-                },
-            },
-        },
-    },
-    "/auth/create/Utilisateur": {
-        post: {
-            tags: ["🔐 Auth"],
-            summary: "Créer un compte utilisateur",
-            description: "Route pour créer un compte de type utilisateur.",
-        },
-        requestBody: {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/CreateAccountBody" },
-                },
-            },
-        },
-        responses: {
-            201: {
-                description: "Compte utilisateur créé avec succès",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "object",
-                            properties: {
-                                message: { type: "string" },
-                                id_utilisateur: {
-                                    type: "integer",
-                                    description: "ID du nouvel utilisateur",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    },
-
+	"/auth/create/utilisateur": {
+		post: {
+			tags: ["🔐 Auth"],
+			summary: "Créer un compte employé",
+			description:
+				"🛡️ **Admin seulement** — la matrice réserve la gestion des utilisateurs à l'admin.",
+			requestBody: {
+				required: true,
+				content: {
+					"application/json": {
+						schema: {
+							$ref: "#/components/schemas/CreateAccountBody",
+						},
+						example: {
+							nom: "Bouchard",
+							prenom: "Marc",
+							courriel: "marc@cabinet.com",
+							telephone: "5149876543",
+							MDP: "MotDePasse456!",
+						},
+					},
+				},
+			},
+			responses: {
+				201: {
+					description: "Compte employé créé",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									message: { type: "string" },
+									id_utilisateur: {
+										type: "integer",
+										example: 2,
+									},
+								},
+							},
+						},
+					},
+				},
+				400: {
+					description: "Champs manquants",
+					content: {
+						"application/json": {
+							schema: { $ref: "#/components/schemas/Error400" },
+						},
+					},
+				},
+				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
+				409: {
+					description: "Courriel déjà utilisé",
+					content: {
+						"application/json": {
+							schema: { $ref: "#/components/schemas/Error409" },
+						},
+					},
+				},
+			},
+		},
+	},
 	"/auth/login": {
 		post: {
 			tags: ["🔐 Auth"],
 			summary: "Connexion — obtenir un JWT",
 			description:
-				"Retourne un token JWT valide **24 heures**. Passez-le dans le header `Authorization: Bearer <token>`.",
+				"🌐 **Public** — retourne un token JWT valide **24 heures**.",
 			security: [],
 			requestBody: {
 				required: true,
 				content: {
 					"application/json": {
 						schema: { $ref: "#/components/schemas/LoginBody" },
+						examples: {
+							admin: {
+								summary: "Admin",
+								value: {
+									courriel: "admin@cmaisonneuve.qc.ca",
+									MDP: "password",
+								},
+							},
+							employe: {
+								summary: "Employé",
+								value: {
+									courriel: "marc@cabinet.com",
+									MDP: "MotDePasse456!",
+									type: "utilisateur",
+								},
+							},
+							client: {
+								summary: "Client",
+								value: {
+									courriel: "alice@exemple.com",
+									MDP: "MotDePasse123!",
+									type: "client",
+								},
+							},
+						},
 					},
 				},
 			},
@@ -193,7 +177,11 @@ Le type est validé côté serveur (400 si invalide).`,
 									},
 									type: {
 										type: "string",
-										enum: ["client", "utilisateur"],
+										enum: [
+											"client",
+											"utilisateur",
+											"admin",
+										],
 									},
 									id: { type: "integer" },
 								},
@@ -205,20 +193,14 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// CLIENTS — routes/client.js + controller/Client.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/clients": {
 		get: {
 			tags: ["👥 Clients"],
 			summary: "Lister tous les clients",
-			description:
-				"🔒 **Rôle : utilisateur** — retourne la liste sans les mots de passe.",
+			description: "👷 **Employé/Admin**",
 			responses: {
 				200: {
-					description: "Liste complète des clients",
+					description: "Liste des clients",
 					content: {
 						"application/json": {
 							schema: {
@@ -233,13 +215,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/clients/{id}": {
 		get: {
 			tags: ["👥 Clients"],
 			summary: "Obtenir un client par ID",
 			description:
-				"🔒 **Token requis** — un client peut voir son propre profil; un employé peut voir n'importe lequel.",
+				"🔑 **Tout connecté** — un client peut voir son propre profil.",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
@@ -255,12 +236,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/clients/update/{id}": {
 		put: {
 			tags: ["👥 Clients"],
 			summary: "Modifier un client",
-			description: "🔒 **Token requis** — client ou employé.",
+			description:
+				"🔑 **Tout connecté** — un client peut modifier son propre profil.",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -284,12 +265,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/clients/delete/{id}": {
 		delete: {
 			tags: ["👥 Clients"],
 			summary: "Supprimer un client",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Client supprimé" },
@@ -299,16 +279,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// UTILISATEURS — routes/utilisateur.js + controller/Utilisateur.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/utilisateurs": {
 		get: {
 			tags: ["🧑‍💼 Utilisateurs"],
 			summary: "Lister tous les employés",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "🛡️ **Admin seulement**",
 			responses: {
 				200: {
 					description: "Liste des employés",
@@ -328,12 +303,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/utilisateurs/{id}": {
 		get: {
 			tags: ["🧑‍💼 Utilisateurs"],
 			summary: "Obtenir un employé par ID",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "🛡️ **Admin seulement**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
@@ -352,12 +326,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/utilisateurs/update/{id}": {
 		put: {
 			tags: ["🧑‍💼 Utilisateurs"],
 			summary: "Modifier un employé",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "🛡️ **Admin seulement**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -377,16 +350,16 @@ Le type est validé côté serveur (400 si invalide).`,
 			responses: {
 				200: { description: "Employé mis à jour" },
 				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/utilisateurs/delete/{id}": {
 		delete: {
 			tags: ["🧑‍💼 Utilisateurs"],
 			summary: "Supprimer un employé",
-			description: "🔒 **Rôle : admin**",
+			description: "🛡️ **Admin seulement**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Employé supprimé" },
@@ -396,31 +369,35 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// DOSSIERS — routes/dossier.js + controller/dossier.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/dossiers": {
 		get: {
 			tags: ["📁 Dossiers"],
 			summary: "Lister tous les dossiers",
-			description:
-				"🔒 **Rôle : utilisateur** — inclut le nom et prénom du client associé.",
+			description: "👷 **Employé/Admin**",
 			responses: {
-				200: { description: "Liste des dossiers avec infos client" },
+				200: { description: "Liste des dossiers" },
 				401: { $ref: "#/components/responses/Unauthorized" },
 				403: { $ref: "#/components/responses/Forbidden" },
 			},
 		},
 	},
-
+	"/dossiers/client/{idClient}": {
+		get: {
+			tags: ["📁 Dossiers"],
+			summary: "Dossiers d'un client",
+			description: "🔑 **Tout connecté**",
+			parameters: [{ $ref: "#/components/parameters/idClientPath" }],
+			responses: {
+				200: { description: "Dossiers du client" },
+				401: { $ref: "#/components/responses/Unauthorized" },
+			},
+		},
+	},
 	"/dossiers/{id}": {
 		get: {
 			tags: ["📁 Dossiers"],
 			summary: "Dossier complet par ID",
-			description:
-				"🔒 **Token requis** — retourne le dossier avec **toutes** ses relations : notes, factures, documents, types de demande.",
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
@@ -436,25 +413,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	"/dossiers/client/{idClient}": {
-		get: {
-			tags: ["📁 Dossiers"],
-			summary: "Dossiers d'un client",
-			description: "🔒 **Token requis** — client ou employé.",
-			parameters: [{ $ref: "#/components/parameters/idClientPath" }],
-			responses: {
-				200: { description: "Liste des dossiers du client" },
-				401: { $ref: "#/components/responses/Unauthorized" },
-			},
-		},
-	},
-
 	"/dossiers/create": {
 		post: {
 			tags: ["📁 Dossiers"],
 			summary: "Créer un dossier",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			requestBody: {
 				required: true,
 				content: {
@@ -487,12 +450,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/dossiers/delete/{id}": {
 		delete: {
 			tags: ["📁 Dossiers"],
-			summary: "Supprimer un dossier",
-			description: "🔒 **Rôle : utilisateur**",
+			summary: "Fermer/Supprimer un dossier",
+			description:
+				'👷 **Employé/Admin** — matrice : "Fermer un dossier d\'un client".',
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Dossier supprimé" },
@@ -502,17 +465,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// NOTES — routes/note.js + controller/note.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/notes/dossier/{idDossier}": {
 		get: {
 			tags: ["📝 Notes"],
 			summary: "Notes d'un dossier",
 			description:
-				"🔒 **Rôle : utilisateur** — notes internes, non visibles par le client.",
+				"👷 **Employé/Admin** — notes internes, jamais accessibles par le client.",
 			parameters: [{ $ref: "#/components/parameters/idDossierPath" }],
 			responses: {
 				200: {
@@ -531,12 +489,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/notes/{id}": {
 		get: {
 			tags: ["📝 Notes"],
 			summary: "Obtenir une note par ID",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
@@ -548,16 +505,16 @@ Le type est validé côté serveur (400 si invalide).`,
 					},
 				},
 				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/notes": {
 		post: {
 			tags: ["📝 Notes"],
 			summary: "Créer une note",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			requestBody: {
 				required: true,
 				content: {
@@ -594,12 +551,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/notes/update/{id}": {
 		put: {
 			tags: ["📝 Notes"],
 			summary: "Modifier une note",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -614,16 +570,16 @@ Le type est validé côté serveur (400 si invalide).`,
 			responses: {
 				200: { description: "Note mise à jour" },
 				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/notes/delete/{id}": {
 		delete: {
 			tags: ["📝 Notes"],
 			summary: "Supprimer une note",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Note supprimée" },
@@ -633,17 +589,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// FACTURES — routes/facture.js + controller/facture.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/factures/dossier/{idDossier}": {
 		get: {
 			tags: ["🧾 Factures"],
 			summary: "Factures d'un dossier",
 			description:
-				"🔒 **Token requis** — visible par le client et l'employé.",
+				"🔑 **Tout connecté** — un client peut voir ses factures.",
 			parameters: [{ $ref: "#/components/parameters/idDossierPath" }],
 			responses: {
 				200: {
@@ -661,12 +612,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/factures/{id}": {
 		get: {
 			tags: ["🧾 Factures"],
 			summary: "Obtenir une facture par ID",
-			description: "🔒 **Token requis**",
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
@@ -682,13 +632,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/factures": {
 		post: {
 			tags: ["🧾 Factures"],
 			summary: "Créer une facture",
-			description:
-				"🔒 **Rôle : utilisateur** — tous les champs sont obligatoires.",
+			description: "👷 **Employé/Admin**",
 			requestBody: {
 				required: true,
 				content: {
@@ -747,12 +695,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/factures/update/{id}": {
 		put: {
 			tags: ["🧾 Factures"],
 			summary: "Modifier une facture",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -776,16 +723,16 @@ Le type est validé côté serveur (400 si invalide).`,
 			responses: {
 				200: { description: "Facture mise à jour" },
 				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/factures/delete/{id}": {
 		delete: {
 			tags: ["🧾 Factures"],
 			summary: "Supprimer une facture",
-			description: "🔒 **Rôle : utilisateur**",
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Facture supprimée" },
@@ -795,17 +742,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// DOCUMENTS — routes/document.js + controller/document.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/documents/dossier/{idDossier}": {
 		get: {
 			tags: ["📄 Documents"],
 			summary: "Documents d'un dossier (métadonnées)",
-			description:
-				"🔒 **Token requis** — retourne les métadonnées sans le contenu binaire.",
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idDossierPath" }],
 			responses: {
 				200: {
@@ -825,17 +766,15 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/documents/{id}/info": {
 		get: {
 			tags: ["📄 Documents"],
 			summary: "Métadonnées d'un document",
-			description:
-				"🔒 **Token requis** — ne retourne pas le contenu binaire.",
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: {
-					description: "Métadonnées du document",
+					description: "Métadonnées",
 					content: {
 						"application/json": {
 							schema: { $ref: "#/components/schemas/Document" },
@@ -847,13 +786,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/documents/{id}/telecharger": {
 		get: {
 			tags: ["📄 Documents"],
 			summary: "Télécharger le fichier brut",
-			description:
-				"🔒 **Token requis** — retourne le fichier avec `Content-Disposition: attachment`.",
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Fichier binaire" },
@@ -862,13 +799,12 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/documents": {
 		post: {
 			tags: ["📄 Documents"],
 			summary: "Uploader un document",
 			description:
-				"🔒 **Token requis** — envoi `multipart/form-data`. Champ fichier = **`fichier`**. Max **10 MB**.",
+				"🔑 **Tout connecté** — matrice : client peut ajouter ses propres documents. Envoi multipart/form-data, champ = `fichier`, max 10 MB.",
 			requestBody: {
 				required: true,
 				content: {
@@ -878,12 +814,7 @@ Le type est validé côté serveur (400 si invalide).`,
 							required: ["id_dossier", "fichier"],
 							properties: {
 								id_dossier: { type: "integer", example: 1 },
-								fichier: {
-									type: "string",
-									format: "binary",
-									description:
-										"Fichier à uploader (max 10 MB)",
-								},
+								fichier: { type: "string", format: "binary" },
 							},
 						},
 					},
@@ -904,39 +835,30 @@ Le type est validé côté serveur (400 si invalide).`,
 						},
 					},
 				},
-				400: { description: "id_dossier ou fichier manquant" },
+				400: { description: "Champs manquants" },
 				401: { $ref: "#/components/responses/Unauthorized" },
 			},
 		},
 	},
-
 	"/documents/delete/{id}": {
 		delete: {
 			tags: ["📄 Documents"],
 			summary: "Supprimer un document",
-			description: "🔒 **Rôle : utilisateur**",
+			description:
+				"🔑 **Tout connecté** — matrice : client peut supprimer ses propres documents.",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Document supprimé" },
 				401: { $ref: "#/components/responses/Unauthorized" },
-				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// TYPE DEMANDES — routes/type_demande.js + controller/Type_demande.js
-	// ⚠️ AUCUNE AUTHENTIFICATION — à sécuriser
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/type-demandes/dossier/{idDossier}": {
 		get: {
 			tags: ["🗂️ Type Demandes"],
 			summary: "Types de demande d'un dossier",
-			description:
-				"⚠️ **Aucune authentification** — pensez à ajouter `verifyToken` dans routes/type_demande.js",
-			security: [],
+			description: "🔑 **Tout connecté** — route maintenant sécurisée.",
 			parameters: [{ $ref: "#/components/parameters/idDossierPath" }],
 			responses: {
 				200: {
@@ -952,28 +874,29 @@ Le type est validé côté serveur (400 si invalide).`,
 						},
 					},
 				},
+				401: { $ref: "#/components/responses/Unauthorized" },
 			},
 		},
 	},
-
 	"/type-demandes/{id}": {
 		get: {
 			tags: ["🗂️ Type Demandes"],
 			summary: "Obtenir un type de demande par ID",
-			security: [],
+			description: "🔑 **Tout connecté**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Type de demande trouvé" },
+				401: { $ref: "#/components/responses/Unauthorized" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/type-demandes": {
 		post: {
 			tags: ["🗂️ Type Demandes"],
-			summary: "Créer un type de demande",
-			security: [],
+			summary: "Créer une demande d'immigration",
+			description:
+				"🧑‍💼+🛡️ **Client + Admin** — matrice : \"Faire une demande d'immigration\". ⚠️ L'employé (utilisateur) n'est pas autorisé selon la matrice.",
 			requestBody: {
 				required: true,
 				content: {
@@ -998,17 +921,28 @@ Le type est validé côté serveur (400 si invalide).`,
 				},
 			},
 			responses: {
-				201: { description: "Type de demande créé" },
+				201: {
+					description: "Demande créée",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: { id_demande: { type: "integer" } },
+							},
+						},
+					},
+				},
 				400: { description: "Champs manquants" },
+				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 			},
 		},
 	},
-
 	"/type-demandes/update/{id}": {
 		put: {
 			tags: ["🗂️ Type Demandes"],
 			summary: "Modifier un type de demande",
-			security: [],
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -1022,33 +956,31 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 			responses: {
 				200: { description: "Mis à jour" },
+				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
 	"/type-demandes/delete/{id}": {
 		delete: {
 			tags: ["🗂️ Type Demandes"],
 			summary: "Supprimer un type de demande",
-			security: [],
+			description: "👷 **Employé/Admin**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Supprimé" },
+				401: { $ref: "#/components/responses/Unauthorized" },
+				403: { $ref: "#/components/responses/Forbidden" },
 				404: { $ref: "#/components/responses/NotFound" },
 			},
 		},
 	},
-
-	// ══════════════════════════════════════════════════════════════════════════
-	// ADMINISTRATEURS — routes/administrateur.js + controller/administrateur.js
-	// ══════════════════════════════════════════════════════════════════════════
-
 	"/administrateurs/update/{id}": {
 		put: {
 			tags: ["⚙️ Administrateurs"],
 			summary: "Modifier un administrateur",
-			description: "🔒 **Rôle : admin**",
+			description: "🛡️ **Admin seulement**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			requestBody: {
 				content: {
@@ -1073,12 +1005,11 @@ Le type est validé côté serveur (400 si invalide).`,
 			},
 		},
 	},
-
 	"/administrateurs/delete/{id}": {
 		delete: {
 			tags: ["⚙️ Administrateurs"],
 			summary: "Supprimer un administrateur",
-			description: "🔒 **Rôle : admin**",
+			description: "🛡️ **Admin seulement**",
 			parameters: [{ $ref: "#/components/parameters/idPath" }],
 			responses: {
 				200: { description: "Administrateur supprimé" },
