@@ -31,7 +31,7 @@ export default function MenuClient() {
           <a href="/client/dossier">Mon Dossier</a>
         </li>
         <li>
-          <a href="/client/suivi">Suivi de la Demande</a>
+          <a href="/client/changement-status">Demande de Changement de Status</a>
         </li>
         <li>
           <a href="/client/documents">Mes Documents</a>

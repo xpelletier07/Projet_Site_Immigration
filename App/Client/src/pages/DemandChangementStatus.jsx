@@ -3,7 +3,7 @@ import '../styles/DemandChangementStatus.css'
 
 export default function DemandChangementStatus() {
   const [formData, setFormData] = useState({
-    currentStatus: 'Temporary Resident (Visa Class 0-1)',
+    currentStatus: 'Résident temporaire (Classe de visa 0-1)',
     desiredStatus: '',
     legalName: '',
     dateOfBirth: '',
@@ -37,19 +37,19 @@ export default function DemandChangementStatus() {
   return (
     <div className="demand-status-container">
       <div className="page-header">
-        <h1>Request for Change of Status</h1>
-        <p>Official form for modifying the legal residency or work status of an existing client profile within the Sovereignty Ledger system.</p>
+        <h1>Demande de Changement de Statut</h1>
+        <p>Formulaire officiel pour modifier le statut de résidence ou de travail d'un profil client existant dans le système.</p>
       </div>
 
       <div className="content-wrapper">
         <div className="main-content">
           {/* Step Indicator */}
           <div className="step-indicator">
-            <span className="step-label">STEP {currentStep} OF {totalSteps}: {
-              currentStep === 1 ? 'CURRENT INFORMATION' :
-              currentStep === 2 ? 'DESIRED STATUS' :
-              currentStep === 3 ? 'SUPPORTING EVIDENCE' :
-              'REVIEW & SUBMIT'
+            <span className="step-label">ÉTAPE {currentStep} SUR {totalSteps}: {
+              currentStep === 1 ? 'INFORMATIONS ACTUELLES' :
+              currentStep === 2 ? 'STATUT DÉSIRÉ' :
+              currentStep === 3 ? 'DOCUMENTS JUSTIFICATIFS' :
+              'EXAMEN & SOUMISSION'
             }</span>
             <div className="progress-bar">
               <div className="progress" style={{ width: `${(currentStep / totalSteps) * 100}%` }}></div>
@@ -58,25 +58,25 @@ export default function DemandChangementStatus() {
 
           {/* Current Status Section */}
           <div className="form-section">
-            <h2>1. Current Status Information</h2>
+            <h2>1. Informations de Statut Actuel</h2>
             <div className="status-box">
               <div className="status-item">
-                <label>CURRENT INFORMATION</label>
-                <p className="status-value">Temporary Resident (Visa Class 0-1)</p>
+                <label>INFORMATIONS ACTUELLES</label>
+                <p className="status-value">Résident temporaire (Classe de visa 0-1)</p>
               </div>
               <div className="status-item">
-                <label>EXPIRY DATE</label>
-                <p className="status-value">April 15, 2024</p>
+                <label>DATE D'EXPIRATION</label>
+                <p className="status-value">15 avril 2024</p>
               </div>
             </div>
           </div>
 
           {/* Request Details Section */}
           <div className="form-section">
-            <h2>2. Request Details</h2>
+            <h2>2. Détails de la Demande</h2>
             
             <div className="form-group">
-              <label htmlFor="desiredStatus">Select a status from the ledger:</label>
+              <label htmlFor="desiredStatus">Sélectionnez un statut dans le registre:</label>
               <select 
                 id="desiredStatus"
                 name="desiredStatus"
@@ -84,23 +84,23 @@ export default function DemandChangementStatus() {
                 onChange={handleChange}
                 className="form-select"
               >
-                <option value="">Choose a status...</option>
-                <option value="permanent-resident">Permanent Resident</option>
-                <option value="work-permit">Work Permit</option>
-                <option value="study-permit">Study Permit</option>
-                <option value="visitor-record">Visitor Record</option>
+                <option value="">Choisir un statut...</option>
+                <option value="permanent-resident">Résident permanent</option>
+                <option value="work-permit">Permis de travail</option>
+                <option value="study-permit">Permis d'études</option>
+                <option value="visitor-record">Dossier de visiteur</option>
               </select>
-              <small>Details reflect selected status will guide the client's current eligibility criteria.</small>
+              <small>Les détails refléteront le statut sélectionné selon les critères d'admissibilité actuels.</small>
             </div>
 
             <div className="form-group">
-              <label htmlFor="reasonForChange">Details and Reasons for Change</label>
+              <label htmlFor="reasonForChange">Détails et Raisons du Changement</label>
               <textarea
                 id="reasonForChange"
                 name="reasonForChange"
                 value={formData.reasonForChange}
                 onChange={handleChange}
-                placeholder="Provide a comprehensive justification for this request..."
+                placeholder="Fournissez une justification complète pour cette demande..."
                 className="form-textarea"
                 rows="5"
               ></textarea>
@@ -109,14 +109,14 @@ export default function DemandChangementStatus() {
 
           {/* Supporting Evidence Section */}
           <div className="form-section">
-            <h2>3. Supporting Evidence</h2>
+            <h2>3. Documents Justificatifs</h2>
             <div className="upload-area">
               <div className="upload-icon">📎</div>
-              <p>Drag and drop documents here or <button className="link-btn">click to browse</button></p>
-              <small>Accepted formats: PDF, JPG, PNG, DOC (Max 5MB each)</small>
+              <p>Glissez-déposez vos documents ici ou <button className="link-btn">cliquez pour parcourir</button></p>
+              <small>Formats acceptés: PDF, JPG, PNG, DOC (Maximum 5MB chacun)</small>
             </div>
             <div className="documents-list">
-              <p className="no-documents">No documents uploaded yet</p>
+              <p className="no-documents">Aucun document téléchargé pour le moment</p>
             </div>
           </div>
 
@@ -127,14 +127,14 @@ export default function DemandChangementStatus() {
               onClick={handlePrevStep}
               disabled={currentStep === 1}
             >
-              ← Previous
+              ← Précédent
             </button>
             <button 
               className="btn btn-primary"
               onClick={handleNextStep}
               disabled={currentStep === totalSteps}
             >
-              Next →
+              Suivant →
             </button>
           </div>
         </div>
@@ -145,33 +145,33 @@ export default function DemandChangementStatus() {
           <div className="sidebar-card legal-directory">
             <div className="card-header">
               <span className="card-icon">⚖️</span>
-              <h3>LEGAL DIRECTORY</h3>
+              <h3>RÉPERTOIRE JURIDIQUE</h3>
             </div>
             <div className="card-body">
-              <p>The Section 2.8 of the Immigration Code states that status change can be filed as per section 10 of the established legislation.</p>
-              <a href="#" className="read-more-btn">Read Full Regulatory Compliance</a>
+              <p>L'Article 2.8 du Code de l'immigration stipule que le changement de statut peut être déposé conformément à la section 10 de la législation établie.</p>
+              <a href="#" className="read-more-btn">Lire la Conformité Réglementaire Complète</a>
             </div>
           </div>
 
           {/* Review Checklist */}
           <div className="sidebar-card review-checklist">
-            <h3>Review Checklist</h3>
+            <h3>Liste de Vérification</h3>
             <div className="checklist">
               <div className="checklist-item">
                 <input type="checkbox" id="check1" />
-                <label htmlFor="check1">Check passport has been valid 6 months remaining validity</label>
+                <label htmlFor="check1">Vérifier que le passeport a 6 mois de validité restante</label>
               </div>
               <div className="checklist-item">
                 <input type="checkbox" id="check2" />
-                <label htmlFor="check2">Reasonably verify eligibility codes for the targeted new status</label>
+                <label htmlFor="check2">Vérifier les critères d'admissibilité pour le nouveau statut</label>
               </div>
               <div className="checklist-item">
                 <input type="checkbox" id="check3" />
-                <label htmlFor="check3">Ensure all required documents are scanned and uploaded</label>
+                <label htmlFor="check3">S'assurer que tous les documents requis sont numérisés et téléchargés</label>
               </div>
               <div className="checklist-item">
                 <input type="checkbox" id="check4" />
-                <label htmlFor="check4">Double-check accuracy of all personal information</label>
+                <label htmlFor="check4">Vérifier l'exactitude de toutes les informations personnelles</label>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function DemandChangementStatus() {
           <div className="sidebar-card info-box">
             <div className="video-placeholder">
               <span className="play-icon">▶</span>
-              <p>Learn How It Works</p>
+              <p>Découvrez Comment Cela Fonctionne</p>
             </div>
           </div>
         </div>

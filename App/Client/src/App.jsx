@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import MenuClient from './components/MenuClient'
 import MenuUtilisateur from './components/MenuUtilisateur'
+import Login from './pages/Login'
 import Home from './pages/Home'
 import DashboardClient from './pages/DashboardClient'
 import DemandChangementStatus from './pages/DemandChangementStatus'
@@ -31,8 +32,9 @@ function App() {
         
         <main className="main-content">
           <Routes>
-            {/* Page d'accueil */}
-            <Route path="/" element={!userRole ? <Home onSetRole={setUserRole} /> : <Navigate to={userRole === 'client' ? '/client/dashboard' : '/utilisateur/dashboard'} />} />
+            {/* Pages publiques */}
+            <Route path="/login" element={<Login onSetRole={setUserRole} />} />
+            <Route path="/home" element={<Home onSetRole={setUserRole} />} />
             
             {/* Routes Client */}
             {userRole === 'client' && (
@@ -55,7 +57,13 @@ function App() {
             )}
             
             {/* Route par défaut */}
-            {userRole && <Route path="/*" element={<Navigate to={userRole === 'client' ? '/client/dashboard' : '/utilisateur/dashboard'} />} />}
+            <Route path="/" element={
+              userRole ? (
+                <Navigate to={userRole === 'client' ? '/client/dashboard' : '/utilisateur/dashboard'} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            } />
           </Routes>
         </main>
       </div>

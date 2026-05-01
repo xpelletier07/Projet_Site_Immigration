@@ -31,10 +31,7 @@ export default function MenuUtilisateur() {
           <a href="/utilisateur/clients">Gestion des Clients</a>
         </li>
         <li>
-          <a href="/utilisateur/dossiers">Gestion des Dossiers</a>
-        </li>
-        <li>
-          <a href="/utilisateur/suivi">Suivi des Demandes</a>
+          <a href="/utilisateur/changement-status">Demande de Changement de Status</a>
         </li>
         <li>
           <a href="/utilisateur/documents">Gestion des Documents</a>
