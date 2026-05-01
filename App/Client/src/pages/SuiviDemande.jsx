@@ -8,46 +8,28 @@ export default function SuiviDemande() {
   const [selectedDossier, setSelectedDossier] = useState(null)
 
   useEffect(() => {
-    fetchDossiers()
+    // Données de démonstration
+    const mockDossiers = [
+      {
+        id: 1,
+        type: 'Résidence permanente',
+        status: 'En révision',
+        createdAt: new Date('2026-03-15'),
+        updatedAt: new Date('2026-04-20'),
+        notes: 'Dossier actuellement en révision par l\'équipe.'
+      },
+      {
+        id: 2,
+        type: 'Visa de travail',
+        status: 'Approuvé',
+        createdAt: new Date('2026-02-10'),
+        updatedAt: new Date('2026-04-15'),
+        notes: 'Visa approuvé et valide jusqu\'au 15 février 2027.'
+      }
+    ]
+    setDossiers(mockDossiers)
+    setLoading(false)
   }, [])
-
-  const fetchDossiers = async () => {
-    try {
-      setLoading(true)
-      const token = localStorage.getItem('token')
-      const response = await fetch('/api/dossier', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      if (!response.ok) throw new Error('Erreur lors de la récupération des dossiers')
-      const data = await response.json()
-      setDossiers(data)
-      setError(null)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleStatusChange = async (dossierId, newStatus) => {
-    try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`/api/dossier/${dossierId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      })
-      if (!response.ok) throw new Error('Erreur lors de la mise à jour')
-      fetchDossiers()
-    } catch (err) {
-      setError(err.message)
-    }
-  }
 
   if (loading) return <div className="loading">Chargement...</div>
   if (error) return <div className="error">Erreur: {error}</div>
@@ -68,7 +50,7 @@ export default function SuiviDemande() {
             >
               <div className="dossier-header">
                 <h3>Dossier #{dossier.id}</h3>
-                <span className={`status ${dossier.status?.toLowerCase() || 'pending'}`}>
+                <span className={`status ${dossier.status?.toLowerCase().replace(/\s+/g, '-') || 'pending'}`}>
                   {dossier.status || 'En attente'}
                 </span>
               </div>

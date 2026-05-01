@@ -1,0 +1,103 @@
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.home-content {
+  text-align: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 90%;
+}
+
+.home-content h1 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.home-content p {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.role-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.role-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.client-btn {
+  border-color: #3498db;
+}
+
+.client-btn:hover {
+  background-color: #ecf7ff;
+  border-color: #2980b9;
+}
+
+.utilisateur-btn {
+  border-color: #27ae60;
+}
+
+.utilisateur-btn:hover {
+  background-color: #f0fdf4;
+  border-color: #229954;
+}
+
+.role-icon {
+  font-size: 3rem;
+}
+
+.role-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.role-desc {
+  font-size: 0.9rem;
+  color: #95a5a6;
+  font-weight: normal;
+}
+
+@media (max-width: 768px) {
+  .home-content {
+    padding: 2rem;
+  }
+
+  .role-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .home-content h1 {
+    font-size: 1.8rem;
+  }
+}
