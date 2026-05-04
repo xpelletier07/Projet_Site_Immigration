@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar.jsx";
-import TopNav from "../../commun/menu.jsx";
 import { getClientBundle, createDossier } from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
 
@@ -45,7 +44,6 @@ export default function FilesPage() {
 	if (loading) {
 		return (
 			<div className="app-shell">
-				<TopNav />
 				<div className="loading-screen">
 					<div className="spinner" />
 				</div>
@@ -64,7 +62,6 @@ export default function FilesPage() {
 
 	return (
 		<div className="app-shell">
-			<TopNav />
 			<div className="page-body">
 				<Sidebar onNewCase={() => {}} />
 

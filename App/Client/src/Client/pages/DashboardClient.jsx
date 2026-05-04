@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar.jsx";
-import Menu from "../../commun/menu.jsx";
 import {
 	getClientBundle,
 	uploadDocument,
@@ -275,7 +274,6 @@ export default function DashboardClient() {
 	if (loading) {
 		return (
 			<div className="app-shell">
-				<Menu />
 				<div className="loading-screen">
 					<div className="spinner" />
 					<p style={{ color: "var(--muted)" }}>
@@ -290,7 +288,6 @@ export default function DashboardClient() {
 	if (!bundle?.hasDossier) {
 		return (
 			<div className="app-shell">
-				<Menu />
 				<div className="page-body">
 					<Sidebar onNewCase={() => setShowNewCase(true)} />
 					<main className="main-content">
@@ -337,7 +334,6 @@ export default function DashboardClient() {
 
 	return (
 		<div className="app-shell">
-			<Menu />
 			<div className="page-body">
 				<Sidebar onNewCase={() => setShowNewCase(true)} />
 

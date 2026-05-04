@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar.jsx";
-import Menu from "../../commun/menu.jsx";
 import {
 	getClientBundle,
 	updateClientProfile,
 	uploadDocument,
 	createDossier,
     getUserId,
-} from "../../commun/commun.jsx";
+} from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
 
 
@@ -305,7 +304,6 @@ export default function MyCasePage() {
 	if (loading) {
 		return (
 			<div className="app-shell">
-				<TopNav />
 				<div className="loading-screen">
 					<div className="spinner" />
 				</div>
@@ -316,7 +314,6 @@ export default function MyCasePage() {
 	if (!bundle?.hasDossier) {
 		return (
 			<div className="app-shell">
-				<TopNav />
 				<div className="page-body">
 					<Sidebar onNewCase={() => setShowNewCase(true)} />
 					<main className="main-content">
@@ -380,7 +377,6 @@ export default function MyCasePage() {
 
 	return (
 		<div className="app-shell">
-			<TopNav />
 			<div className="page-body">
 				<Sidebar onNewCase={() => setShowNewCase(true)} />
 

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import { getClientBundle } from "../Client/services/client.service.jsx";
+
 import DashboardClient from "../Client/pages/DashboardClient.jsx";
 import DashboardClientEmpty from "../Client/pages/DashboardClientEmpty.jsx";
+import Documents from "../Client/pages/Documents_Page.jsx";
+import Files from "../Client/pages/Files_Page.jsx";
+import MyCasePage from "../Client/pages/MyCaseClient.jsx";
 
 export default function ClientDashboardRouter() {
 	const [bundle, setBundle] = useState(null);
@@ -29,7 +35,21 @@ export default function ClientDashboardRouter() {
 		);
 
 	return bundle.hasDossier ? (
-		<DashboardClient bundle={bundle} />
+		<Routes>
+			{/* /client/ → /client/dashboard */}
+			<Route index element={<Navigate to="dashboard" replace />} />
+
+			<Route
+				path="dashboard"
+				element={<DashboardClient bundle={bundle} />}
+			/>
+			<Route path="documents" element={<Documents bundle={bundle} />} />
+			<Route path="files" element={<Files bundle={bundle} />} />
+			<Route path="my-case" element={<MyCasePage bundle={bundle} />} />
+
+			{/* 404 dans l'espace client */}
+			{/*<Route path="*" element={<Navigate to="dashboard" replace />} />*/}
+		</Routes>
 	) : (
 		<DashboardClientEmpty />
 	);

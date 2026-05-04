@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../components/Sidebar.jsx";
-import Menu from "../../commun/menu.jsx";
 import {
 	getClientBundle,
 	uploadDocument,
@@ -152,7 +151,6 @@ export default function DocumentsPage() {
 	if (loading) {
 		return (
 			<div className="app-shell">
-				<Menu />
 				<div className="loading-screen">
 					<div className="spinner" />
 				</div>
@@ -165,7 +163,6 @@ export default function DocumentsPage() {
 
 	return (
 		<div className="app-shell">
-			<Menu />
 			<div className="page-body">
 				<Sidebar onNewCase={() => setShowNewCase(true)} />
 

@@ -29,7 +29,7 @@ export default function Menu() {
 					Dashboard
 				</NavLink>
 				<NavLink
-					to="/client/mycase"
+					to="/client/my-case"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>
 					My Case

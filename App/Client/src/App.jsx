@@ -31,7 +31,7 @@ export default function App() {
 						}
 					/>
 					<Route
-						path="/client/mycase"
+						path="/client/my-case"
 						element={
 							<RequireClient>
 								<MyCasePage />

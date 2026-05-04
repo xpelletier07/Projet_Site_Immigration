@@ -109,7 +109,7 @@ export default function Sidebar({ onNewCase }) {
 
 	const links = [
 		{ path: "/client/dashboard", label: "Dashboard", Icon: DashIcon },
-		{ path: "/client/mycase", label: "My Case", Icon: CaseIcon },
+		{ path: "/client/my-case", label: "My Case", Icon: CaseIcon },
 		{ path: "/client/documents", label: "Documents", Icon: DocsIcon },
 		{ path: "/client/files", label: "Files", Icon: FilesIcon },
 	];
