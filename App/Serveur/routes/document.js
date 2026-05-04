@@ -9,12 +9,11 @@ import {
 	deleteDocument,
 } from "../controller/document.js";
 import {
-	verifyClientOwnership,
 	verifyToken,
 	verifyRole,
 	verifyEmploye,
 	verifyClientOrEmploye,
-	verifyClientOwnsDossier,
+	verifyClientHasAccessToDossier,
 } from "../api/authentification/middleware.js";
 
 // Stockage en mémoire — le Buffer est passé directement à SQLite
@@ -26,16 +25,16 @@ const upload = multer({
 const router = Router();
 
 // Lister les documents d'un dossier (sans le binaire)
-router.get("/dossier/:idDossier", verifyClientOwnsDossier, getDocumentsByDossier);
+router.get("/dossier/:idDossier", verifyClientHasAccessToDossier, getDocumentsByDossier);
 
 // Métadonnées d'un document
-router.get("/:id/info", verifyClientOwnsDossier, getDocumentById);
+router.get("/:id/info", verifyClientHasAccessToDossier, getDocumentById);
 
 // Télécharger le fichier brut
-router.get("/:id/telecharger", verifyClientOwnsDossier, downloadDocument);
+router.get("/:id/telecharger", verifyClientHasAccessToDossier, downloadDocument);
 
 // Upload d'un nouveau document (multipart/form-data, champ "fichier")
-router.post("/", verifyClientOwnsDossier, upload.single("fichier"), addDocument);
+router.post("/", verifyClientHasAccessToDossier, upload.single("fichier"), addDocument);
 
 // Suppression — employés seulement
 router.delete("/delete/:id", verifyEmploye, deleteDocument);

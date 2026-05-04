@@ -69,54 +69,48 @@ export function verifyClientOrEmploye(req, res, next) {
     });
 }
 
-export const verifyClientOwnership = (resourceType) => {
-    const resourceConfig = {
-        client: { table: 'client', idField: 'id_client', dossierField: 'id_client' },
-        dossier: { table: 'dossier', idField: 'id_dossier', dossierField: 'id_dossier' },
-        document: { table: 'documents', idField: 'id_document', dossierField: 'id_dossier' },
-        facture: { table: 'facture', idField: 'id_facture', dossierField: 'id_dossier' },
-        note: { table: 'note', idField: 'id_note', dossierField: 'id_dossier' },
-        type_demande: { table: 'type_demande', idField: 'id_demande', dossierField: 'id_dossier' },
-    };
+export function verifyClientHasAccessToDossier(req, res, next) {
+	verifyToken(req, res, async () => {
+		if (req.user.type !== "client") {
+			return next();
+		}
 
-    const config = resourceConfig[resourceType];
-    if (!config) {
-        throw new Error(`Type de ressource inconnu: ${resourceType}`);
-    }
+		const dossierId =
+			req.params.idDossier ||
+			req.params.id ||
+			req.body.id_dossier;
 
-    return async (req, res, next) => {
-        verifyToken(req, res, async () => {
-            if (req.user.type !== "client") {
-                return next();
-            }
+		if (!dossierId) {
+			return res
+				.status(400)
+				.json({ error: "ID de dossier manquant dans la requête." });
+		}
 
-            const resourceId = req.params.id;
-            if (!resourceId) {
-                return res.status(400).json({ error: "ID de ressource manquant dans les paramètres." });
-            }
+		try {
+			const dossier = await db("dossier")
+				.where("id_dossier", dossierId)
+				.first();
 
-            try {
-                const resource = await db(config.table).where(config.idField, resourceId).first();
-                if (!resource) {
-                    return res.status(404).json({ error: "Ressource non trouvée." });
-                }
+			if (!dossier) {
+				return res.status(404).json({ error: "Dossier introuvable." });
+			}
 
-                const dossierId = resource[config.dossierField];
-                const dossier = await db('dossier').where('id_dossier', dossierId).first();
-                if (!dossier || dossier.id_client !== req.user.id) {
-                    return res.status(403).json({ error: "Accès interdit. Vous n'êtes pas propriétaire de cette ressource." });
-                }
+			if (dossier.id_client !== req.user.id) {
+				return res.status(403).json({
+					error: "Accès interdit à ce dossier.",
+				});
+			}
 
-                next();
-            } catch (error) {
-                console.error("Erreur lors de la vérification de propriété:", error);
-                res.status(500).json({ error: "Erreur interne du serveur." });
-            }
-        });
-    };
-};
+			next();
+		} catch (error) {
+			console.error("Erreur verifyClientHasAccessToDossier:", error);
+			return res.status(500).json({
+				error: "Erreur interne serveur.",
+			});
+		}
+	});
+}
 
-export const verifyClientOwnsDossier = verifyClientOwnership('dossier');
 
 // Middlewares spécifiques pour les permissions de routes
 export function verifyConnected(req, res, next) {
