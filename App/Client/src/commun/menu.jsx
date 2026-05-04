@@ -17,7 +17,7 @@ export default function Menu() {
 
 			<nav>
 				<NavLink
-					to="/client/dashboard"
+					to="/home"
 					className={({ isActive }) => (isActive ? "active" : "")}
 				>
 					Home
