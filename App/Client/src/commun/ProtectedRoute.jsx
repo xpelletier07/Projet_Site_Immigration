@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { isLoggedIn, getUserType } from "../common/api.js";
+import { isLoggedIn, getUserType } from "./commun.jsx";
 
 export function RequireAuth({ children }) {
 	if (!isLoggedIn()) return <Navigate to="/login" replace />;
