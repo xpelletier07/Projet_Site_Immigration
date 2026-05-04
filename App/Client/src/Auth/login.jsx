@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../common/clientService.js";
+import { loginUser } from "../Client/services/client.service.jsx";
 
 export default function LoginPage() {
 	const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function LoginPage() {
 							marginBottom: "4px",
 						}}
 					>
-						The Sovereign Ledger
+						ImmiPortail
 					</h1>
 					<p
 						style={{
@@ -190,6 +190,46 @@ export default function LoginPage() {
 					© 2024 The Sovereign Ledger. An official government digital
 					service.
 				</p>
+
+				<div
+					className="demo-accounts"
+					style={{ color: "white", textAlign: "center" }}
+				>
+					<br />
+					<h3>Comptes de Test</h3>
+					<hr />
+					<li>
+						<ul>
+							<div className="account">
+								<p>
+									<strong>Client:</strong>
+								</p>
+								<p>Email: client@example.com</p>
+								<p>Mot de passe: client123</p>
+							</div>
+						</ul>
+						<hr />
+						<ul>
+							<div className="account">
+								<p>
+									<strong>Utilisateur (Employé):</strong>
+								</p>
+								<p>Email: user@example.com</p>
+								<p>Mot de passe: user123</p>
+							</div>
+						</ul>
+						<hr />
+						<ul>
+							<div className="account">
+								<p>
+									<strong>Admin:</strong>
+								</p>
+								<p>Email: admin@example.com</p>
+								<p>Mot de passe: admin123</p>
+							</div>
+						</ul>
+					</li>
+				</div>
 			</div>
 		</div>
 	);

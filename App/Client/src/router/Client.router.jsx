@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { getClientBundle } from "../Client/services/client.service.jsx";
+import { isLoggedIn } from "../commun/commun.jsx";
 
 import DashboardClient from "../Client/pages/DashboardClient.jsx";
 import DashboardClientEmpty from "../Client/pages/DashboardClientEmpty.jsx";
@@ -15,11 +16,19 @@ export default function ClientDashboardRouter() {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
+		if (!isLoggedIn()) {
+			setError(true);
+			setLoading(false);
+			return;
+		}
+
 		getClientBundle()
 			.then(setBundle)
 			.catch(() => setError(true))
 			.finally(() => setLoading(false));
 	}, []);
+
+	console.log("Client bundle:", bundle);
 
 	if (loading)
 		return (
@@ -27,6 +36,9 @@ export default function ClientDashboardRouter() {
 				Chargement sécurisé du portail...
 			</div>
 		);
+
+	if (!isLoggedIn()) return <Navigate to="/login" replace />;
+
 	if (error)
 		return (
 			<div className="p-10 text-red-600">
@@ -34,7 +46,9 @@ export default function ClientDashboardRouter() {
 			</div>
 		);
 
-	return bundle.hasDossier ? (
+	if (bundle == null || !bundle.hasDossier) return <DashboardClientEmpty />;
+
+	return (
 		<Routes>
 			{/* /client/ → /client/dashboard */}
 			<Route index element={<Navigate to="dashboard" replace />} />
@@ -48,9 +62,7 @@ export default function ClientDashboardRouter() {
 			<Route path="my-case" element={<MyCasePage bundle={bundle} />} />
 
 			{/* 404 dans l'espace client */}
-			{/*<Route path="*" element={<Navigate to="dashboard" replace />} />*/}
+			<Route path="*" element={<Navigate to="dashboard" replace />} />
 		</Routes>
-	) : (
-		<DashboardClientEmpty />
 	);
 }
