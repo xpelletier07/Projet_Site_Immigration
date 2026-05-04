@@ -187,8 +187,7 @@ export default function LoginPage() {
 						marginTop: "20px",
 					}}
 				>
-					© 2024 The Sovereign Ledger. An official government digital
-					service.
+					© 2026 ImmiPortail. Le service gouvernementale d'immigration du Gouvernement du Québec.
 				</p>
 
 				<div
