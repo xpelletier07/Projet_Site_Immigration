@@ -14,7 +14,6 @@ App
         /--- Auth
                 - Login.jsx
                 - Register.jsx
-                - AccueilGlobal.jsx
 
         /--- Accueil
             - GlobalClient.jsx
