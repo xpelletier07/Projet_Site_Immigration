@@ -1,0 +1,178 @@
+/* =========================
+   IMMIGRATION DESIGN SYSTEM
+========================= */
+
+body {
+	background: #f7f9fb;
+    color: #191c1e;
+    font-family: Inter, sans-serif;
+}
+
+li {
+    list-style: none;
+    text-decoration: none;
+    gap: 2em;
+}
+
+/* HEADER GLASS */
+.glass-header {
+	background: rgba(247, 249, 251, 0.85);
+	backdrop-filter: blur(16px);
+	border-bottom: 1px solid #e0e3e5;
+}
+
+/* PRIMARY GRADIENT BUTTON */
+.primary-gradient {
+	background: linear-gradient(135deg, #001e40, #003366);
+	color: white;
+}
+
+/* BENTO CARDS */
+.card-ui {
+	background: white;
+	border-radius: 12px;
+	border: 1px solid #e0e3e5;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* STATUS BADGE */
+.status-pill {
+	background: #d5e3fc;
+	color: #1f477b;
+	padding: 6px 12px;
+	border-radius: 999px;
+	font-weight: 600;
+	font-size: 12px;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+	display: flex;
+	gap: 6px;
+	height: 6px;
+}
+
+.progress-step {
+	flex: 1;
+	border-radius: 999px;
+	background: #e0e3e5;
+}
+
+.progress-step.active {
+	background: #001e40;
+}
+
+/* DOCUMENT ROW */
+.doc-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #eceef0;
+	transition: 0.2s;
+}
+
+.doc-row:hover {
+	background: #f2f4f6;
+}
+
+:root {
+	--bg: #f7f9fb;
+	--surface: #ffffff;
+	--surface-2: #eceef0;
+	--primary: #001e40;
+	--primary-2: #003366;
+	--text: #191c1e;
+	--muted: #737780;
+	--border: #e0e3e5;
+	--danger: #ba1a1a;
+}
+
+/* GLOBAL */
+body {
+	background: var(--bg);
+	color: black var(--text);
+	font-family: Inter, sans-serif;
+}
+
+/* HEADER GLASS */
+.glass {
+	background: rgba(247, 249, 251, 0.85);
+	backdrop-filter: blur(16px);
+	border-bottom: 1px solid var(--border);
+}
+
+/* SIDEBAR */
+.sidebar {
+	background: #f2f4f6;
+	border-right: 1px solid var(--border);
+	min-height: 100vh;
+}
+
+/* ACTIVE NAV ITEM */
+.nav-active {
+	background: white;
+	border-radius: 10px;
+	color: var(--primary);
+	font-weight: 600;
+}
+
+/* CARDS */
+.card-ui {
+	background: var(--surface);
+	border-radius: 14px;
+	border: 1px solid var(--border);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* GRADIENT BUTTON */
+.gradient-btn {
+	background: linear-gradient(135deg, var(--primary), var(--primary-2));
+	color: white;
+}
+
+/* PROGRESS */
+.progress-line {
+	position: relative;
+	height: 6px;
+	background: var(--surface-2);
+	border-radius: 999px;
+}
+
+.progress-fill {
+	height: 6px;
+	background: var(--primary);
+	border-radius: 999px;
+	width: 33%;
+}
+
+/* DOCUMENT ROW */
+.doc-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 14px;
+	border-radius: 10px;
+	border: 1px solid var(--border);
+}
+
+.doc-item:hover {
+	background: #f2f4f6;
+}
+
+/* BADGES */
+.badge {
+	font-size: 12px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-weight: 600;
+}
+
+.badge-ok {
+	background: #d5f5e3;
+	color: #1e7e34;
+}
+
+.badge-missing {
+	background: #ffe5e5;
+	color: var(--danger);
+}

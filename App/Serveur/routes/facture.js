@@ -7,14 +7,14 @@ import {
 	updateFacture,
 	deleteFacture,
 } from "../controller/facture.js";
-import { verifyClientOwnership ,verifyToken, verifyRole, verifyEmploye, verifyClientOwnsDossier }
+import { verifyToken, verifyRole, verifyEmploye, verifyClientHasAccessToDossier }
  from "../api/authentification/middleware.js";
 
 const router = Router();
 
 // Clients et employés peuvent consulter les factures
-router.get("/dossier/:idDossier", verifyClientOwnsDossier, getFacturesByDossier);
-router.get("/:id", verifyClientOwnsDossier, getFactureById);
+router.get("/dossier/:idDossier", verifyClientHasAccessToDossier, getFacturesByDossier);
+router.get("/:id", verifyClientHasAccessToDossier, getFactureById);
 
 // Seuls les employés créent, modifient, suppriment
 router.post("/", verifyEmploye, createFacture);
