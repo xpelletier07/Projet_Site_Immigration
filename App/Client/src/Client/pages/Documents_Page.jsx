@@ -6,9 +6,9 @@ import {
 	uploadDocument,
 	deleteDocument,
 	createDossier,
-} from "../common/clientService.js";
-import { useToast } from "../common/Toast.jsx";
-import { getUserId, API_URL, getToken } from "../common/api.js";
+} from "../services/client.service.jsx";
+import { useToast } from "../../commun/Toast.jsx";
+import { getUserId, API_URL, getToken } from "../../commun/commun.jsx";
 
 const FileIcon = () => (
 	<svg

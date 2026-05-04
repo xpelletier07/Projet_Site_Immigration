@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar.jsx";
 import TopNav from "../../commun/menu.jsx";
 import { getClientBundle, createDossier } from "../services/client.service.jsx";
-import { useToast } from "../commun/Toast.jsx";
+import { useToast } from "../../commun/Toast.jsx";
 
 const FolderIcon = () => (
 	<svg
