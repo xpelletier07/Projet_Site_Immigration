@@ -25,7 +25,7 @@ Tâches:
     - [Xavier - DONE] Dashboard Client
 
     Utilisateur:
-    - [Hichem]  Faire le menu Utilisateur
+    - [Hichem]  Faire le menu Utilisateur+ menu lorsque personne est connecté
     - [Eric]  Page de gestion des clients global  + modification
     - Accès à la page gestion de notre dossier (client) - 
     - [Hichem] Page suivie de la demande + son changement
