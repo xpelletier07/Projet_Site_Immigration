@@ -1,53 +1,54 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './App.css'
+import './Inscription.css'
 
-const EyeIcon = ({ open }) => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    {open ? (
-      <>
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </>
-    ) : (
-      <>
-        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-        <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-        <line x1="1" y1="1" x2="23" y2="23"/>
-      </>
-    )}
+const ShieldIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>
 )
-
-const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-    <polyline points="20,6 9,17 4,12"/>
+const ScaleIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 3v18M3 9l9-6 9 6M5 11l-2 6h18l-2-6"/>
+  </svg>
+)
+const BuildingIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/>
+  </svg>
+)
+const ArrowIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+)
+const EyeIcon = ({ open }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    {open ? (<><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>) : (<><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></>)}
   </svg>
 )
 
 export default function Inscription() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ prenom: '', nom: '', email: '', password: '', confirm: '', terms: false })
+  const [form, setForm] = useState({ prenom: '', nom: '', email: '', tel: '', password: '', confirm: '', terms: false })
   const [showPwd, setShowPwd] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
-  const [focused, setFocused] = useState(null)
+  const [submitted, setSubmitted] = useState(false)
 
-  const rules = {
-    length: form.password.length >= 8,
-    upper: /[A-Z]/.test(form.password),
-    number: /[0-9]/.test(form.password),
+  const handleChange = (field, value) => {
+    setForm(p => ({ ...p, [field]: value }))
+    if (errors[field]) setErrors(p => ({ ...p, [field]: undefined }))
   }
 
   const validate = () => {
     const e = {}
-    if (!form.prenom.trim()) e.prenom = 'Champ requis'
-    if (!form.nom.trim()) e.nom = 'Champ requis'
+    if (!form.prenom.trim()) e.prenom = 'Requis'
+    if (!form.nom.trim()) e.nom = 'Requis'
     if (!form.email.includes('@')) e.email = 'Email invalide'
-    if (!rules.length || !rules.upper || !rules.number) e.password = 'Mot de passe trop faible'
-    if (form.password !== form.confirm) e.confirm = 'Les mots de passe ne correspondent pas'
-    if (!form.terms) e.terms = 'Vous devez accepter les conditions'
+    if (form.password.length < 8) e.password = 'Min. 8 caractères'
+    if (form.password !== form.confirm) e.confirm = 'Non identiques'
+    if (!form.terms) e.terms = 'Obligatoire'
     return e
   }
 
@@ -58,152 +59,226 @@ export default function Inscription() {
     if (Object.keys(e2).length === 0) setSubmitted(true)
   }
 
-  const handleChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }))
-    if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }))
-  }
-
   if (submitted) {
     return (
-      <div className="page">
-        <div className="card success-card">
-          <div className="success-icon">✦</div>
-          <h2 className="success-title">Bienvenue, {form.prenom} !</h2>
-          <p className="success-text">
-            Votre compte a été créé avec succès. Un email de confirmation a été envoyé à <strong>{form.email}</strong>.
-          </p>
-          <button className="btn" onClick={() => { setSubmitted(false); setForm({ prenom: '', nom: '', email: '', password: '', confirm: '', terms: false }) }}>
-            Retour
-          </button>
+      <div className="ins-page">
+        <nav className="ins-nav">
+          <div className="ins-brand"><BuildingIcon /><span>The Sovereign Ledger</span></div>
+          <div className="ins-nav-right"><span className="ins-nav-text">Déjà inscrit ?</span><a href="#" className="ins-nav-link">Connexion</a></div>
+        </nav>
+        <div className="ins-success-wrap">
+          <div className="ins-success">
+            <div className="ins-success-icon">✓</div>
+            <h2>Compte créé avec succès</h2>
+            <p>Un email de vérification a été envoyé à <strong>{form.email}</strong>. Veuillez vérifier votre boîte de réception pour continuer.</p>
+            <button className="ins-submit-btn" onClick={() => setSubmitted(false)}>Retour</button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="page">
-      <div className="card">
-        <div className="header">
-          <div className="logo">✦</div>
-          <h1 className="title">Créer un compte</h1>
-          <p className="subtitle">Rejoignez-nous dès aujourd'hui</p>
+    <div className="ins-page">
+      {/* Nav */}
+      <nav className="ins-nav">
+        <div className="ins-brand"><BuildingIcon /><span>The Sovereign Ledger</span></div>
+        <div className="ins-nav-right">
+          <span className="ins-nav-text">Déjà inscrit ?</span>
+          <a href="#" className="ins-nav-link">Connexion</a>
         </div>
+      </nav>
 
-        <form onSubmit={handleSubmit} className="form" noValidate>
-          <div className="row">
-            <Field label="Prénom" id="prenom" value={form.prenom} error={errors.prenom}
-              focused={focused === 'prenom'}
-              onChange={v => handleChange('prenom', v)}
-              onFocus={() => setFocused('prenom')}
-              onBlur={() => setFocused(null)}
-              placeholder="Marie" />
-            <Field label="Nom" id="nom" value={form.nom} error={errors.nom}
-              focused={focused === 'nom'}
-              onChange={v => handleChange('nom', v)}
-              onFocus={() => setFocused('nom')}
-              onBlur={() => setFocused(null)}
-              placeholder="Dupont" />
-          </div>
-
-          <Field label="Adresse email" id="email" type="email" value={form.email} error={errors.email}
-            focused={focused === 'email'}
-            onChange={v => handleChange('email', v)}
-            onFocus={() => setFocused('email')}
-            onBlur={() => setFocused(null)}
-            placeholder="marie@exemple.com" />
-
-          <div className="field-wrap">
-            <label className="label" htmlFor="password">Mot de passe</label>
-            <div className={`input-wrap ${focused === 'password' ? 'is-focused' : ''} ${errors.password ? 'is-error' : ''}`}>
-              <input
-                id="password"
-                type={showPwd ? 'text' : 'password'}
-                className="input"
-                value={form.password}
-                placeholder="••••••••"
-                onChange={e => handleChange('password', e.target.value)}
-                onFocus={() => setFocused('password')}
-                onBlur={() => setFocused(null)}
-              />
-              <button type="button" className="eye-btn" onClick={() => setShowPwd(p => !p)}>
-                <EyeIcon open={showPwd} />
-              </button>
-            </div>
-            {form.password && (
-              <div className="rules">
-                {[['length', '8 caractères min.'], ['upper', '1 majuscule'], ['number', '1 chiffre']].map(([k, label]) => (
-                  <span key={k} className={`rule ${rules[k] ? 'ok' : ''}`}>
-                    <span className="rule-icon">{rules[k] ? <CheckIcon /> : '○'}</span> {label}
-                  </span>
-                ))}
+      {/* Body */}
+      <div className="ins-body">
+        {/* Left panel */}
+        <aside className="ins-left">
+          <div className="ins-left-content">
+            <p className="ins-left-label">Votre portail officiel.</p>
+            <p className="ins-left-desc">
+              Bienvenue sur le registre officiel. En créant un compte, vous entamez un processus sécurisé de gestion de votre dossier d'immigration. Chaque donnée est protégée par les protocoles de sécurité du Sovereign Ledger.
+            </p>
+            <div className="ins-features">
+              <div className="ins-feature">
+                <span className="ins-feature-icon"><ShieldIcon /></span>
+                <div>
+                  <div className="ins-feature-title">Sécurité de niveau souverain</div>
+                  <div className="ins-feature-sub">Chiffrement de bout en bout pour tous les documents.</div>
+                </div>
               </div>
-            )}
-            {errors.password && <span className="error">{errors.password}</span>}
-          </div>
-
-          <div className="field-wrap">
-            <label className="label" htmlFor="confirm">Confirmer le mot de passe</label>
-            <div className={`input-wrap ${focused === 'confirm' ? 'is-focused' : ''} ${errors.confirm ? 'is-error' : ''}`}>
-              <input
-                id="confirm"
-                type={showConfirm ? 'text' : 'password'}
-                className="input"
-                value={form.confirm}
-                placeholder="••••••••"
-                onChange={e => handleChange('confirm', e.target.value)}
-                onFocus={() => setFocused('confirm')}
-                onBlur={() => setFocused(null)}
-              />
-              <button type="button" className="eye-btn" onClick={() => setShowConfirm(p => !p)}>
-                <EyeIcon open={showConfirm} />
-              </button>
+              <div className="ins-feature">
+                <span className="ins-feature-icon"><ScaleIcon /></span>
+                <div>
+                  <div className="ins-feature-title">Cadre Juridique</div>
+                  <div className="ins-feature-sub">Conformité totale avec les lois sur la protection des données personnelles.</div>
+                </div>
+              </div>
             </div>
-            {errors.confirm && <span className="error">{errors.confirm}</span>}
+          </div>
+          <div className="ins-left-img">
+            <div className="ins-img-placeholder">
+              <div className="ins-img-inner">
+                <div className="ins-desk-svg">
+                  <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="320" height="200" fill="#e8ecf0"/>
+                    <rect x="80" y="40" width="160" height="110" rx="4" fill="#2c3e50"/>
+                    <rect x="84" y="44" width="152" height="102" rx="2" fill="#1a252f"/>
+                    <rect x="90" y="50" width="140" height="90" fill="#0d1b2a"/>
+                    <rect x="95" y="55" width="60" height="4" rx="1" fill="#3a7bd5" opacity=".7"/>
+                    <rect x="95" y="63" width="40" height="3" rx="1" fill="#4a5568" opacity=".5"/>
+                    <rect x="95" y="70" width="130" height="2" rx="1" fill="#2d3748" opacity=".6"/>
+                    <rect x="95" y="76" width="110" height="2" rx="1" fill="#2d3748" opacity=".5"/>
+                    <rect x="95" y="82" width="120" height="2" rx="1" fill="#2d3748" opacity=".4"/>
+                    <rect x="140" y="150" width="40" height="6" rx="1" fill="#b0bec5"/>
+                    <rect x="60" y="156" width="200" height="6" rx="2" fill="#90a4ae"/>
+                    <rect x="20" y="162" width="280" height="3" rx="1" fill="#78909c"/>
+                    <circle cx="240" cy="140" r="20" fill="none" stroke="#b0bec5" strokeWidth="1.5"/>
+                    <path d="M230 140h20M240 130v20" stroke="#b0bec5" strokeWidth="1.5"/>
+                    <rect x="30" y="100" width="40" height="4" rx="1" fill="#b0bec5" opacity=".4"/>
+                    <rect x="30" y="108" width="30" height="4" rx="1" fill="#b0bec5" opacity=".3"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right panel - form */}
+        <main className="ins-right">
+          {/* Steps */}
+          <div className="ins-steps">
+            <div className="ins-step ins-step-active">
+              <span>Étape 1: Informations<br/>Personnelles</span>
+            </div>
+            <div className="ins-step ins-step-next">
+              <span className="ins-step-label-sm">Prochaine étape:</span>
+              <span>Vérification</span>
+            </div>
           </div>
 
-          <div className="checkbox-wrap">
-            <label className={`checkbox-label ${errors.terms ? 'is-error' : ''}`}>
-              <input type="checkbox" checked={form.terms} onChange={e => handleChange('terms', e.target.checked)} className="checkbox-input" />
-              <span className="checkbox-custom">{form.terms && <CheckIcon />}</span>
-              <span className="checkbox-text">J'accepte les <a href="#" className="link">conditions d'utilisation</a> et la <a href="#" className="link">politique de confidentialité</a></span>
-            </label>
-            {errors.terms && <span className="error">{errors.terms}</span>}
+          <h2 className="ins-form-title">Création de compte</h2>
+          <p className="ins-form-sub">Veuillez renseigner vos informations telles qu'elles apparaissent sur vos documents officiels.</p>
+
+          <form onSubmit={handleSubmit} noValidate className="ins-form">
+            {/* Prénom + Nom */}
+            <div className="ins-row">
+              <div className="ins-field">
+                <label>Prénom</label>
+                <input
+                  className={errors.prenom ? 'error' : ''}
+                  value={form.prenom}
+                  onChange={e => handleChange('prenom', e.target.value)}
+                  placeholder="James"
+                />
+                {errors.prenom && <span className="ins-err">{errors.prenom}</span>}
+              </div>
+              <div className="ins-field">
+                <label>Nom de famille</label>
+                <input
+                  className={errors.nom ? 'error' : ''}
+                  value={form.nom}
+                  onChange={e => handleChange('nom', e.target.value)}
+                  placeholder="Curt"
+                />
+                {errors.nom && <span className="ins-err">{errors.nom}</span>}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="ins-field">
+              <label>Adresse e-mail</label>
+              <input
+                type="email"
+                className={errors.email ? 'error' : ''}
+                value={form.email}
+                onChange={e => handleChange('email', e.target.value)}
+                placeholder="james.curt@example.com"
+              />
+              {errors.email && <span className="ins-err">{errors.email}</span>}
+            </div>
+
+            {/* Téléphone */}
+            <div className="ins-field">
+              <label>Téléphone</label>
+              <div className="ins-tel-wrap">
+                <span className="ins-tel-prefix">+1</span>
+                <input
+                  type="tel"
+                  value={form.tel}
+                  onChange={e => handleChange('tel', e.target.value)}
+                  placeholder="..."
+                />
+              </div>
+            </div>
+
+            {/* Password + Confirm */}
+            <div className="ins-row">
+              <div className="ins-field">
+                <label>Mot de passe</label>
+                <div className="ins-pwd-wrap">
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    className={errors.password ? 'error' : ''}
+                    value={form.password}
+                    onChange={e => handleChange('password', e.target.value)}
+                  />
+                  <button type="button" className="ins-eye" onClick={() => setShowPwd(p => !p)}>
+                    <EyeIcon open={showPwd} />
+                  </button>
+                </div>
+                {errors.password && <span className="ins-err">{errors.password}</span>}
+              </div>
+              <div className="ins-field">
+                <label>Confirmation</label>
+                <div className="ins-pwd-wrap">
+                  <input
+                    type={showConfirm ? 'text' : 'password'}
+                    className={errors.confirm ? 'error' : ''}
+                    value={form.confirm}
+                    onChange={e => handleChange('confirm', e.target.value)}
+                  />
+                  <button type="button" className="ins-eye" onClick={() => setShowConfirm(p => !p)}>
+                    <EyeIcon open={showConfirm} />
+                  </button>
+                </div>
+                {errors.confirm && <span className="ins-err">{errors.confirm}</span>}
+              </div>
+            </div>
+
+            {/* Terms */}
+            <div className="ins-terms">
+              <label className={`ins-terms-label ${errors.terms ? 'error' : ''}`}>
+                <input type="checkbox" checked={form.terms} onChange={e => handleChange('terms', e.target.checked)} />
+                <span>
+                  En cochant cette case, je certifie que les informations fournies sont exactes. Je reconnais avoir pris connaissance de la <a href="#">Politique de Confidentialité</a> et des <a href="#">Conditions d'Utilisation</a> du Sovereign Ledger.
+                </span>
+              </label>
+              {errors.terms && <span className="ins-err">{errors.terms}</span>}
+            </div>
+
+            <button type="submit" className="ins-submit-btn">
+              Continuer l'inscription <ArrowIcon />
+            </button>
+          </form>
+        </main>
+      </div>
+
+      {/* Footer */}
+      <footer className="ins-footer">
+        <div className="ins-footer-inner">
+          <div className="ins-footer-brand">
+            <div className="ins-footer-name">The Sovereign Ledger</div>
+            <div className="ins-footer-copy">© 2024 The Sovereign Ledger. An official government digital service. Tous droits réservés.</div>
           </div>
-
-          <button type="submit" className="btn btn-full">
-            Créer mon compte
-          </button>
-
-          <p className="login-link">
-            Déjà inscrit ? <a href="#" className="link">Se connecter</a>
-            {' · '}
-            <span className="link" style={{cursor:'pointer'}} onClick={() => navigate('/admin')}>
-              Accès Admin
-            </span>
-          </p>
-        </form>
-      </div>
-    </div>
-  )
-}
-
-function Field({ label, id, type = 'text', value, error, focused, onChange, onFocus, onBlur, placeholder }) {
-  return (
-    <div className="field-wrap">
-      <label className="label" htmlFor={id}>{label}</label>
-      <div className={`input-wrap ${focused ? 'is-focused' : ''} ${error ? 'is-error' : ''}`}>
-        <input
-          id={id}
-          type={type}
-          className="input"
-          value={value}
-          placeholder={placeholder}
-          onChange={e => onChange(e.target.value)}
-          onFocus={onFocus}
-          onBlur={onBlur}
-        />
-      </div>
-      {error && <span className="error">{error}</span>}
+          <div className="ins-footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Legal Notice</a>
+            <a href="#">Accessibility</a>
+            <a href="#" className="ins-footer-contact">Contact Support</a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
