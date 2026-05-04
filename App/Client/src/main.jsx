@@ -1,9 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import GlobalRouter from './router/Global.router.jsx'
+import { BrowserRouter } from "react-router-dom";
+import Menu from './commun/menu.jsx'
+
+import "./assets/Bulma/css/bulma.min.css";
+import './assets/css/global.css'
+import './assets/css/login.css'
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <Menu />
+      <GlobalRouter />
+    </BrowserRouter>
   </StrictMode>,
 )
