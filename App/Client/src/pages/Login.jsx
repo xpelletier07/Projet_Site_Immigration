@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../styles/Login.css'
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 export default function Login({ onSetRole }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,38 +17,45 @@ export default function Login({ onSetRole }) {
     setLoading(true)
 
     try {
-      // Simulation de vérification des credentials
-      // En production, cela ferait un appel API
       if (!email || !password) {
         setError('Veuillez remplir tous les champs')
-        setLoading(false)
         return
       }
 
-      // Données de test pour la démonstration
-      const testAccounts = {
-        'client@example.com': { password: 'client123', role: 'client' },
-        'user@example.com': { password: 'user123', role: 'utilisateur' },
-        'admin@example.com': { password: 'admin123', role: 'admin' }
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          courriel: email,
+          MDP: password
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data?.message || 'Email ou mot de passe incorrect')
+        return
       }
 
-      const account = testAccounts[email]
-      
-      if (account && account.password === password) {
-        // Simulation d'un délai réseau
-        setTimeout(() => {
-          localStorage.setItem('userRole', account.role)
-          localStorage.setItem('userEmail', email)
-          localStorage.setItem('token', 'fake-jwt-token-' + Date.now())
-          onSetRole(account.role)
-          navigate('/')
-        }, 500)
-      } else {
-        setError('Email ou mot de passe incorrect')
-        setLoading(false)
+      if (!data?.token || !data?.type) {
+        setError('Réponse d’authentification invalide')
+        return
       }
+
+      sessionStorage.setItem('token', data.token)
+      sessionStorage.setItem('userRole', data.type)
+      sessionStorage.setItem('userEmail', email)
+
+      localStorage.removeItem('token')
+
+      onSetRole(data.type)
+      navigate('/')
     } catch (err) {
       setError('Une erreur s\'est produite lors de la connexion')
+    } finally {
       setLoading(false)
     }
   }

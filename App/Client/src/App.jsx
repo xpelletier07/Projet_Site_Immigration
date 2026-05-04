@@ -14,9 +14,10 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Vérifier le rôle de l'utilisateur depuis localStorage
-    const role = localStorage.getItem('userRole')
-    setUserRole(role)
+    const token = sessionStorage.getItem('token')
+    const role = sessionStorage.getItem('userRole')
+
+    setUserRole(token && role ? role : null)
     setLoading(false)
   }, [])
 

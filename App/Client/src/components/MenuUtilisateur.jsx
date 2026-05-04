@@ -9,7 +9,9 @@ export default function MenuUtilisateur() {
   }
 
   const handleLogout = () => {
-    // Logique de déconnexion
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('userRole')
+    sessionStorage.removeItem('userEmail')
     localStorage.removeItem('token')
     window.location.href = '/login'
   }
