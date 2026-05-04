@@ -203,8 +203,8 @@ export default function LoginPage() {
 								<p>
 									<strong>Client:</strong>
 								</p>
-								<p>Email: client@example.com</p>
-								<p>Mot de passe: client123</p>
+								<p>Email: alice.tremblay@exemple.com</p>
+								<p>Mot de passe: MotDePasse123!</p>
 							</div>
 						</ul>
 						<hr />
@@ -213,8 +213,8 @@ export default function LoginPage() {
 								<p>
 									<strong>Utilisateur (Employé):</strong>
 								</p>
-								<p>Email: user@example.com</p>
-								<p>Mot de passe: user123</p>
+								<p>Email: marc.bouchard@cabinet.com</p>
+								<p>Mot de passe: MotDePasse456!</p>
 							</div>
 						</ul>
 						<hr />
@@ -223,8 +223,8 @@ export default function LoginPage() {
 								<p>
 									<strong>Admin:</strong>
 								</p>
-								<p>Email: admin@example.com</p>
-								<p>Mot de passe: admin123</p>
+								<p>Email: admin@cmaisonneuve.qc.ca</p>
+								<p>Mot de passe: password</p>
 							</div>
 						</ul>
 					</li>
