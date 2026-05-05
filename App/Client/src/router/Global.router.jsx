@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import {AccueilClient} from "../Accueil/AccueilClient.jsx"
 
 import LoginPage from "../Auth/login.jsx";
 
@@ -11,7 +12,7 @@ export default function GlobalRouter() {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<div>Register page (not implemented)</div>} />
 			<Route path="/client/*" element={<ClientDashboardRouter />} />
-
+			<Route path="/" element={<AccueilClient/>} />
 			<Route path="*" element={<div>Page not found</div>} />
 		</Routes>
 	);

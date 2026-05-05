@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { styles } from "./ComponentsAccueilClient/AccueilClient.css.js"
 import { FooterAccueil } from "./ComponentsAccueilClient/FooterAccueil.jsx";
-import { pathways } from "./ComponentsAccueilClient/OptionsDemande.js"; 
+import { pathways } from "./ComponentsAccueilClient/OptionsDemande.jsx"; 
 
 function AccueilClient() {
     return (

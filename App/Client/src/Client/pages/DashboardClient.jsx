@@ -169,7 +169,7 @@ function NewCaseModal({ onClose, onCreated }) {
 			toast("Dossier créé avec succès !", "success");
 			onCreated(dossier, type);
 		} catch (err) {
-			toast("Erreur lors de la création du dossier.", "error");
+			toast("Erreur lors de la création du dossier.", err);
 		} finally {
 			setLoading(false);
 		}
