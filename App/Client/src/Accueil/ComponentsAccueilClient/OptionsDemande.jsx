@@ -46,6 +46,7 @@ export const IconBell = () => (
     </svg>
 );
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const pathways = [
     { icon: <IconBuilding />, title: "Résidence Permanente", desc: "Établissez-vous durablement et profitez de tous les droits civiques et sociaux de la nation.", delay: "8 – 12 Mois" },
     { icon: <IconBriefcase />, title: "Travail Temporaire", desc: "Contribuez à l'économie nationale par vos talents et votre expertise professionnelle.", delay: "4 – 6 Semaines" },

@@ -1,10 +1,15 @@
 import { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { styles } from "./ComponentsAccueilClient/AccueilClient.css.js"
+import { styles } from "./ComponentsAccueilClient/AccueilGlobal.css.js"
 import { FooterAccueil } from "./ComponentsAccueilClient/FooterAccueil.jsx";
-import { pathways } from "./ComponentsAccueilClient/OptionsDemande.js"; 
+import { pathways } from "./ComponentsAccueilClient/OptionsDemande.jsx";
+import { loginUser } from "../Utilisateur/services/utilisateur.service.jsx";
+import { AuthContext } from "../router/RouterUser.jsx";
 
-function AccueilClient() {
+function AccueilGlobal() {
+   const navigate = useNavigate();
+   const context = useContext(AuthContext);
+
     return (
         <>
             <style>{styles}</style>
@@ -92,7 +97,11 @@ function AccueilClient() {
                 <p className="sl-cta-sub">
                     L'enregistrement de votre profil prend moins de 10 minutes et constitue la clé de voûte de votre future demande.
                 </p>
-                <button className="btn-primary">Commencer mon profil</button>
+                <button className="btn-primary" onClick={() =>{
+                    loginUser();
+                    navigate("/dashborduser");
+
+                }}>Commencer mon profil</button>
                 <div className="sl-social-proof">
                     <div className="sl-avatars">
                         <div className="sl-mini-avatar">A</div>
@@ -107,4 +116,4 @@ function AccueilClient() {
     );
 }
 
-export default AccueilClient
+export default AccueilGlobal
