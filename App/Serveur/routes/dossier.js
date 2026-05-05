@@ -7,8 +7,8 @@ import {
 	createDossier,
 	deleteDossier,
 } from "../controller/dossier.js";
-import { verifyClientOwnership ,verifyToken, verifyRole, verifyEmploye, verifyClientOwnsDossier }
- from "../api/authentification/middleware.js";
+import { verifyToken, verifyRole, verifyEmploye, verifyClientHasAccessToDossier }
+	from "../api/authentification/middleware.js";
 
 const router = Router();
 
@@ -16,13 +16,13 @@ const router = Router();
 router.get("/", verifyEmploye, getAllDossiers);
 
 // Client ou employé – dossiers d'un client spécifique
-router.get("/client/:idClient", verifyClientOwnsDossier, getDossiersByClient);
+router.get("/client/:idClient" /*, verifyClientHasAccessToDossier*/, getDossiersByClient);
 
 // Client ou employé – détail d'un dossier
-router.get("/:id", verifyClientOwnsDossier, getDossierById);
+router.get("/:id", verifyClientHasAccessToDossier, getDossierById);
 
 // Employés seulement – création et suppression
-router.post("/create", verifyEmploye, createDossier);
+router.post("/create", verifyToken, createDossier);
 router.delete("/delete/:id", verifyEmploye, deleteDossier);
 
 export default router;
