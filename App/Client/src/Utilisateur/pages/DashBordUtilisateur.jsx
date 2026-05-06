@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { globalStyles } from "../components/DashBord.css";
+import { StatCards } from "../components/StatCards.jsx"
+import { Sidebar } from "../components/SideBar.jsx"
+import { DossierTable } from "../components/DossierTable.jsx"
+import { RecentActivity } from "../components/RecentActivity.jsx"
 
 export default function DashBordUtilisateur() {
     const [active, setActive] = useState("Dashboard");
@@ -9,10 +13,7 @@ export default function DashBordUtilisateur() {
             <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
             <div style={{ display: "flex" }}>
                 <Sidebar active={active} setActive={setActive} />
-
                 <div className="main-content">
-                    <Topbar />
-
                     <div className="page-body">
                         <div className="page-title">DashBord Employé</div>
                         <div className="page-sub">

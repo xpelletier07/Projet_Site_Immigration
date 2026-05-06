@@ -5,7 +5,7 @@ export function FooterAccueil() {
             <footer className="sl-footer">
                 <div className="sl-footer-grid">
                     <div>
-                        <div className="sl-footer-brand">Sovereign Ledger</div>
+                        <div className="sl-footer-brand">ImmiPortail</div>
                         <p className="sl-footer-brand-desc">
                             L'infrastructure de confiance pour l'immigration mondiale. Développé et maintenu par les Services Nationaux de la Citoyenneté.
                         </p>
@@ -24,7 +24,7 @@ export function FooterAccueil() {
                     ))}
                 </div>
                 <div className="sl-footer-bottom">
-                    <span className="sl-footer-copy">© 2024 Sovereign Ledger. Tous droits réservés. Un service du Gouvernement National.</span>
+                    <span className="sl-footer-copy">© 2026 ImmiPortail. Tous droits réservés. Un service du Gouvernement National.</span>
                     <div className="sl-footer-icons">
                         {["⊕", "♡", "✲"].map((ic, i) => (
                             <div className="sl-footer-icon-btn" key={i}>{ic}</div>
