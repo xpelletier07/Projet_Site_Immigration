@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useContext, useState} from "react";
+import {useNavigate } from "react-router-dom";
 import { styles } from "./ComponentsAccueilClient/AccueilGlobal.css.js"
 import { FooterAccueil } from "./ComponentsAccueilClient/FooterAccueil.jsx";
 import { pathways } from "./ComponentsAccueilClient/OptionsDemande.jsx";
@@ -8,7 +8,9 @@ import { AuthContext } from "../router/RouterUser.jsx";
 
 function AccueilGlobal() {
    const navigate = useNavigate();
+   const [data, setdata] = useState([]);
    const context = useContext(AuthContext);
+   context.settoken(data.token);
 
     return (
         <>
@@ -23,7 +25,10 @@ function AccueilGlobal() {
                         Accédez à la résidence et à la citoyenneté à travers une infrastructure numérique souveraine, sécurisée et d'une précision absolue.
                     </p>
                     <div className="sl-hero-actions">
-                        <button className="btn-primary">Commencer ma demande</button>
+                        <button className="btn-primary" onClick={() =>{
+                            //Envoie normalement le client vers une page de connexion
+                            setdata(loginUser("marc@cabinet.com", "MotDePasse456!" ))
+                        }}>Commencer ma demande</button>
                         <button className="btn-outline-white">Suivre mon dossier</button>
                     </div>
                 </div>
@@ -98,10 +103,8 @@ function AccueilGlobal() {
                     L'enregistrement de votre profil prend moins de 10 minutes et constitue la clé de voûte de votre future demande.
                 </p>
                 <button className="btn-primary" onClick={() =>{
-                    loginUser();
                     navigate("/dashborduser");
-
-                }}>Commencer mon profil</button>
+                }}>Commencer mon profil</button> {/*Envoie l'utilisateur vers une page d'inscription*/}
                 <div className="sl-social-proof">
                     <div className="sl-avatars">
                         <div className="sl-mini-avatar">A</div>
