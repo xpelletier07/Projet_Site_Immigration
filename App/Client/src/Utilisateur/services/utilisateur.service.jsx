@@ -1,7 +1,5 @@
 import { apiFetch, getUserId, getToken, API_URL } from "../../commun/commun.jsx";
 
-export {apiFetch, getUserId, getToken, API_URL};
-
 export async function getClientBundle() {
 	const idClient = getUserId();
 	if (!idClient) throw new Error("Non authentifié");
@@ -100,4 +98,90 @@ export async function registerClient(payload) {
 		method: "POST",
 		body: JSON.stringify(payload),
 	});
+}
+
+// Recupère tous les dossierActifs
+export async function getAllDossiersActifs(token) {
+	const res = await fetch(`${API_URL}/dossiers`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			 Authorization: `Bearer ${token}`
+		}
+	})
+	if (!res.ok) {
+		const data = await res.json().catch(() => ({}));
+		throw new Error(data.message || "Identifiants invalides");
+	}
+
+	const data = await res.json();
+
+	const dossiersAvecDetails = await Promise.all(
+		data.map(async (d) => {
+			const dossier = await apiFetch(`/dossiers/${d.id_dossier}`, {method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			 Authorization: `Bearer ${token}`
+		}}
+	);
+
+			return {
+				...d,
+				details: dossier
+			};
+		})
+	);
+
+	const listactif = dossiersAvecDetails.filter(
+		(d) => d.details?.factures?.[0]?.statut === "en attente"
+	);
+
+	const moy = listactif.length / data.length
+
+	return moy;
+}
+
+export async function getClientDossier(token) {
+  const res = await fetch(`${API_URL}/clients`, {method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			 Authorization: `Bearer ${token}`
+		}});
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+
+    throw new Error(
+      data.message || "Identifiants invalides"
+    );
+  }
+
+  const data = await res.json();
+
+  const resultats = await Promise.all(
+    data.map(async (e) => {
+      const dossier = await apiFetch(
+        `/dossiers/client/${e.id_client}`
+      );
+
+      return {
+        client: e,
+        dossier,
+      };
+    })
+  );
+
+  const clientsSansDossier = resultats.filter(
+    (r) =>
+      !r.dossier ||
+      r.dossier.length === 0
+  );
+
+  const clientsAvecDossier = resultats.filter(
+    (r) =>
+      r.dossier || r.dossier.length !== 0
+  );
+  
+  const contenu = {a: clientsSansDossier.length, b: clientsAvecDossier.length, c : resultats.length}
+  return contenu;
 }

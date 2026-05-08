@@ -1,7 +1,7 @@
 export function Topbar() {
   return (
     <div className="topbar">
-      <span className="topbar-brand">The Sovereign Ledger</span>
+      <span className="topbar-brand"></span>
       <div className="topbar-right">
         <div className="search-box">
           <i className="fas fa-magnifying-glass icon-btn" />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { style } from "../components/Gestion.css";
 
-export default function GestionsClients() {
+export function GestionsClients() {
   const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("Tous les statuts");
     const [typeFilter, setTypeFilter]   = useState("Tous les types"); // AJOUTÉ

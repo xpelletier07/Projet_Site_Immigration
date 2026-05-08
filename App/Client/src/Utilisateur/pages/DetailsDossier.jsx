@@ -12,7 +12,7 @@ const TIMELINE = [
 
 const STATUS_OPTIONS = ["En cours d'examen", "Documents manquants", "En attente de paiement", "Approuvé", "Rejeté"];
 
-export default function DossierDetail() {
+export function DetailsDossier() {
     const [note, setNote] = useState("");
     const [status, setStatus] = useState("En cours d'examen");
 
