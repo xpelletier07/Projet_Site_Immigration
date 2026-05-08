@@ -1,3 +1,5 @@
+
+
 export function RecentActivity() {
   return (
     <div className="section-card">
