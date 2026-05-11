@@ -16,11 +16,14 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: Install and build
+      - name: Build Client
         run: |
+          cd App/Client
+          npm install
           npm run build
+          cd ../..
 
-      - name: Install server dependencies
+      - name: Install Server dependencies
         run: |
           cd App/Serveur
           npm install
