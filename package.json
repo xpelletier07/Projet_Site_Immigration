@@ -1,4 +1,18 @@
 {
+  "name": "immiportail",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Application d'immigration ImmiPortail",
+  "main": "App/Serveur/app.js",
+  "scripts": {
+    "build": "cd App/Client && npm install && npm run build && cd ../..",
+    "start": "cd App/Serveur && node app.js",
+    "dev": "cd App/Serveur && npm run dev"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "devDependencies": {},
   "dependencies": {
     "cors": "^2.8.6"
   }
