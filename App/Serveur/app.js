@@ -1,6 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { db , initializeDatabase } from "./db/db.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { db, initializeDatabase } from "./db/db.js";
+
+// Pour obtenir __dirname avec ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import des routes (contrôleurs)
 import adminRoutes from "./routes/administrateur.js";
@@ -21,8 +27,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ─── Montage des routes ───────────────────────────────────────────────────────
-// Pour ajouter un nouveau micro-service : importer sa route et l'ajouter ici
+// AJOUTER CETTE LIGNE : Servir les fichiers statiques du client
+app.use(express.static(path.join(__dirname, "../Client/dist")));
+
+// ─── Montage des routes ──────────────────────────────────────────────────────
 app.use("/doc", swaggerRouter);
 app.use("/auth", authRoutes);
 app.use("/clients", clientRoutes);
@@ -33,9 +41,15 @@ app.use("/factures", factureRoutes);
 app.use("/documents", documentRoutes);
 app.use("/type-demandes", typeDemandeRoutes);
 app.use("/administrateurs", adminRoutes);
+
 // Route de base
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
 	res.json({ message: "API Immigration - Opérationnelle" });
+});
+
+// AJOUTER CES LIGNES : Fallback pour React Router (SPA)
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "../Client/dist/index.html"));
 });
 
 // Initialiser du serveur
