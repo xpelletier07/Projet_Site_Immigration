@@ -3,8 +3,6 @@ name: Deploy to Azure App Service
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -16,17 +14,33 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
-          cache: 'npm'
+          node-version: '22.x'
 
-      - name: npm install and build
+      - name: Build client (React Vite)
         run: |
+          cd App/client
           npm install
-          npm run build --if-present
+          npm run build
+          cd ../..
 
-      - name: Deploy to Azure App Service
+      - name: Install server dependencies
+        run: |
+          cd App/serveur
+          npm install
+          cd ../..
+
+      - name: Prepare deployment
+        run: |
+          mkdir -p deploy
+          cp -r App/serveur/* deploy/
+          mkdir -p deploy/public
+          cp -r App/client/dist/* deploy/public/
+          cd deploy
+          ls -la
+
+      - name: Deploy to Azure
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'immiportail'
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: .
+          package: ./deploy
