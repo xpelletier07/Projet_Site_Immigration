@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar.jsx";
+import Sidebar from "../components/SideBar.jsx";
 import { getClientBundle, createDossier } from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
 
