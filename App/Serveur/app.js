@@ -12,6 +12,7 @@ import noteRoutes from "./routes/note.js";
 import factureRoutes from "./routes/facture.js";
 import documentRoutes from "./routes/document.js";
 import typeDemandeRoutes from "./routes/type_demande.js";
+import swaggerRouter from "./documentation/Swagger/swagger.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use(express.json());
 
 // ─── Montage des routes ───────────────────────────────────────────────────────
 // Pour ajouter un nouveau micro-service : importer sa route et l'ajouter ici
+app.use("/doc", swaggerRouter);
 app.use("/auth", authRoutes);
 app.use("/clients", clientRoutes);
 app.use("/utilisateurs", utilisateurRoutes);

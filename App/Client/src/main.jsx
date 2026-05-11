@@ -1,17 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import Inscription from './Inscription.jsx'
-import Dashboard from './Dashboard.jsx'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import GlobalRouter from './router/Global.router.jsx'
+import { BrowserRouter } from "react-router-dom";
+import Menu from './commun/menu.jsx'
+
+import "./assets/Bulma/css/bulma.min.css";
+import './assets/css/global.css'
+import './assets/css/login.css'
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Inscription />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
+      <Menu />
+      <GlobalRouter />
     </BrowserRouter>
   </StrictMode>,
 )
