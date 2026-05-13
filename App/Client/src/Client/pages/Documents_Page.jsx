@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import Sidebar from "../components/Sidebar.jsx";
+import Sidebar from "../components/SideBar.jsx";
 import {
 	getClientBundle,
 	uploadDocument,
