@@ -33,8 +33,8 @@ router.get("/:id/info", verifyClientHasAccessToDossier, getDocumentById);
 // Télécharger le fichier brut
 router.get("/:id/telecharger", verifyClientHasAccessToDossier, downloadDocument);
 
-// Upload d'un nouveau document (multipart/form-data, champ "fichier")
-router.post("/", verifyClientHasAccessToDossier, upload.single("fichier"), addDocument);
+// Upload d'un nouveau document (multipart/form-data, champ "file")
+router.post("/", verifyClientHasAccessToDossier, upload.single("file"), addDocument);
 
 // Suppression — employés seulement
 router.delete("/delete/:id", verifyEmploye, deleteDocument);

@@ -41,7 +41,7 @@ export async function createDossier(id_client) {
 
 export async function uploadDocument(file, id_dossier) {
 	const formData = new FormData();
-	formData.append("fichier", file);
+	formData.append("file", file);
 	formData.append("id_dossier", id_dossier);
 
 	const response = await fetch(`${API_URL}/documents`, {
