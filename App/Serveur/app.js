@@ -48,10 +48,11 @@ app.get("/api", (req, res) => {
 });
 
 // AJOUTER CES LIGNES : Fallback pour React Router (SPA)
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "../Client/dist/index.html"));
+app.all("/{*splat}", (req, res) => {
+	res.status(404).json({
+		error: "Route introuvable",
+	});
 });
-
 // Initialiser du serveur
 initializeDatabase().then(() => {
 	app.listen(PORT, () => {
