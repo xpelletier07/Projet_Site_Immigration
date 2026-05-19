@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { apiFetch } from './Client/services/client.service.jsx'
-import './Dashboard.css'
+import { apiFetch } from '../../commun/commun.jsx'
+import './DashboardAdmin.css'
 
 const UsersIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

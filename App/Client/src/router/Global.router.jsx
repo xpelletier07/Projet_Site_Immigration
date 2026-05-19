@@ -3,9 +3,10 @@ import { Routes, Route } from "react-router-dom";
 
 import LoginPage from "../Auth/login.jsx";
 import Inscription from "../Auth/Inscription.jsx"
-import Dashboard from "../Dashboard.jsx";
 
-import ClientDashboardRouter from "./Client.router";
+import ClientDashboardRouter from "./Client.router.jsx";
+import AdminDashboardRouter from "./Admin.router.jsx";
+
 
 export default function GlobalRouter() {
 	return (
@@ -13,7 +14,8 @@ export default function GlobalRouter() {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<Inscription />} />
 			<Route path="/client/*" element={<ClientDashboardRouter />} />
-			<Route path="/dashboard" element={<Dashboard />} /> 
+
+			<Route path="/admin/*" element={<AdminDashboardRouter />} />
 
 			<Route path="*" element={<div>Page not found</div>} />
 		</Routes>
