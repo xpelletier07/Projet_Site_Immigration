@@ -268,3 +268,35 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   .ins-row { grid-template-columns: 1fr; }
   .ins-nav { padding: 0 1rem; }
 }
+
+/* ── Erreur globale serveur ── */
+.ins-error-banner {
+  background: #fef2f2;
+  color: #c0392b;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Bouton désactivé ── */
+.ins-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Lien login bas de formulaire ── */
+.ins-login-link {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+.ins-link {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ins-link:hover { text-decoration: underline; }

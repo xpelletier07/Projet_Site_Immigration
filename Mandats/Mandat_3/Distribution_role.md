@@ -14,7 +14,7 @@ Tâches:
 - [Xavier - DONE]  Ajout D'une api / url documentation vers le swagger
 
 - [Eric - DONE]  Page accueil avant d'être connecté
-- [Glodie]  Page d'inscription
+- [Fait]  Page d'inscription
 - [Xavier - DONE]  Page connexion
 
 

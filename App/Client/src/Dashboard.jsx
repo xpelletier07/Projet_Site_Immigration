@@ -1,17 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiFetch } from './Client/services/client.service.jsx'
 import './Dashboard.css'
 
-const SearchIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-  </svg>
-)
-const ShieldIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-)
 const UsersIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -24,16 +15,9 @@ const RoleIcon = () => (
     <path d="M18 14l2 2 4-4"/>
   </svg>
 )
-const DownloadIcon = () => (
+const FolderIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/>
-  </svg>
-)
-const LogIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
-    <line x1="9" y1="21" x2="9" y2="9"/>
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
   </svg>
 )
 const AlertIcon = () => (
@@ -42,151 +26,225 @@ const AlertIcon = () => (
     <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
   </svg>
 )
-const RefreshIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-  </svg>
-)
-const BuildingIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-    <rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/>
+const InvoiceIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14,2 14,8 20,8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
   </svg>
 )
 
-const logs = [
-  { icon: <ShieldIcon />, type: 'info', title: 'Authentification Multi-facteurs', desc: "Nouvel employé enregistré via l'ID national.", time: '10:45' },
-  { icon: <AlertIcon />, type: 'warning', title: 'Avertissement de Quota', desc: 'Le stockage des documents atteint 85% de sa capacité.', time: '09:12' },
-  { icon: <RefreshIcon />, type: 'update', title: 'Mise à jour du Système', desc: 'Version 4.2.1 déployée avec succès sur le cluster de production.', time: 'Hier' },
-]
+const StatCard = ({ label, value, loading, color = 'var(--blue)' }) => (
+  <div className="db-stat-quick">
+    <div className="db-stat-quick-value" style={{ color }}>{loading ? '...' : value}</div>
+    <div className="db-stat-quick-label">{label}</div>
+  </div>
+)
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [search, setSearch] = useState('')
+
+  const [users, setUsers]       = useState({ clients: 0, utilisateurs: 0, total: 0 })
+  const [dossiers, setDossiers] = useState({ total: 0 })
+  const [factures, setFactures] = useState({ total: 0, enRetard: 0, payees: 0, enAttente: 0 })
+  const [demandes, setDemandes] = useState({ parStatut: {} })
+  const [alertes, setAlertes]   = useState([])
+  const [loading, setLoading]   = useState(true)
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        // Utilisateurs
+        const [clients, utilisateurs] = await Promise.all([
+          apiFetch('/clients'),
+          apiFetch('/utilisateurs'),
+        ])
+        const nbClients      = Array.isArray(clients)      ? clients.length      : 0
+        const nbUtilisateurs = Array.isArray(utilisateurs) ? utilisateurs.length : 0
+        setUsers({ clients: nbClients, utilisateurs: nbUtilisateurs, total: nbClients + nbUtilisateurs })
+
+        // Dossiers
+        const allDossiers = await apiFetch('/dossiers')
+        const nbDossiers  = Array.isArray(allDossiers) ? allDossiers.length : 0
+        setDossiers({ total: nbDossiers })
+
+        // Factures + alertes retard
+        const today = new Date()
+        let totalFactures = 0, enRetard = 0, payees = 0, enAttente = 0
+        const alertesRetard = []
+
+        if (Array.isArray(allDossiers)) {
+          await Promise.all(allDossiers.map(async (d) => {
+            try {
+              const facts = await apiFetch(`/factures/dossier/${d.id_dossier}`)
+              if (!Array.isArray(facts)) return
+              facts.forEach(f => {
+                totalFactures++
+                const statut = (f.statut || '').toLowerCase()
+                if (statut === 'payé' || statut === 'paye') payees++
+                else if (new Date(f.date_echeance) < today) {
+                  enRetard++
+                  alertesRetard.push({
+                    id: f.id_facture,
+                    desc: f.description,
+                    echeance: f.date_echeance,
+                    dossier: d.id_dossier,
+                  })
+                } else enAttente++
+              })
+            } catch (_) {}
+          }))
+        }
+        setFactures({ total: totalFactures, enRetard, payees, enAttente })
+        setAlertes(alertesRetard.slice(0, 4)) // max 4 alertes
+
+        // Demandes par statut
+        let parStatut = {}
+        if (Array.isArray(allDossiers)) {
+          await Promise.all(allDossiers.map(async (d) => {
+            try {
+              const dem = await apiFetch(`/type-demandes/dossier/${d.id_dossier}`)
+              if (!Array.isArray(dem)) return
+              dem.forEach(dm => {
+                const s = dm.Statut || 'Inconnu'
+                parStatut[s] = (parStatut[s] || 0) + 1
+              })
+            } catch (_) {}
+          }))
+        }
+        setDemandes({ parStatut })
+
+      } catch (err) {
+        console.error('Erreur dashboard:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAll()
+  }, [])
+
+  const pct = (val) => users.total > 0 ? Math.round((val / users.total) * 100) : 0
 
   return (
     <div className="db-page">
-      {/* Navbar */}
-      <nav className="db-nav">
-        <div className="db-nav-left">
-          <div className="db-brand">
-            <BuildingIcon />
-            <span>The Sovereign Ledger</span>
-          </div>
-          <div className="db-nav-links">
-            <a href="#" className="db-nav-link">Home</a>
-            <a href="#" className="db-nav-link db-nav-active">Dashboard</a>
-            <a href="#" className="db-nav-link">My Case</a>
-            <a href="#" className="db-nav-link">Management</a>
-          </div>
-        </div>
-        <div className="db-nav-right">
-          <div className="db-search-wrap">
-            <SearchIcon />
-            <input
-              className="db-search"
-              placeholder="Rechercher..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-          <button className="db-signout" onClick={() => navigate('/')}>Sign Out</button>
-        </div>
-      </nav>
-
-      {/* Main */}
       <main className="db-main">
-        {/* Page title */}
+
         <div className="db-title-wrap">
           <h1 className="db-title">Tableau de bord Administrateur</h1>
-          <p className="db-subtitle">Vue d'ensemble de la santé du système et gestion des utilisateurs.</p>
+          <p className="db-subtitle">Vue d'ensemble et gestion des utilisateurs.</p>
         </div>
 
-        {/* Grid */}
+        {/* ── Ligne stats rapides ── */}
+        <div className="db-quick-stats">
+          <StatCard label="Utilisateurs" value={users.total.toLocaleString('fr-CA')} loading={loading} />
+          <StatCard label="Clients" value={users.clients.toLocaleString('fr-CA')} loading={loading} color="#2d5a8e" />
+          <StatCard label="Employés" value={users.utilisateurs.toLocaleString('fr-CA')} loading={loading} color="#0891b2" />
+          <StatCard label="Dossiers" value={dossiers.total.toLocaleString('fr-CA')} loading={loading} color="#7c3aed" />
+          <StatCard label="Factures totales" value={factures.total.toLocaleString('fr-CA')} loading={loading} color="#059669" />
+          <StatCard label="Factures en retard" value={factures.enRetard.toLocaleString('fr-CA')} loading={loading} color="#dc2626" />
+        </div>
+
         <div className="db-grid">
 
-          {/* Left col */}
-          <div className="db-col-left">
+          {/* ── Col gauche ── */}
+          <div className="db-col">
 
-            {/* System health card */}
-            <div className="db-card db-health-card">
-              <div className="db-health-header">
-                <div className="db-health-title-wrap">
-                  <ShieldIcon />
-                  <div>
-                    <div className="db-card-title">Santé du système</div>
-                    <div className="db-card-sub">Actualisé il y a 2 minutes</div>
+            {/* Utilisateurs */}
+            <div className="db-card">
+              <div className="db-card-header">
+                <UsersIcon />
+                <span className="db-card-title">Répartition des utilisateurs</span>
+              </div>
+              <div className="db-users-count">{loading ? '...' : users.total.toLocaleString('fr-CA')}</div>
+              <div className="db-users-sub">Total des comptes actifs</div>
+              {[
+                { label: 'Clients (Demandeurs)', val: users.clients,      color: '#2d5a8e' },
+                { label: 'Employés (Agents)',    val: users.utilisateurs,  color: '#0891b2' },
+              ].map(({ label, val, color }) => (
+                <div className="db-user-stat" key={label}>
+                  <div className="db-user-stat-header">
+                    <span>{label}</span>
+                    <span className="db-user-stat-num">{loading ? '...' : val.toLocaleString('fr-CA')}</span>
+                  </div>
+                  <div className="db-stat-bar">
+                    <div className="db-stat-fill" style={{ width: `${pct(val)}%`, background: color }}></div>
                   </div>
                 </div>
-                <span className="db-badge-op">● OPÉRATIONNEL</span>
-              </div>
-              <div className="db-metrics">
-                <div className="db-metric">
-                  <div className="db-metric-label">SERVEUR CENTRAL</div>
-                  <div className="db-metric-value">99.9%</div>
-                  <div className="db-metric-bar"><div className="db-metric-fill" style={{width:'99.9%'}}></div></div>
-                </div>
-                <div className="db-metric">
-                  <div className="db-metric-label">BASE DE DONNÉES</div>
-                  <div className="db-metric-value">12ms</div>
-                  <div className="db-metric-bar"><div className="db-metric-fill db-metric-fill-green" style={{width:'30%'}}></div></div>
-                </div>
-                <div className="db-metric">
-                  <div className="db-metric-label">CHARGE API</div>
-                  <div className="db-metric-value">24%</div>
-                  <div className="db-metric-bar"><div className="db-metric-fill db-metric-fill-yellow" style={{width:'24%'}}></div></div>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Logs card */}
-            <div className="db-card db-logs-card">
-              <div className="db-logs-header">
-                <div className="db-logs-title">
-                  <LogIcon />
-                  <span>Journaux système récents</span>
-                </div>
-                <a href="#" className="db-voir-tout">Voir tout →</a>
+            {/* Factures */}
+            <div className="db-card">
+              <div className="db-card-header">
+                <InvoiceIcon />
+                <span className="db-card-title">État des factures</span>
               </div>
-              <div className="db-logs">
-                {logs.map((log, i) => (
-                  <div key={i} className={`db-log db-log-${log.type}`}>
-                    <div className={`db-log-icon db-log-icon-${log.type}`}>{log.icon}</div>
-                    <div className="db-log-content">
-                      <div className="db-log-title">{log.title}</div>
-                      <div className="db-log-desc">{log.desc}</div>
-                    </div>
-                    <div className="db-log-time">{log.time}</div>
+              <div className="db-factures-grid">
+                {[
+                  { label: 'Total',      val: factures.total,     color: 'var(--blue)' },
+                  { label: 'Payées',     val: factures.payees,    color: '#16a34a' },
+                  { label: 'En attente', val: factures.enAttente, color: '#d97706' },
+                  { label: 'En retard',  val: factures.enRetard,  color: '#dc2626' },
+                ].map(({ label, val, color }) => (
+                  <div key={label} className="db-facture-item">
+                    <div className="db-facture-val" style={{ color }}>{loading ? '...' : val}</div>
+                    <div className="db-facture-label">{label}</div>
                   </div>
                 ))}
               </div>
             </div>
+
           </div>
 
-          {/* Right col */}
-          <div className="db-col-right">
+          {/* ── Col droite ── */}
+          <div className="db-col">
 
-            {/* Users card */}
-            <div className="db-card db-users-card">
-              <div className="db-card-title">Utilisateurs totaux</div>
-              <div className="db-users-count">14,284</div>
-              <div className="db-users-sub">Actifs ce mois-ci</div>
-              <div className="db-user-stat">
-                <div className="db-user-stat-header">
-                  <span>Clients (Demandeurs)</span>
-                  <span className="db-user-stat-num">13,102</span>
-                </div>
-                <div className="db-stat-bar"><div className="db-stat-fill" style={{width:'92%'}}></div></div>
+            {/* Demandes par statut */}
+            <div className="db-card">
+              <div className="db-card-header">
+                <FolderIcon />
+                <span className="db-card-title">Demandes par statut</span>
               </div>
-              <div className="db-user-stat">
-                <div className="db-user-stat-header">
-                  <span>Employés (Agents)</span>
-                  <span className="db-user-stat-num">1,182</span>
+              {loading ? (
+                <p className="db-loading-text">Chargement...</p>
+              ) : Object.keys(demandes.parStatut).length === 0 ? (
+                <p className="db-empty-text">Aucune demande enregistrée</p>
+              ) : (
+                <div className="db-demandes-list">
+                  {Object.entries(demandes.parStatut).map(([statut, count]) => (
+                    <div key={statut} className="db-demande-row">
+                      <span className={`db-statut-badge db-statut-${statut.toLowerCase().replace(/\s/g,'-')}`}>
+                        {statut}
+                      </span>
+                      <span className="db-demande-count">{count}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="db-stat-bar"><div className="db-stat-fill" style={{width:'8%'}}></div></div>
-              </div>
+              )}
             </div>
 
-            {/* Actions card */}
+            {/* Alertes factures en retard */}
+            {alertes.length > 0 && (
+              <div className="db-card db-alertes-card">
+                <div className="db-card-header">
+                  <AlertIcon />
+                  <span className="db-card-title">Factures en retard</span>
+                  <span className="db-badge-danger">{factures.enRetard}</span>
+                </div>
+                <div className="db-alertes-list">
+                  {alertes.map(a => (
+                    <div key={a.id} className="db-alerte-row">
+                      <div className="db-alerte-info">
+                        <span className="db-alerte-desc">{a.desc}</span>
+                        <span className="db-alerte-meta">Dossier #{a.dossier} · Échéance : {new Date(a.echeance).toLocaleDateString('fr-CA')}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Actions de gestion */}
             <div className="db-card db-actions-card">
               <div className="db-actions-title">Actions de Gestion</div>
               <button className="db-action-btn" onClick={() => navigate('/admin')}>
@@ -197,39 +255,11 @@ export default function Dashboard() {
                 <span>Permissions de Rôle</span>
                 <RoleIcon />
               </button>
-              <button className="db-action-btn">
-                <span>Exporter Rapports</span>
-                <DownloadIcon />
-              </button>
-            </div>
-
-            {/* Quote card */}
-            <div className="db-card db-quote-card">
-              <div className="db-quote-overlay">
-                <p className="db-quote-text">
-                  <em>La sécurité des données est le pilier de notre souveraineté numérique.</em>
-                </p>
-              </div>
             </div>
 
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="db-footer">
-        <div class="db-footer-left">
-          <div className="db-footer-brand">The Sovereign Ledger</div>
-          <div className="db-footer-copy">© 2024 The Sovereign Ledger. An official government digital service. Tous droits réservés. L'accès non autorisé est strictement interdit.</div>
-        </div>
-        <div className="db-footer-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Legal Notice</a>
-          <a href="#">Accessibility</a>
-          <a href="#" className="db-footer-contact">Contact Support</a>
-        </div>
-      </footer>
     </div>
   )
 }

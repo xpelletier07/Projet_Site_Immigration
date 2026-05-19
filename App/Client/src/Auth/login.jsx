@@ -15,6 +15,7 @@ export default function LoginPage() {
 		try {
 			const data = await loginUser(form.courriel, form.MDP);
 			if (data.type === "client") navigate("/client/dashboard");
+			else if (data.type === "admin") navigate("/dashboard");
 			else navigate("/management");
 		} catch (err) {
 			setError(err.message || "Identifiants invalides.");
