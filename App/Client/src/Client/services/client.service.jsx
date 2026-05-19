@@ -96,7 +96,7 @@ export async function loginUser(courriel, MDP) {
 }
 
 export async function registerClient(payload) {
-	return apiFetch(`/auth/createClient`, {
+	return apiFetch(`/auth/create/Client`, {
 		method: "POST",
 		body: JSON.stringify(payload),
 	});

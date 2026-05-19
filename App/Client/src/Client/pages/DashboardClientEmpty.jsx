@@ -1,10 +1,10 @@
 import React from "react";
 import { FolderOpen, PlusCircle } from "lucide-react";
-import { API_URL } from "../../commun/commun";
+import { API_URL, apiFetch } from "../../commun/commun";
 
 export default function DashboardClientEmpty() {
 	async function createDemande() {
-        Api_fetch(`${API_URL}/demandes/create`, {
+        apiFetch(`${API_URL}/demandes/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
