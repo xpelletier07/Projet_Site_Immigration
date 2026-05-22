@@ -24,7 +24,7 @@ function AccueilGlobal() {
                         Accédez à la résidence et à la citoyenneté à travers une infrastructure numérique souveraine, sécurisée et d'une précision absolue.
                     </p>
                     <div className="sl-hero-actions">
-                        <button className="btn-primary" onClick={async () => {
+                        <button className="btn-primary" onClick={() => {
                             //Envoie normalement le client vers une page de connexion
                             setTimeout(async () => {
                                 const result = await loginUser(
@@ -34,15 +34,15 @@ function AccueilGlobal() {
 
                                 setdata(result);
 
-                                context.settoken(result.token);
+                                context.settoken(data.token);
 
                                 console.log({
                                     data: result,
                                     token: result.token,
                                 });
 
-                                navigate("/dashborduser");
-                            }, 2000);
+                                navigate("/dashborduser/");
+                            }, 100);
 
                         }}>Commencer ma demande</button>
                         <button className="btn-outline-white">Suivre mon dossier</button>

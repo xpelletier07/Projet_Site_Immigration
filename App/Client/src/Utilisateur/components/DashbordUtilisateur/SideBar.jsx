@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 export function Sidebar({ active, setActive }) {
   const navItems = [
-    { label: "Dashboard", icon: "fa-table-columns" },
-    { label: "Files", icon: "fa-folder" },
-    { label: "Clients", icon: "fa-user" },
-    { label: "Documents", icon: "fa-file-lines" },
+    { label: "Dashboard", icon: "fa-table-columns", navigate: "/dashboard" },
+    { label: "Files", icon: "fa-folder", navigate: "/files" },
+    { label: "Clients", icon: "fa-user", navigate: "/clients" },
+    { label: "Documents", icon: "fa-file-lines", navigate: "/documents" },
   ];
   const navigate = useNavigate();
 
@@ -22,7 +22,10 @@ export function Sidebar({ active, setActive }) {
           <a
             key={n.label}
             className={`sidebar-item${active === n.label ? " is-active" : ""}`}
-            onClick={() => setActive(n.label)}
+            onClick={() => {
+              setActive(n.label);
+              navigate(n.navigate);
+            }}
           >
             <i className={`fas ${n.icon}`} />
             {n.label}
@@ -33,7 +36,7 @@ export function Sidebar({ active, setActive }) {
       <div className="sidebar-footer">
         <button className="new-case-btn">Nouveau dossier</button>
         {/*<a className="sidebar-item"><i className="fas fa-gear" /> Paramètres</a>*/}
-        <a className="sidebar-item"  onClick={() => {logout; navigate("/")}}><i className="fas fa-arrow-right-from-bracket"/>Deconnexion</a>
+        <a className="sidebar-item"  onClick={() => {logout(); navigate("/")}}><i className="fas fa-arrow-right-from-bracket"/>Deconnexion</a>
       </div>
     </aside>
   );

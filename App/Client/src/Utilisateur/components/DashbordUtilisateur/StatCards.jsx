@@ -1,5 +1,6 @@
 import { useEffect, useState} from "react";
 import { getAllDossiersActifs,  getClientDossier } from "../services/utilisateur.service";
+import { getToken } from "../../commun/commun";
 
 export function StatCards() {
   const [nbDossiers, setNbDossiers] = useState(0);
@@ -10,7 +11,7 @@ export function StatCards() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const token = sessionStorage.getItem("token");
+        const token = getToken();
 
         const actifs = await getAllDossiersActifs(token);
 
@@ -47,7 +48,7 @@ export function StatCards() {
           <div className="card-label">Dossiers actifs</div>
           <div className="card-value">{nbDossiers}</div>
           <div className="card-growth">
-            <i className="fas fa-arrow-trend-up" />
+            {/*<i className="fas fa-arrow-trend-up" />*/}
           </div>
         </div>
       </div>
@@ -61,7 +62,6 @@ export function StatCards() {
           <div className="card-label">Dossiers en attente</div>
           <div className="card-value">{clientS}</div>
           <div className="card-sub">
-            Temps d'attente requis : 2 jours
           </div>
         </div>
       </div>
@@ -75,7 +75,6 @@ export function StatCards() {
           <div className="card-label">Dossiers complétés</div>
           <div className="card-value">{clientA}</div>
           <div className="card-sub">
-            Temps d'attente requis : 2 jours
           </div>
         </div>
       </div>
@@ -89,7 +88,6 @@ export function StatCards() {
           <div className="card-label">Total Dossiers</div>
           <div className="card-value">{clientC}</div>
           <div className="card-sub">
-            Temps d'attente requis : 2 jours
           </div>
         </div>
       </div>

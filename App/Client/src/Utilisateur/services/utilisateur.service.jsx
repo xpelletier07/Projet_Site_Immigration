@@ -141,6 +141,7 @@ export async function getAllDossiersActifs(token) {
 	return moy;
 }
 
+//recupère tous les clients avec leurs dossiers
 export async function getClientDossier(token) {
   const res = await fetch(`${API_URL}/clients`, {method: "GET",
 		headers: {

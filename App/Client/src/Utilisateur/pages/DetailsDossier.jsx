@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { style } from "../components/Details.css";
+import { style } from "../components/DetailsDossiers/Details.css";
 
 // Créer une fonction pour générer la time line selon un client
 const TIMELINE = [

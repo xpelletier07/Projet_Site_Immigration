@@ -1,6 +1,5 @@
+export function RecentActivity({ activities }) {
 
-
-export function RecentActivity() {
   return (
     <div className="section-card">
       <div className="section-header">
@@ -17,7 +16,7 @@ export function RecentActivity() {
       </div>
 
       <div style={{ padding: "0 18px" }}>
-        {/* Modèle de la div
+        {//Modèle de la div
 
         activities.map((a, i) => (
           <div className="activity-item" key={i}>
@@ -32,7 +31,7 @@ export function RecentActivity() {
             </div>
           </div>
         ))
-        */}
+        }
       </div>
     </div>
   );
