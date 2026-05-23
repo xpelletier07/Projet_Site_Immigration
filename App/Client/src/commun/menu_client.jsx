@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout, getUserType } from "../commun/commun.jsx";
 
+
 export default function Menu() {
 	const navigate = useNavigate();
 	const type = getUserType();

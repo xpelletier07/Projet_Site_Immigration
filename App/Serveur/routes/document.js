@@ -10,13 +10,10 @@ import {
 } from "../controller/document.js";
 import {
 	verifyToken,
-	verifyRole,
 	verifyEmploye,
-	verifyClientOrEmploye,
 	verifyClientHasAccessToDossier,
 } from "../api/authentification/middleware.js";
 
-// Stockage en mémoire — le Buffer est passé directement à SQLite
 const upload = multer({
 	storage: multer.memoryStorage(),
 	limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB max
@@ -33,8 +30,15 @@ router.get("/:id/info", verifyClientHasAccessToDossier, getDocumentById);
 // Télécharger le fichier brut
 router.get("/:id/telecharger", verifyClientHasAccessToDossier, downloadDocument);
 
-// Upload d'un nouveau document (multipart/form-data, champ "file")
-router.post("/", verifyClientHasAccessToDossier, upload.single("file"), addDocument);
+// Upload — multer EN PREMIER pour parser le multipart avant le middleware d'auth
+// verifyToken valide le JWT, puis le controller vérifie l'accès au dossier
+router.post(
+	"/",
+	verifyToken,
+	upload.single("file"),
+	verifyClientHasAccessToDossier,
+	addDocument,
+);
 
 // Suppression — employés seulement
 router.delete("/delete/:id", verifyEmploye, deleteDocument);

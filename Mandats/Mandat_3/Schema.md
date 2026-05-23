@@ -63,7 +63,7 @@ App
         /--- commun
             - Toast.jsx
             - commun.jsx
-            - menu.jsx
+            - menu_client.jsx
             - ProtectedRoute.jsx
 
         /--- router
