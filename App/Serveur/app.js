@@ -22,13 +22,14 @@ import swaggerRouter from "./documentation/Swagger/swagger.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const clientDistPath = path.join(__dirname, "../Client/dist");
 
 // Middleware globaux
 app.use(cors());
 app.use(express.json());
 
 // AJOUTER CETTE LIGNE : Servir les fichiers statiques du client
-app.use(express.static(path.join(__dirname, "../Client/dist")));
+app.use(express.static(clientDistPath));
 
 // ─── Montage des routes ──────────────────────────────────────────────────────
 app.use("/doc", swaggerRouter);
@@ -47,7 +48,12 @@ app.get("/api", (req, res) => {
 	res.json({ message: "API Immigration - Opérationnelle" });
 });
 
-// AJOUTER CES LIGNES : Fallback pour React Router (SPA)
+// Fallback React Router (SPA): les routes frontend doivent retourner index.html
+app.get("/{*splat}", (req, res) => {
+	res.sendFile(path.join(clientDistPath, "index.html"));
+});
+
+// Route introuvable pour les autres methodes (POST/PUT/DELETE, etc.)
 app.all("/{*splat}", (req, res) => {
 	res.status(404).json({
 		error: "Route introuvable",
@@ -56,7 +62,8 @@ app.all("/{*splat}", (req, res) => {
 // Initialiser du serveur
 initializeDatabase().then(() => {
 	app.listen(PORT, () => {
-		console.log(`Serveur démarré sur le port ${PORT}`);
+		console.log(`Serveur démarré: http://localhost:${PORT}`);
+		console.log(`Documentation Swagger: http://localhost:${PORT}/doc`);
 	});
 });
 
