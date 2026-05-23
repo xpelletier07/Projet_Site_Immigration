@@ -109,9 +109,9 @@ export default function Sidebar({ onNewCase }) {
 
 	const links = [
 		{ path: "/client/dashboard", label: "Dashboard", Icon: DashIcon },
-		{ path: "/client/my-case", label: "My Case", Icon: CaseIcon },
+		{ path: "/client/my-case", label: "Mon Dossier", Icon: CaseIcon },
 		{ path: "/client/documents", label: "Documents", Icon: DocsIcon },
-		{ path: "/client/files", label: "Files", Icon: FilesIcon },
+		{ path: "/client/files", label: "Fichiers", Icon: FilesIcon },
 	];
 
 	function handleLogout() {
@@ -144,7 +144,7 @@ export default function Sidebar({ onNewCase }) {
 			))}
 
 			<button className="sidebar-new-case mt-4" onClick={onNewCase}>
-				<PlusIcon /> New Case
+				<PlusIcon /> Nouvelle demande
 			</button>
 
 			<div className="sidebar-bottom">
@@ -152,14 +152,14 @@ export default function Sidebar({ onNewCase }) {
 					className="sidebar-link"
 					onClick={() => navigate("/client/settings")}
 				>
-					<SettingsIcon /> Settings
+					<SettingsIcon /> Paramètres
 				</button>
 				<button
 					className="sidebar-link"
 					style={{ color: "#f87171" }}
 					onClick={handleLogout}
 				>
-					<LogoutIcon /> Logout
+					<LogoutIcon /> Se déconnecter
 				</button>
 			</div>
 		</aside>
