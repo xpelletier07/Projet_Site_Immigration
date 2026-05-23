@@ -7,16 +7,14 @@ import DashboardAdmin from "../Admin/pages/DashboardAdmin.jsx";
 
 
 export default function AdminDashboardRouter() {
-	const [bundle, setBundle] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
 		if (!isLoggedIn()) {
 			setError(true);
-			setLoading(false);
-			return;
 		}
+		setLoading(false);
 	}, []);
 
 	if (loading)
