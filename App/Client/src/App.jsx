@@ -10,7 +10,7 @@ import MyCasePage from "./Client/pages/MyCaseClient.jsx";
 import DocumentsPage from "./Client/pages/DocumentsPage.jsx";
 import FilesPage from "./Client/pages/FilesPage.jsx";
 
-import "./assets/global.css";
+import "./assets/css/Global.css";
 
 export default function App() {
 	return (

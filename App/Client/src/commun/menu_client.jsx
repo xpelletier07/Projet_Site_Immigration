@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { logout, getUserType } from "../commun/commun.jsx";
+import { logout, getUserType } from "./commun.jsx";
 
 export default function Menu() {
 	const navigate = useNavigate();
