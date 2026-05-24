@@ -38,6 +38,12 @@ export const getTypeDemandeById = async (req, res) => {
 // POST /type-demandes
 export const createTypeDemande = async (req, res) => {
 	const { id_dossier, Type_Demande, id_utilisateur } = req.body;
+	const requestDescription =
+		typeof req.body.Description === "string"
+			? req.body.Description
+			: typeof req.body.description === "string"
+				? req.body.description
+				: "";
 	if (!id_dossier || !Type_Demande)
 		return res
 			.status(400)
@@ -47,7 +53,7 @@ export const createTypeDemande = async (req, res) => {
 		const [id_demande] = await db("type_demande").insert({
 			id_dossier,
 			Type_Demande,
-			Description: req.body.Description || "",
+			Description: requestDescription,
 			Statut: req.body.Statut || "En attente",
 			id_utilisateur: id_utilisateur || null,
 		});
@@ -61,7 +67,16 @@ export const createTypeDemande = async (req, res) => {
 export const updateTypeDemande = async (req, res) => {
 	const { Type_Demande, Description, Statut, id_utilisateur } = req.body;
 	try {
-		const payload = { Type_Demande, Description, Statut };
+		const payload = {
+			Type_Demande,
+			Description:
+				typeof Description === "string"
+					? Description
+					: typeof req.body.description === "string"
+						? req.body.description
+						: "",
+			Statut,
+		};
 		if (Object.prototype.hasOwnProperty.call(req.body, "id_utilisateur")) {
 			payload.id_utilisateur = id_utilisateur || null;
 		}
