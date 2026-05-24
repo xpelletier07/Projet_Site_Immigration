@@ -69,10 +69,10 @@ export async function downloadDocument(id_document) {
 	return response;
 }
 
-export async function createTypeDemande(id_dossier, Type_Demande) {
+export async function createTypeDemande(id_dossier, Type_Demande, Description = "") {
 	return apiFetch(`/type-demandes`, {
 		method: "POST",
-		body: JSON.stringify({ id_dossier, Type_Demande }),
+		body: JSON.stringify({ id_dossier, Type_Demande, Description }),
 	});
 }
 

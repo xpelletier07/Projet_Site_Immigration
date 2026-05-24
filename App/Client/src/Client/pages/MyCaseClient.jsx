@@ -223,6 +223,7 @@ function EditProfileModal({ client, onClose, onSaved }) {
 function NewDemandeModal({ dossierId, onClose, onCreated }) {
 	const toast = useToast();
 	const [type, setType] = useState("Résidence permanente");
+	const [description, setDescription] = useState("");
 	const [loading, setLoading] = useState(false);
 
 	const types = [
@@ -241,7 +242,7 @@ function NewDemandeModal({ dossierId, onClose, onCreated }) {
 		}
 		setLoading(true);
 		try {
-			await createTypeDemande(dossierId, type);
+			await createTypeDemande(dossierId, type, description.trim());
 			toast(`Demande "${type}" soumise !`, "success");
 			onCreated();
 		} catch {
@@ -276,6 +277,16 @@ function NewDemandeModal({ dossierId, onClose, onCreated }) {
 								</option>
 							))}
 						</select>
+					</div>
+					<div className="form-group">
+						<label className="form-label">Description de votre demande</label>
+						<textarea
+							className="form-input"
+							rows={4}
+							placeholder="Ex: Renouvellement de permis de travail avec changement d'employeur"
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+						/>
 					</div>
 					<div className="info-box">
 						ℹ️ Un agent vous sera assigné sous 24-48 heures
