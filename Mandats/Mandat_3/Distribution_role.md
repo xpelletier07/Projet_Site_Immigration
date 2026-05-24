@@ -20,7 +20,7 @@ Tâches:
 
     Client : 
     - [Xavier - DONE]  Faire le menu Client
-    - [ A trouver ]  La page de demande de changement de status (résidence) (client)
+    - [ Xavier - DONE ]  La page de demande de changement de status (résidence) (client)
     - [Xavier - Présent mais non fonctionnel]  Page de gestion de notre dossier + modification (accès restraint pour client, accès complet pour utilisateur) + suivie traitement demande
     - [Xavier - DONE] Dashboard Client
 
