@@ -1,11 +1,24 @@
-import React from "react";
+import { React, useState, useEffect} from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout, getUserType } from "../commun/commun.jsx";
 
 export default function Menu() {
 	const navigate = useNavigate();
-	const type = getUserType();
-	const loggedIn = isLoggedIn();
+	const [type, setType] = useState(getUserType());
+	const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+
+	useEffect(() => {
+		function syncAuth() {
+			setType(getUserType());
+			setLoggedIn(isLoggedIn());
+		}
+		window.addEventListener("storage", syncAuth);
+		const interval = setInterval(syncAuth, 300);
+		return () => {
+			window.removeEventListener("storage", syncAuth);
+			clearInterval(interval);
+		};
+	}, []);
 
 	function handleLogout() {
 		logout();
