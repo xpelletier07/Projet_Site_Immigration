@@ -455,15 +455,44 @@ export default function DashboardClient() {
 						<div className="page-header flex justify-between items-center">
 							<div>
 								<h1 className="page-title">
-									Dossier #{dossierId}:{" "}
-									<span className="status-inline">
-										{statusLabel}
-									</span>
-								</h1>
-								<p className="page-subtitle">
-									Votre dossier est en cours de traitement.
-									Suivez son avancement ci-dessous.
-								</p>
+    Dossier #{dossierId}:{" "}
+    <span className="status-inline">{statusLabel}</span>
+</h1>
+
+{/* Types de demandes actives */}
+{demandes.length > 0 && (
+    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "8px" }}>
+        {demandes.map(d => (
+            <span key={d.id_demande} style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "4px 12px",
+                borderRadius: "999px",
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                background: "var(--accent)",
+                color: "var(--blue)",
+                border: "1px solid var(--blue-light)",
+            }}>
+                {d.Type_Demande}
+                <span style={{
+                    padding: "1px 7px",
+                    borderRadius: "999px",
+                    fontSize: "0.68rem",
+                    background: "var(--navy)",
+                    color: "white",
+                }}>
+                    {d.Statut || "En attente"}
+                </span>
+            </span>
+        ))}
+    </div>
+)}
+
+<p className="page-subtitle" style={{ marginTop: "6px" }}>
+    Votre dossier est en cours de traitement. Suivez son avancement ci-dessous.
+</p>
 							</div>
 							<button
 								className="btn btn-primary"
