@@ -136,7 +136,7 @@ function Roadmap({ currentStep }) {
 	return (
 		<div className="card roadmap-card">
 			<div className="roadmap-header">
-				<span className="roadmap-title">Suivi de la demande</span>
+				<span className="roadmap-title">Suivi des demandes</span>
 				<span className="roadmap-phase-badge">
 					PHASE {currentStep + 1} SUR {STEPS.length}
 				</span>

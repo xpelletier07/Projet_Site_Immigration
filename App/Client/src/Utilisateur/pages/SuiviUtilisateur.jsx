@@ -88,7 +88,7 @@ export default function SuiviUtilisateurPage() {
 					>
 						<div>
 							<h1 className="page-title" style={{ marginBottom: "2px" }}>
-								Suivi de la demande
+								Suivi des demandes
 							</h1>
 							<p className="page-subtitle" style={{ marginBottom: 0 }}>
 								Consultez toutes les demandes clients et mettez a jour leur statut.

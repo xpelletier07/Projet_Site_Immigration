@@ -101,7 +101,7 @@ export default function Inscription() {
     return (
       <div className="ins-page">
         <nav className="ins-nav">
-          <div className="ins-brand"><BuildingIcon /><span>The Sovereign Ledger</span></div>
+          <div className="ins-brand"><BuildingIcon /><span>ImmiPortail</span></div>
           <div className="ins-nav-right">
             <span className="ins-nav-text">Déjà inscrit ?</span>
             <Link to="/login" className="ins-nav-link">Connexion</Link>
@@ -126,7 +126,7 @@ export default function Inscription() {
     <div className="ins-page">
       {/* Nav */}
       <nav className="ins-nav">
-        <div className="ins-brand"><BuildingIcon /><span>The Sovereign Ledger</span></div>
+        <div className="ins-brand"><BuildingIcon /><span>ImmiPortail</span></div>
         <div className="ins-nav-right">
           <span className="ins-nav-text">Déjà inscrit ?</span>
           <Link to="/login" className="ins-nav-link">Connexion</Link>
