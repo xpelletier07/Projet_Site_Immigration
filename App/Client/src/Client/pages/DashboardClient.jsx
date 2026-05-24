@@ -93,7 +93,9 @@ function computeCaseStatus(demandes = [], documents = []) {
 			s.includes("approuvé") ||
 			s.includes("refusé") ||
 			s.includes("décision") ||
-			s.includes("accepté"),
+			s.includes("accepté") ||
+			s.includes("approuve") ||
+			s.includes("refuse"),
 	);
 
 	let currentStep = 0;
@@ -106,7 +108,7 @@ function computeCaseStatus(demandes = [], documents = []) {
 
 	const statusLabel = hasDecision
 		? demandeStatuts.find(
-				(s) => s.includes("approuvé") || s.includes("accepté"),
+				(s) => s.includes("approuvé") || s.includes("accepté") || s.includes("approuve"),
 			)
 			? "Approuvé"
 			: "Décision rendue"

@@ -117,7 +117,9 @@ function computeCaseStatus(demandes = [], documents = []) {
 			s.includes("approuvé") ||
 			s.includes("refusé") ||
 			s.includes("décision") ||
-			s.includes("accepté"),
+			s.includes("accepté") ||
+			s.includes("approuve") ||
+			s.includes("refuse"),
 	);
 
 	let currentStep = 0;
@@ -466,7 +468,10 @@ export default function MyCasePage() {
 		{ label: "Soumission reçue", done: true },
 		{ label: "Documents soumis", done: documents.length > 0 },
 		{ label: "Demande soumise", done: demandes.length > 0 },
-		{ label: "Décision finale", done: hasDecision },
+		{ label: "Décision finale", done: demandes.some(d =>
+        ["approuvé", "refusé", "accepté", "décision", "approuve", "refuse"]
+        .some(k => (d.Statut || "").toLowerCase().includes(k))
+    ) },
 	];
 
 	return (
