@@ -3,9 +3,16 @@ import { db } from "../db/db.js";
 // GET /type-demandes/dossier/:idDossier
 export const getTypeDemandesByDossier = async (req, res) => {
 	try {
-		const types = await db("type_demande").where({
-			id_dossier: req.params.idDossier,
-		});
+		const types = await db("type_demande as td")
+			.leftJoin("utilisateur as u", "td.id_utilisateur", "u.id_utilisateur")
+			.select(
+				"td.*",
+				"u.nom as utilisateur_nom",
+				"u.prenom as utilisateur_prenom",
+			)
+			.where({
+				"td.id_dossier": req.params.idDossier,
+			});
 		res.json(types);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
@@ -30,7 +37,7 @@ export const getTypeDemandeById = async (req, res) => {
 
 // POST /type-demandes
 export const createTypeDemande = async (req, res) => {
-	const { id_dossier, Type_Demande } = req.body;
+	const { id_dossier, Type_Demande, id_utilisateur } = req.body;
 	if (!id_dossier || !Type_Demande)
 		return res
 			.status(400)
@@ -42,6 +49,7 @@ export const createTypeDemande = async (req, res) => {
 			Type_Demande,
 			Description: req.body.Description || "",
 			Statut: req.body.Statut || "En attente",
+			id_utilisateur: id_utilisateur || null,
 		});
 		res.status(201).json({ id_demande });
 	} catch (err) {
@@ -51,11 +59,16 @@ export const createTypeDemande = async (req, res) => {
 
 // PUT /type-demandes/:id
 export const updateTypeDemande = async (req, res) => {
-	const { Type_Demande, Description, Statut } = req.body;
+	const { Type_Demande, Description, Statut, id_utilisateur } = req.body;
 	try {
+		const payload = { Type_Demande, Description, Statut };
+		if (Object.prototype.hasOwnProperty.call(req.body, "id_utilisateur")) {
+			payload.id_utilisateur = id_utilisateur || null;
+		}
+
 		const updated = await db("type_demande")
 			.where({ id_demande: req.params.id })
-			.update({ Type_Demande, Description, Statut });
+			.update(payload);
 		if (!updated)
 			return res
 				.status(404)

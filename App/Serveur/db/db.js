@@ -100,8 +100,32 @@ async function createTBL_Type_Demande() {
 				.unsigned()
 				.references("id_dossier")
 				.inTable("dossier");
+			table
+				.integer("id_utilisateur")
+				.unsigned()
+				.references("id_utilisateur")
+				.inTable("utilisateur")
+				.nullable();
 		});
 		console.log('Table "type_demande" created successfully.');
+	}
+}
+
+async function ensureTypeDemandeAssignableColumn() {
+	const tableExists = await db.schema.hasTable("type_demande");
+	if (!tableExists) return;
+
+	const hasUserColumn = await db.schema.hasColumn("type_demande", "id_utilisateur");
+	if (!hasUserColumn) {
+		await db.schema.alterTable("type_demande", (table) => {
+			table
+				.integer("id_utilisateur")
+				.unsigned()
+				.references("id_utilisateur")
+				.inTable("utilisateur")
+				.nullable();
+		});
+		console.log('Column "id_utilisateur" added to "type_demande" successfully.');
 	}
 }
 
@@ -166,6 +190,7 @@ async function initializeDatabase() {
 	await createTBL_client();
 	await createTBL_dossier();
 	await createTBL_Type_Demande();
+	await ensureTypeDemandeAssignableColumn();
 	await createTBL_Note();
 	await createTBL_Facture();
 	await createTBL_Documents();
