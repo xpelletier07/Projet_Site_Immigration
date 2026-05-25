@@ -1,12 +1,12 @@
-import { logout } from "../../commun/commun.jsx";
+import { logout } from "../../../commun/commun.jsx";
 import { useNavigate } from "react-router-dom";
 
 export function Sidebar({ active, setActive }) {
   const navItems = [
-    { label: "Dashboard", icon: "fa-table-columns", navigate: "/dashboard" },
-    { label: "Files", icon: "fa-folder", navigate: "/files" },
-    { label: "Clients", icon: "fa-user", navigate: "/clients" },
-    { label: "Documents", icon: "fa-file-lines", navigate: "/documents" },
+    { label: "Dashboard", icon: "fa-table-columns", navigate: "/dashboarduser/" },
+    { label: "Files", icon: "fa-folder", navigate: "/dashboarduser/files" },
+    { label: "Clients", icon: "fa-user", navigate: "/dashboarduser/clients" },
+    { label: "Documents", icon: "fa-file-lines", navigate: "/dashboarduser/documents" },
   ];
   const navigate = useNavigate();
 

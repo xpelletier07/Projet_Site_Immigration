@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { apiFetch } from "../../commun/commun.jsx";
+import { apiFetch } from "../../../commun/commun.jsx";
 
 export function ModifierClientModal({ idClient, onClose }) {
 

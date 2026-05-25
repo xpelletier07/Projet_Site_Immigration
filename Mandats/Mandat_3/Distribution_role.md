@@ -27,7 +27,7 @@ Tâches:
     Utilisateur:
     - [Hichem]  Faire le menu Utilisateur
     - [Eric]  Page de gestion des clients global  + modification
-    - Accès à la page gestion de notre dossier (client) - 
+    - [Eric]Accès à la page gestion de notre dossier (client) - 
     - [Hichem] Page suivie de la demande + son changement
     - [Eric] Dashboard Utilisateur
 

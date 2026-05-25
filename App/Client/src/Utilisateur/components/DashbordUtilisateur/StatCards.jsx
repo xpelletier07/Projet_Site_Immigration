@@ -1,6 +1,6 @@
 import { useEffect, useState} from "react";
-import { getAllDossiersActifs,  getClientDossier } from "../services/utilisateur.service";
-import { getToken } from "../../commun/commun";
+import { getAllDossiersActifs,  getClientDossier } from "../../services/utilisateur.service";
+import { getToken } from "../../../commun/commun.jsx";
 
 export function StatCards() {
   const [nbDossiers, setNbDossiers] = useState(0);

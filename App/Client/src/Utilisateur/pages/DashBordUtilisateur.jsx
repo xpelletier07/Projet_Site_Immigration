@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { globalStyles } from "../components/DashbordUtilisateur/DashBord.css.js";
-import { StatCards } from "../components/StatCards.jsx"
-import { Sidebar } from "../components/SideBar.jsx"
+import { StatCards } from "../components/DashbordUtilisateur/StatCards.jsx";
+import { Sidebar } from "../components/DashbordUtilisateur/Sidebar.jsx";
 import { DossierTable } from "../components/DashbordUtilisateur/DossierTable.jsx"
 import { RecentActivity } from "../components/DashbordUtilisateur/RecentActivity.jsx"
-import { apiFetch } from "../../commun/commun";
+import { apiFetch } from "../../commun/commun.jsx";
 
 
 export default function DashBordUtilisateur() {

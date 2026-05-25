@@ -41,7 +41,7 @@ function AccueilGlobal() {
                                     token: result.token,
                                 });
 
-                                navigate("/dashborduser/");
+                                navigate("/gestionclient");
                             }, 100);
 
                         }}>Commencer ma demande</button>

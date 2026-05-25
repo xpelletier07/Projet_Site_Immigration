@@ -14,6 +14,9 @@ export function DashbordRouter() {
     <>
       <Routes>
         <Route path="/" element={<DashBordUtilisateur />} />
+        <Route path="/files" element={<div>Files</div>} />
+        <Route path="/clients" element={<div>Clients</div>} />
+        <Route path="/documents" element={<div>Documents</div>} />
       </Routes>
     </>
   )

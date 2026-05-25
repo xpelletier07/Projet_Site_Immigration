@@ -13,21 +13,23 @@ export function DetailsDossier() {
   const [dossier, setDossier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dossierDetails, setDossierDetails] = useState(null);
+  const [clientDetails, setClientDetails] = useState(null);
 
   useEffect(() => {
-    async function fetchDossier() {
+    async function fetchDossierDetails() {
       try {
-        setLoading(true);
-        const data = await apiFetch(`/dossiers/${id}`);
-        setDossier(data);
-        if (data?.dossier?.statut) setStatus(data.dossier.statut);
+        const detailsfordossier = await apiFetch(`/dossiers/${id}`)
+        const detailsforclient = await apiFetch(`/clients/${detailsfordossier.id_client}`)
+
+        setClientDetails(detailsforclient);
+        setDossierDetails(detailsfordossier);
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error(`Erreur lors de la récupération des détails pour le dossier ${id}`, err);
       }
     }
-    if (id) fetchDossier();
+
+    fetchDossierDetails();
   }, [id]);
 
   const client = dossier?.client ?? dossier?.clients ?? null;
@@ -47,7 +49,7 @@ export function DetailsDossier() {
     },
     { label: "Examen préliminaire", sub: "En cours de vérification", done: documents.length > 0 },
     { label: "Vérification biométrique", sub: "Attendu dans les 5 jours", done: false },
-    { label: "Décision finale", sub: "En attente des étapes précédentes", done: status === "Approuvé" },
+    { label: "Décision finale", sub: "En attente des étapes précédentes", done: status === "approuvé" },
   ];
 
   if (loading) {

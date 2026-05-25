@@ -219,7 +219,7 @@ export function GestionsClients() {
             {Filtrer_wrap().map((client) => {
               const tagClass =
                 client?.details?.factures[0]?.statut === "en cours" ? "en-cours"
-                  : client?.details?.factures[0]?.statut === "action Requise" ? "action"
+                  : client?.details?.document ? "action"
                     : client?.details?.factures[0]?.statut === "en attente" ? "attente"
                       : "approuve";
 
@@ -244,7 +244,7 @@ export function GestionsClients() {
 
                   {/* Status */}
                   <div className="col-status">
-                    <span className={`sl-tag ${tagClass}`}>{client?.details?.factures[0]?.statut || "Statut Inconnu"}</span>
+                    <span className={`sl-tag ${tagClass}`}>{client?.details?.factures[0]?.statut || "Action Requise"}</span>
                   </div>
 
                   {/* Last activity */}
@@ -269,7 +269,7 @@ export function GestionsClients() {
                       title="Supprimer"
                       onClick={() => handleDelete(client.dossier.id_dossier)}
                     >🗑️</button>
-                    <button className="btn-voir" onClick={() => navigate("/details/" + client.dossier.id_dossier)}>Voir Dossier</button>
+                    <button className="btn-voir" onClick={() => navigate(`/details/${client.dossier.id_dossier}`)}>Voir Dossier</button>
                   </div>
                 </div>
               );
