@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
-import "../components/DashbordUtilisateur/Dashboard.css"
 
 export default function DashBordUtilisateur() {
 	const navigate = useNavigate();
@@ -60,10 +59,8 @@ export default function DashBordUtilisateur() {
 		(d) => d?.details?.factures?.[0]?.statut === "approuvé"
 	).length;
 
-	const boxStyle = { background: "#fff", boxShadow: "none", border: "1px solid #e0e0e0" };
-
 	return (
-		<div className="is-flex" style={{ background: "#fff" }}>
+		<div className="is-flex" style={{ minHeight: "100vh" }}>
 			<SideBarUtilisateur />
 
 			<div className="section" style={{ flex: 1 }}>
@@ -79,24 +76,28 @@ export default function DashBordUtilisateur() {
 
 					{/* ── Titre ── */}
 					<h1 className="title is-3 mb-1">Dashboard Employé</h1>
-					<p className="subtitle is-6 mb-5">
-						Bonjour. Voici le suivi des dossiers en cours.
-					</p>
+					<p className="subtitle is-6 mb-5">Bonjour. Voici le suivi des dossiers en cours.</p>
 
 					{/* ── Stats ── */}
 					<div className="columns mb-5">
-						{[
-							{ label: "Dossiers actifs", value: dossiers.length },
-							{ label: "En attente",      value: enAttente },
-							{ label: "Approuvés",       value: approuves },
-						].map(({ label, value }) => (
-							<div className="column" key={label}>
-								<div className="box has-text-centered" style={boxStyle}>
-									<p className="heading">{label}</p>
-									<p className="title is-2">{value}</p>
-								</div>
+						<div className="column">
+							<div className="box has-background-info-light">
+								<p className="heading">Dossiers actifs</p>
+								<p className="title is-2 has-text-info">{dossiers.length}</p>
 							</div>
-						))}
+						</div>
+						<div className="column">
+							<div className="box has-background-warning-light">
+								<p className="heading">En attente</p>
+								<p className="title is-2 has-text-warning-dark">{enAttente}</p>
+							</div>
+						</div>
+						<div className="column">
+							<div className="box has-background-success-light">
+								<p className="heading">Approuvés</p>
+								<p className="title is-2 has-text-success">{approuves}</p>
+							</div>
+						</div>
 					</div>
 
 					{/* ── Contenu principal ── */}
@@ -104,12 +105,11 @@ export default function DashBordUtilisateur() {
 
 						{/* ── Colonne gauche : tableau ── */}
 						<div className="column is-8">
-							<div className="box" style={boxStyle}>
-
+							<div className="box">
 								<div className="is-flex is-justify-content-space-between is-align-items-center mb-4">
 									<h2 className="title is-5 mb-0">Dossiers récents</h2>
 									<button
-										className="button is-small"
+										className="button is-small is-light"
 										onClick={() => navigate("/gestionclient")}
 									>
 										Voir tous
@@ -117,7 +117,7 @@ export default function DashBordUtilisateur() {
 								</div>
 
 								{loading ? (
-									<progress className="progress is-small" max="100">
+									<progress className="progress is-small is-info" max="100">
 										Chargement…
 									</progress>
 								) : (
@@ -135,18 +135,32 @@ export default function DashBordUtilisateur() {
 											<tbody>
 												{dossiers.length === 0 ? (
 													<tr>
-														<td colSpan={5} className="has-text-centered has-text-grey py-5">
+														<td
+															colSpan={5}
+															className="has-text-centered has-text-grey py-5"
+														>
 															Aucun dossier trouvé.
 														</td>
 													</tr>
 												) : (
 													dossiers.map((d) => {
-														const statut = d?.details?.factures?.[0]?.statut;
+														const statut =
+															d?.details?.factures?.[0]?.statut;
+														const tagClass =
+															statut === "approuvé"
+																? "is-success"
+																: statut === "en attente"
+																? "is-warning"
+																: "is-info";
 														return (
 															<tr
 																key={d.dossier.id_dossier}
 																style={{ cursor: "pointer" }}
-																onClick={() => navigate(`/utilisateur/dossier/${d.dossier.id_dossier}`)}
+																onClick={() =>
+																	navigate(
+																		`/dossier/${d.dossier.id_dossier}`
+																	)
+																}
 															>
 																<td>
 																	<strong>
@@ -157,12 +171,17 @@ export default function DashBordUtilisateur() {
 																	#{d.dossier.id_dossier}
 																</td>
 																<td>
-																	{d?.details?.typeDemandes?.[0]?.Type_Demande ?? (
-																		<span className="has-text-grey">—</span>
+																	{d?.details?.typeDemandes?.[0]
+																		?.Type_Demande ?? (
+																		<span className="has-text-grey">
+																			—
+																		</span>
 																	)}
 																</td>
 																<td>
-																	<span className="tag">
+																	<span
+																		className={`tag ${tagClass} is-light is-medium`}
+																	>
 																		{statut ?? "En cours"}
 																	</span>
 																</td>
@@ -182,7 +201,7 @@ export default function DashBordUtilisateur() {
 						<div className="column is-4">
 
 							{/* Activité récente */}
-							<div className="box mb-4" style={boxStyle}>
+							<div className="box mb-4">
 								<h2 className="title is-5 mb-4">Activité récente</h2>
 								{activities.length === 0 ? (
 									<p className="has-text-grey is-size-6">Aucune activité.</p>
@@ -201,32 +220,31 @@ export default function DashBordUtilisateur() {
 							</div>
 
 							{/* Actions rapides */}
-							<div className="box mb-4" style={boxStyle}>
+							<div className="box mb-4">
 								<h2 className="title is-5 mb-4">Actions rapides</h2>
 								<button
-									className="button is-fullwidth mb-2"
+									className="button is-fullwidth is-light mb-2"
 									onClick={() => navigate("/gestionclient")}
 								>
 									Gérer les clients
 								</button>
 								<button
-									className="button is-fullwidth"
+									className="button is-fullwidth is-primary is-light"
 									onClick={() => navigate("/gestionclient")}
 								>
 									Nouveau dossier
 								</button>
 							</div>
 
-							{/* Note juridique */}
-							<div className="box" style={boxStyle}>
-								<p className="has-text-weight-bold mb-2">
-									Mise à jour juridique
+							{/* Mise à jour juridique */}
+							<div className="notification is-warning is-light">
+								<p className="has-text-weight-bold mb-2">⚖️ Mise à jour juridique</p>
+								<p className="is-size-7">
+									Les nouvelles réglementations sur les visas 2024 sont en
+									vigueur. Consultez le guide mis à jour pour assurer la
+									conformité des dossiers.
 								</p>
-								<p className="has-text-grey is-size-7">
-									Les nouvelles réglementations sur les visas 2024 sont en vigueur.
-									Consultez le guide mis à jour pour assurer la conformité des dossiers.
-								</p>
-								<button className="button is-small is-fullwidth mt-3">
+								<button className="button is-warning is-light is-small mt-3 is-fullwidth">
 									Lire le guide
 								</button>
 							</div>
