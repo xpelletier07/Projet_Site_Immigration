@@ -8,7 +8,7 @@ import ClientDashboardRouter from "./Client.router.jsx";
 import AdminDashboardRouter from "./Admin.router.jsx";
 import UtilisateurRouter from "./Utilisateur.router.jsx";
 import { isLoggedIn, getUserType } from "../commun/commun.jsx";
-import HomePublic from "../commun/HomePublic.jsx";
+import HomePublic from "../commun/HomePublic/HomePublic.jsx";
 
 function HomeRedirect() {
 	if (!isLoggedIn()) return <HomePublic />;

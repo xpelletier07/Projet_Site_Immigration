@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { styles } from "./ComponentsAccueilClient/AccueilGlobal.css.js"
-import { FooterAccueil } from "./ComponentsAccueilClient/FooterAccueil.jsx";
-import { pathways, IconCpu, IconShield, IconHeadset } from "./ComponentsAccueilClient/OptionsDemande.jsx";
-import { loginUser } from "../Utilisateur/services/utilisateur.service.jsx";
-import { AuthContext } from "../router/AuthContext.jsx";
+import { styles } from "./HomePublic.css.js"
+import { FooterAccueil } from "./HomeFooter.jsx";
+import { pathways, IconCpu, IconShield, IconHeadset } from "./OptionsDemande.jsx";
+import { loginUser } from "../../Utilisateur/services/utilisateur.service.jsx";
+import { AuthContext } from "../../commun/AuthContext.jsx";
 
-function AccueilGlobal() {
+function HomePublic() {
     const navigate = useNavigate();
     const [data, setdata] = useState([]);
     const context = useContext(AuthContext);
@@ -41,7 +41,7 @@ function AccueilGlobal() {
                                     token: result.token,
                                 });
 
-                                navigate("/login");
+                                navigate("/gestionclient");
                             }, 100);
 
                         }}>Commencer ma demande</button>
@@ -119,7 +119,7 @@ function AccueilGlobal() {
                     L'enregistrement de votre profil prend moins de 10 minutes et constitue la clé de voûte de votre future demande.
                 </p>
                 <button className="btn-primary" onClick={() => {
-                    navigate("/client/register");
+                    navigate("/dashborduser");
                 }}>Commencer mon profil</button> {/*Envoie l'utilisateur vers une page d'inscription*/}
                 <div className="sl-social-proof">
                     <div className="sl-avatars">
@@ -135,4 +135,4 @@ function AccueilGlobal() {
     );
 }
 
-export default AccueilGlobal
+export default HomePublic;
