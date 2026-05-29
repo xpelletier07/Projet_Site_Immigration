@@ -7,14 +7,23 @@ import {
 	updateTypeDemande,
 	deleteTypeDemande,
 } from "../controller/Type_demande.js";
-import { verifyRole, verifyClientOwnership, verifyClientOwnsDossier } from "../api/authentification/middleware.js";
+import {
+	verifyToken,
+	verifyClientHasAccessToDossier,
+	verifyEmploye,
+} from "../api/authentification/middleware.js";
 
 const router = Router();
 
-router.get("/dossier/:idDossier", verifyClientOwnsDossier, getTypeDemandesByDossier); // GET    /type-demandes/dossier/:idDossier
-router.get("/:id", verifyClientOwnsDossier, getTypeDemandeById); // GET    /type-demandes/:id
-router.post("/", verifyClientOwnsDossier, createTypeDemande); // POST   /type-demandes
-router.put("/update/:id", verifyClientOwnsDossier, updateTypeDemande); // PUT    /type-demandes/:id
-router.delete("/delete/:id", verifyClientOwnsDossier, deleteTypeDemande); // DELETE /type-demandes/:id
+// GET — lecture par dossier ou par id
+router.get("/dossier/:idDossier", verifyClientHasAccessToDossier, getTypeDemandesByDossier);
+router.get("/:id", verifyToken, getTypeDemandeById);
+
+// POST — client ou employé peut créer une demande
+router.post("/", verifyToken, createTypeDemande);
+
+// PUT / DELETE — employés seulement
+router.put("/update/:id", verifyEmploye, updateTypeDemande);
+router.delete("/delete/:id", verifyEmploye, deleteTypeDemande);
 
 export default router;

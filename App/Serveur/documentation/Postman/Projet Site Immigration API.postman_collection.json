@@ -1,0 +1,1397 @@
+{
+  "info": {
+    "_postman_id": "59bec3d7-7cfb-4d80-bd45-de32679d667b",
+    "name": "Projet Site Immigration API",
+    "description": "Collection complète de toutes les routes de l'API Immigration — Auth, Clients, Utilisateurs, Dossiers, Notes, Factures, Documents, Type Demandes, Administrateurs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52544265"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentification",
+      "item": [
+        {
+          "name": "Créer un compte Client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id_client) {",
+                  "  pm.collectionVariables.set('CLIENT_ID', json.id_client);",
+                  "}",
+                  "",
+                  "pm.test(\"Le status code est 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"La réponse est du JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test(\"Le body contient un token\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"token\");",
+                  "    pm.expect(json.token).to.be.a(\"string\").and.not.empty;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Tremblay\",\n  \"prenom\": \"Alice\",\n  \"courriel\": \"alice.tremblay@exemple.com\",\n  \"telephone\": \"5141234567\",\n  \"MDP\": \"MotDePasse123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/create/Client",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "create",
+                "Client"
+              ]
+            },
+            "description": "Crée un nouveau compte client. Retourne l'id_client créé."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un compte Utilisateur (Employé)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "",
+                  "if (json.id_utilisateur) {",
+                  "  pm.collectionVariables.set('USER_ID', json.id_utilisateur);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Bouchard\",\n  \"prenom\": \"Marc\",\n  \"courriel\": \"marc.bouchard@cabinet.com\",\n  \"telephone\": \"5149876543\",\n  \"MDP\": \"MotDePasse456!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/create/Utilisateur",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "create",
+                "Utilisateur"
+              ]
+            },
+            "description": "Crée un nouveau compte employé (utilisateur)."
+          },
+          "response": []
+        },
+        {
+          "name": "Connexion (Login) - Client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\r",
+                  "if (json.token) {\r",
+                  "  pm.collectionVariables.set('TOKEN', json.token);\r",
+                  "  pm.collectionVariables.set(\"currentRole\", json.type)\r",
+                  "  pm.collectionVariables.set(\"currentID\", json.id)\r",
+                  "  console.log('Token sauvegardé !');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courriel\": \"alice.tremblay@exemple.com\",\n  \"MDP\": \"MotDePasse123!\",\n  \"type\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Connexion (Login) - Utilisateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('TOKEN', json.token);",
+                  "  pm.collectionVariables.set(\"currentRole\", json.type)",
+                  "  pm.collectionVariables.set(\"currentID\", json.id)",
+                  "  console.log('Token sauvegardé !');",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courriel\": \"marc.bouchard@cabinet.com\",\n  \"MDP\": \"MotDePasse456!\",\n  \"type\": \"utilisateur\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Connexion — retourne un JWT (valide 24h). Le script de test sauvegarde automatiquement le token dans la variable TOKEN."
+          },
+          "response": []
+        },
+        {
+          "name": "Connexion (Login) - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\r",
+                  "if (json.token) {\r",
+                  "  pm.collectionVariables.set('TOKEN', json.token);\r",
+                  "  pm.collectionVariables.set(\"currentRole\", json.type)\r",
+                  "  pm.collectionVariables.set(\"currentID\", json.id)\r",
+                  "  console.log('Token sauvegardé !');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courriel\": \"admin@cmaisonneuve.qc.ca\",\n  \"MDP\": \"password\",\n  \"type\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Clients",
+      "item": [
+        {
+          "name": "Lister tous les clients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/clients",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            },
+            "description": "🔒 Employés seulement. Retourne tous les clients sans le MDP."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir un client par ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/clients/{{CLIENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "clients",
+                "{{CLIENT_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Un client peut consulter son propre profil; un employé peut voir n'importe lequel."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Tremblay\",\n  \"prenom\": \"Alice-Marie\",\n  \"courriel\": \"alice.marie@exemple.com\",\n  \"telephone\": \"5141234999\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/clients/update/{{CLIENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "clients",
+                "update",
+                "{{CLIENT_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Mise à jour des informations d'un client."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un client",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/clients/delete/{{CLIENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "clients",
+                "delete",
+                "{{CLIENT_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement. Supprime un client définitivement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧑‍💼 Utilisateurs (Employés)",
+      "item": [
+        {
+          "name": "Lister tous les utilisateurs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/utilisateurs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "utilisateurs"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir un utilisateur par ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/utilisateurs/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "utilisateurs",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un utilisateur",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Bouchard\",\n  \"prenom\": \"Marc-Antoine\",\n  \"courriel\": \"marc.a.bouchard@cabinet.com\",\n  \"telephone\": \"5149876000\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/utilisateurs/update/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "utilisateurs",
+                "update",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un utilisateur",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/utilisateurs/delete/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "utilisateurs",
+                "delete",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "🔒 Admins seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📁 Dossiers",
+      "item": [
+        {
+          "name": "Lister tous les dossiers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/dossiers",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dossiers"
+              ]
+            },
+            "description": "🔒 Employés seulement. Retourne tous les dossiers avec nom/prénom du client associé."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir les dossiers d'un client",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/dossiers/client/{{CLIENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dossiers",
+                "client",
+                "{{CLIENT_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Client ou employé."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir un dossier complet par ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\nif (json.id_dossier) {\n  pm.collectionVariables.set('DOSSIER_ID', json.id_dossier);\n}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/dossiers/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dossiers",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Retourne le dossier avec ses notes, factures, documents et types de demandes."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un dossier",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id_dossier) {",
+                  "  pm.collectionVariables.set('DOSSIER_ID', json.id_dossier);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_client\": {{currentID}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/dossiers/create",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dossiers",
+                "create"
+              ]
+            },
+            "description": "🔒 Employés seulement. Crée un nouveau dossier pour un client."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un dossier",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/dossiers/delete/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "dossiers",
+                "delete",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Notes",
+      "item": [
+        {
+          "name": "Lister les notes d'un dossier",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notes/dossier/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notes",
+                "dossier",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement. Les notes sont internes."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir une note par ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notes/{{NOTE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notes",
+                "{{NOTE_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer une note",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\nif (json.id_note) {\n  pm.collectionVariables.set('NOTE_ID', json.id_note);\n}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_dossier\": {{DOSSIER_ID}},\n  \"note\": \"Première consultation effectuée. Documents manquants : acte de naissance.\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/notes",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notes"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier une note",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Mise à jour : acte de naissance reçu le 2024-03-15.\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/notes/update/{{NOTE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notes",
+                "update",
+                "{{NOTE_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une note",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notes/delete/{{NOTE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notes",
+                "delete",
+                "{{NOTE_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧾 Factures",
+      "item": [
+        {
+          "name": "Lister les factures d'un dossier",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/factures/dossier/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "factures",
+                "dossier",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Clients et employés peuvent consulter."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir une facture par ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/factures/{{FACTURE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "factures",
+                "{{FACTURE_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer une facture",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\nif (json.id_facture) {\n  pm.collectionVariables.set('FACTURE_ID', json.id_facture);\n}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_dossier\": {{DOSSIER_ID}},\n  \"description\": \"Frais de traitement dossier résidence permanente\",\n  \"montant\": 1500.00,\n  \"date_emission\": \"2024-03-15\",\n  \"date_echeance\": \"2024-04-15\",\n  \"statut\": \"en attente\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/factures",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "factures"
+              ]
+            },
+            "description": "🔒 Employés seulement. Tous les champs sont obligatoires."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier une facture",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Frais de traitement — révisé\",\n  \"montant\": 1750.00,\n  \"date_emission\": \"2024-03-15\",\n  \"date_echeance\": \"2024-05-01\",\n  \"statut\": \"payée\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/factures/update/{{FACTURE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "factures",
+                "update",
+                "{{FACTURE_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une facture",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/factures/delete/{{FACTURE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "factures",
+                "delete",
+                "{{FACTURE_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📄 Documents",
+      "item": [
+        {
+          "name": "Lister les documents d'un dossier",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/documents/dossier/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "documents",
+                "dossier",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "🔒 Token requis. Retourne les métadonnées sans le binaire."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir les infos d'un document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/documents/{{DOCUMENT_ID}}/info",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "documents",
+                "{{DOCUMENT_ID}}",
+                "info"
+              ]
+            },
+            "description": "🔒 Token requis. Métadonnées seulement (sans contenu binaire)."
+          },
+          "response": []
+        },
+        {
+          "name": "Télécharger un document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/documents/{{DOCUMENT_ID}}/telecharger",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "documents",
+                "{{DOCUMENT_ID}}",
+                "telecharger"
+              ]
+            },
+            "description": "🔒 Token requis. Retourne le fichier brut avec les headers Content-Type et Content-Disposition."
+          },
+          "response": []
+        },
+        {
+          "name": "Uploader un document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\nif (json.id_document) {\n  pm.collectionVariables.set('DOCUMENT_ID', json.id_document);\n}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "id_dossier",
+                  "value": "{{DOSSIER_ID}}",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "description": "Fichier à uploader (max 10MB)",
+                  "src": "/chemin/vers/votre/fichier.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/documents",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "documents"
+              ]
+            },
+            "description": "🔒 Token requis. Envoi multipart/form-data. Champ fichier = 'fichier', max 10 MB."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un document",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/documents/delete/{{DOCUMENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "documents",
+                "delete",
+                "{{DOCUMENT_ID}}"
+              ]
+            },
+            "description": "🔒 Employés seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗂️ Types de Demande",
+      "item": [
+        {
+          "name": "Lister les types de demande d'un dossier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/type-demandes/dossier/{{DOSSIER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "type-demandes",
+                "dossier",
+                "{{DOSSIER_ID}}"
+              ]
+            },
+            "description": "⚠️ Aucune protection d'authentification sur cette route."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir un type de demande par ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/type-demandes/{{DEMANDE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "type-demandes",
+                "{{DEMANDE_ID}}"
+              ]
+            },
+            "description": "⚠️ Aucune protection d'authentification."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un type de demande",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();\nif (json.id_demande) {\n  pm.collectionVariables.set('DEMANDE_ID', json.id_demande);\n}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_dossier\": {{DOSSIER_ID}},\n  \"Type_Demande\": \"Résidence permanente\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/type-demandes",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "type-demandes"
+              ]
+            },
+            "description": "Exemples de Type_Demande : 'Résidence permanente', 'Permis temporaire', 'Visa étudiant', 'Regroupement familial'."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un type de demande",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Type_Demande\": \"Permis de travail temporaire\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/type-demandes/update/{{DEMANDE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "type-demandes",
+                "update",
+                "{{DEMANDE_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un type de demande",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/type-demandes/delete/{{DEMANDE_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "type-demandes",
+                "delete",
+                "{{DEMANDE_ID}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Administrateurs",
+      "item": [
+        {
+          "name": "Modifier un administrateur",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Admin\",\n  \"prenom\": \"Super\",\n  \"courriel\": \"admin@cmaisonneuve.qc.ca\",\n  \"telephone\": \"5140000000\",\n  \"MDP\": \"NouveauMDP!\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/administrateurs/update/{{ADMIN_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "administrateurs",
+                "update",
+                "{{ADMIN_ID}}"
+              ]
+            },
+            "description": "🔒 Admins seulement."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un administrateur",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/administrateurs/delete/{{ADMIN_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "administrateurs",
+                "delete",
+                "{{ADMIN_ID}}"
+              ]
+            },
+            "description": "🔒 Admins seulement."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏠 Base",
+      "item": [
+        {
+          "name": "Santé de l'API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "Vérifie que l'API est opérationnelle. Aucune authentification requise."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "CLIENT_ID",
+      "value": "1"
+    },
+    {
+      "key": "USER_ID",
+      "value": "1"
+    },
+    {
+      "key": "DOSSIER_ID",
+      "value": "1"
+    },
+    {
+      "key": "NOTE_ID",
+      "value": "1"
+    },
+    {
+      "key": "FACTURE_ID",
+      "value": "1"
+    },
+    {
+      "key": "DOCUMENT_ID",
+      "value": "1"
+    },
+    {
+      "key": "DEMANDE_ID",
+      "value": "1"
+    },
+    {
+      "key": "ADMIN_ID",
+      "value": "1"
+    },
+    {
+      "key": "currentRole",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "currentID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -10,25 +10,30 @@ Menu :
 
 Tâches:
 
-- [Xavier]  Créer une collection Post-man fonctionnel et la mettre dans le GIT (pas juste de les tester)
-- [Xavier]  Ajout D'une api / url documentation vers le swagger
+- [Xavier - DONE]  Créer une collection Post-man fonctionnel et la mettre dans le GIT (pas juste de les tester)
+- [Xavier - DONE]  Ajout D'une api / url documentation vers le swagger
 
-- [Eric]  Page accueil avant d'être connecté
-- [Glodie]  Page d'inscription
-- [Hichem]  Page connexion
+- [Eric - DONE]  Page accueil avant d'être connecté
+- [Fait]  Page d'inscription
+- [Xavier - DONE]  Page connexion
 
 
     Client : 
-    - [Hichem]  Faire le menu Client
-    - [ A trouver ]  La page de demande de changement de status (résidence) (client)
-    - [Xavier]  Page de gestion de notre dossier + modification (accès restraint pour client, accès complet pour utilisateur) + suivie traitement demande
-    - [Xavier] Dashboard Client
+    - [Xavier - DONE]  Faire le menu Client
+    - [ Xavier - DONE ]  La page de demande de changement de status (résidence) (client)
+    - [Xavier - Présent mais non fonctionnel]  Page de gestion de notre dossier + modification (accès restraint pour client, accès complet pour utilisateur) + suivie traitement demande
+    - [Xavier - DONE] Dashboard Client
 
     Utilisateur:
-    - [Hichem]  Faire le menu Utilisateur
+    - [Hichem - DONE]  Faire le menu Utilisateur+ menu lorsque personne est connecté
     - [Eric]  Page de gestion des clients global  + modification
+<<<<<<< HEAD
     - [Eric]Accès à la page gestion de notre dossier (client) - 
     - [Hichem] Page suivie de la demande + son changement
+=======
+    - Accès à la page gestion de notre dossier (client) - 
+    - [Hichem - DONE] Page suivie de la demande + son changement
+>>>>>>> main
     - [Eric] Dashboard Utilisateur
 
 
