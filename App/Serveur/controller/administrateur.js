@@ -1,72 +1,78 @@
+import bcrypt from "bcrypt";
+import { db } from "../db/db.js";
 
-// Fonction pour inscrire un nouvel utilisateur (employé / admin)
-export async function inscrireUtilisateur(req, res) {
-    const { nom, prenom, courriel, telephone, MDP } = req.body;
+// Colonnes sûres à renvoyer
+const SAFE_COLS = [
+  "id_admin",
+  "nom",
+  "prenom",
+  "courriel",
+  "telephone",
+  "date_creation",
+];
 
-    if (!nom || !prenom || !courriel || !telephone || !MDP) {
-        return res.status(400).json({ error: "Tous les champs sont requis." });
-    }
+// GET /administrateurs
+export const getAllAdmins = async (req, res) => {
+  try {
+    const admins = await db("admin").select(SAFE_COLS);
+    res.json(admins);
+  } catch (err) {
+    console.error("Erreur récupération admins:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
 
-    try {
-        // Vérifier si un utilisateur existe déjà avec ce courriel
-        const existant = await db('utilisateur').where({ courriel }).first();
-        if (existant) {
-            return res.status(409).json({ error: "Un utilisateur existe déjà avec ce courriel." });
-        }
-    } catch (error) {
-        return res.status(500).json({ error: "Erreur lors de la vérification du courriel." });
-    }
+// POST /auth/create/Utilisateur (inscrire un employé/admin)
+export const inscrireUtilisateur = async (req, res) => {
+  const { nom, prenom, courriel, telephone, MDP } = req.body;
+  if (!nom || !prenom || !courriel || !telephone || !MDP) {
+    return res.status(400).json({ error: "Tous les champs sont requis." });
+  }
 
-    // Hachage sécurisé du mot de passe avant insertion
+  try {
+    const existant = await db("utilisateur").where({ courriel }).first();
+    if (existant) return res.status(409).json({ error: "Un utilisateur existe déjà avec ce courriel." });
+
     const mdpHache = await bcrypt.hash(MDP, 10);
+    const [id_utilisateur] = await db("utilisateur").insert({ nom, prenom, courriel, telephone, MDP: mdpHache });
+    res.status(201).json({ message: "Utilisateur inscrit avec succès !", id_utilisateur });
+  } catch (error) {
+    console.error("Erreur lors de l'inscription de l'utilisateur :", error);
+    res.status(500).json({ error: "Une erreur est survenue lors de l'inscription de l'utilisateur." });
+  }
+};
 
-    // Insertion du nouvel utilisateur dans la base de données
-    await db('utilisateur')
-        .insert({ nom, prenom, courriel, telephone: telephone, MDP: mdpHache })
-        .then(([id_utilisateur]) => {
-            console.log(`Nouvel utilisateur créé (ID: ${id_utilisateur})`);
-            res.status(201).json({
-                message: "Utilisateur inscrit avec succès !",
-                id_utilisateur
-            });
-        })
-        .catch((error) => {
-            console.error("Erreur lors de l'inscription de l'utilisateur :", error);
-            res.status(500).json({ error: "Une erreur est survenue lors de l'inscription de l'utilisateur." });
-        });
-}
-
-// fonction pour supprimer un admin
-
-export async function deleteAdminById(id_admin) {
-    return await db("admin").where({ id_admin }).del();
-}
-
-
-// Fonction pour mettre à jour les données d'un administrateur
-
-export async function updateAdmin(req, res) {
-    try {
-    const { id_admin } = req.params;
+// PUT /administrateurs/update/:id
+export const updateAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
     const { nom, prenom, courriel, telephone, MDP } = req.body;
-
-    if (!id_admin || !nom || !prenom || !courriel || !telephone || !MDP) {
-        return res.status(400).json({ error: "Tous les champs sont requis." });
+    if (!id || !nom || !prenom || !courriel || !telephone) {
+      return res.status(400).json({ error: "Tous les champs sont requis (sauf MDP)." });
     }
 
-    const data = { nom, prenom, courriel, telephone, MDP };
-    await db("admin")
-        .where({ id_admin })
-        .update(data)
-        .then(() => {
-            res.status(200).json({ message: "Administrateur mis à jour avec succès." });
-        })
-        .catch((error) => {
-            console.error("Erreur lors de la mise à jour de l'administrateur:", error);
-            res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour de l'administrateur." });
-        });
-    } catch (error) {
-        console.error("Erreur lors de la mise à jour de l'administrateur:", error);
-        res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour de l'administrateur." });
-    }
-}
+    const data = { nom, prenom, courriel, telephone };
+    if (MDP) data.MDP = MDP;
+
+    const updated = await db("admin").where({ id_admin: id }).update(data);
+    if (!updated) return res.status(404).json({ error: "Administrateur introuvable." });
+    res.json({ message: "Administrateur mis à jour avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'administrateur:", error);
+    res.status(500).json({ error: "Une erreur est survenue lors de la mise à jour de l'administrateur." });
+  }
+};
+
+// DELETE /administrateurs/delete/:id
+export const deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await db("admin").where({ id_admin: id }).del();
+    if (!deleted) return res.status(404).json({ error: "Administrateur introuvable." });
+    res.json({ message: "Administrateur supprimé." });
+  } catch (error) {
+    console.error("Erreur suppression admin:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
