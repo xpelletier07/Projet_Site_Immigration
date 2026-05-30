@@ -9,6 +9,7 @@ import {
 	getUserId,
 } from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
+import NewDemandeModal from "../components/NewDemandeModal.jsx";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 const FileIcon = () => (
@@ -108,7 +109,10 @@ function computeCaseStatus(demandes = [], documents = []) {
 
 	const statusLabel = hasDecision
 		? demandeStatuts.find(
-				(s) => s.includes("approuvé") || s.includes("accepté") || s.includes("approuve"),
+				(s) =>
+					s.includes("approuvé") ||
+					s.includes("accepté") ||
+					s.includes("approuve"),
 			)
 			? "Approuvé"
 			: "Décision rendue"
@@ -168,86 +172,6 @@ function Roadmap({ currentStep }) {
 						</div>
 					);
 				})}
-			</div>
-		</div>
-	);
-}
-
-// ─── Modal : nouvelle type_demande dans dossier existant ──────────────────────
-function NewDemandeModal({ dossierId, onClose, onCreated }) {
-	const [type, setType] = useState("Résidence permanente");
-	const [loading, setLoading] = useState(false);
-	const toast = useToast();
-
-	const types = [
-		"Résidence permanente",
-		"Permis de travail",
-		"Permis d'études",
-		"Visa de visiteur",
-		"Citoyenneté",
-		"Regroupement familial",
-	];
-
-	async function handleCreate() {
-		if (!dossierId) {
-			toast("Aucun dossier actif.", "error");
-			return;
-		}
-		setLoading(true);
-		try {
-			await createTypeDemande(dossierId, type);
-			toast(`Demande "${type}" soumise !`, "success");
-			onCreated();
-		} catch {
-			toast("Erreur lors de la création.", "error");
-		} finally {
-			setLoading(false);
-		}
-	}
-
-	return (
-		<div className="app-modal-overlay" onClick={onClose}>
-			<div className="app-modal" onClick={(e) => e.stopPropagation()}>
-				<div className="app-modal-header">
-					<span className="app-modal-title">
-						Nouvelle demande d'immigration
-					</span>
-					<button className="app-modal-close" onClick={onClose}>
-						✕
-					</button>
-				</div>
-				<div className="app-modal-body">
-					<div className="form-group">
-						<label className="form-label">Type de demande</label>
-						<select
-							className="form-input"
-							value={type}
-							onChange={(e) => setType(e.target.value)}
-						>
-							{types.map((t) => (
-								<option key={t} value={t}>
-									{t}
-								</option>
-							))}
-						</select>
-					</div>
-					<div className="info-box">
-						ℹ️ Un agent vous sera assigné sous 24-48 heures
-						ouvrables.
-					</div>
-				</div>
-				<div className="app-modal-footer">
-					<button className="btn btn-outline" onClick={onClose}>
-						Annuler
-					</button>
-					<button
-						className="btn btn-primary"
-						onClick={handleCreate}
-						disabled={loading}
-					>
-						{loading ? "Envoi..." : "Soumettre"}
-					</button>
-				</div>
 			</div>
 		</div>
 	);
@@ -440,7 +364,6 @@ export default function DashboardClient() {
 		},
 	];
 
-
 	return (
 		<>
 			<div className="app-shell">
@@ -457,44 +380,63 @@ export default function DashboardClient() {
 						<div className="page-header flex justify-between items-center">
 							<div>
 								<h1 className="page-title">
-    Dossier #{dossierId}:{" "}
-    <span className="status-inline">{statusLabel}</span>
-</h1>
+									Dossier #{dossierId}:{" "}
+									<span className="status-inline">
+										{statusLabel}
+									</span>
+								</h1>
 
-{/* Types de demandes actives */}
-{demandes.length > 0 && (
-    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "8px" }}>
-        {demandes.map(d => (
-            <span key={d.id_demande} style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "4px 12px",
-                borderRadius: "999px",
-                fontSize: "0.78rem",
-                fontWeight: 600,
-                background: "var(--accent)",
-                color: "var(--blue)",
-                border: "1px solid var(--blue-light)",
-            }}>
-                {d.Type_Demande}
-                <span style={{
-                    padding: "1px 7px",
-                    borderRadius: "999px",
-                    fontSize: "0.68rem",
-                    background: "var(--navy)",
-                    color: "white",
-                }}>
-                    {d.Statut || "En attente"}
-                </span>
-            </span>
-        ))}
-    </div>
-)}
+								{/* Types de demandes actives */}
+								{demandes.length > 0 && (
+									<div
+										style={{
+											display: "flex",
+											gap: "8px",
+											flexWrap: "wrap",
+											marginTop: "8px",
+										}}
+									>
+										{demandes.map((d) => (
+											<span
+												key={d.id_demande}
+												style={{
+													display: "inline-flex",
+													alignItems: "center",
+													gap: "6px",
+													padding: "4px 12px",
+													borderRadius: "999px",
+													fontSize: "0.78rem",
+													fontWeight: 600,
+													background: "var(--accent)",
+													color: "var(--blue)",
+													border: "1px solid var(--blue-light)",
+												}}
+											>
+												{d.Type_Demande}
+												<span
+													style={{
+														padding: "1px 7px",
+														borderRadius: "999px",
+														fontSize: "0.68rem",
+														background:
+															"var(--navy)",
+														color: "white",
+													}}
+												>
+													{d.Statut || "En attente"}
+												</span>
+											</span>
+										))}
+									</div>
+								)}
 
-<p className="page-subtitle" style={{ marginTop: "6px" }}>
-    Votre dossier est en cours de traitement. Suivez son avancement ci-dessous.
-</p>
+								<p
+									className="page-subtitle"
+									style={{ marginTop: "6px" }}
+								>
+									Votre dossier est en cours de traitement.
+									Suivez son avancement ci-dessous.
+								</p>
 							</div>
 							<button
 								className="btn btn-primary"
@@ -936,11 +878,10 @@ export default function DashboardClient() {
 			</div>
 			{showNewDemande && (
 				<NewDemandeModal
-					dossierId={dossierId}
 					onClose={() => setShowNewDemande(false)}
 					onCreated={() => {
 						setShowNewDemande(false);
-						refresh();
+						window.location.reload();
 					}}
 				/>
 			)}

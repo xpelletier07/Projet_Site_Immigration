@@ -37,8 +37,8 @@ export default function Menu() {
 		links.push(
 			{ to: "/client/dashboard", label: "Tableau de bord" },
 			{ to: "/client/my-case", label: "Mon dossier" },
-			{ to: "/client/files", label: "Mes demandes" },
 			{ to: "/client/documents", label: "Documents" },
+			{ to: "/client/files", label: "Mes demandes" },
 		);
 	} else if (type === "utilisateur") {
 		links.push(

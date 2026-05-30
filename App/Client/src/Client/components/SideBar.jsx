@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import NewDemandeModal from "./NewDemandeModal.jsx";
 
 const DashIcon = () => (
 	<svg
@@ -106,6 +107,7 @@ const PlusIcon = () => (
 export default function Sidebar({ onNewCase }) {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
+	const [showNewDemande, setShowNewDemande] = useState(false);
 
 	const links = [
 		{ path: "/client/dashboard", label: "Dashboard", Icon: DashIcon },
@@ -120,48 +122,63 @@ export default function Sidebar({ onNewCase }) {
 	}
 
 	return (
-		<aside className="sidebar">
-			<div className="sidebar-brand">
-				<div className="sidebar-logo">🏛️</div>
-				<div>
-					<div className="sidebar-brand-title">Official Portal</div>
-					<div className="sidebar-brand-text">
-						IMMIGRATION SERVICES
+		<>
+			<aside className="sidebar">
+				<div className="sidebar-brand">
+					<div className="sidebar-logo">🏛️</div>
+					<div>
+						<div className="sidebar-brand-title">
+							Official Portal
+						</div>
+						<div className="sidebar-brand-text">
+							IMMIGRATION SERVICES
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div className="sidebar-label">Portal</div>
+				<div className="sidebar-label">Portal</div>
 
-			{links.map(({ path, label, Icon }) => (
+				{links.map(({ path, label, Icon }) => (
+					<button
+						key={path}
+						className={`sidebar-link${pathname === path ? " active" : ""}`}
+						onClick={() => navigate(path)}
+					>
+						<Icon /> {label}
+					</button>
+				))}
+
 				<button
-					key={path}
-					className={`sidebar-link${pathname === path ? " active" : ""}`}
-					onClick={() => navigate(path)}
+					className="sidebar-new-case mt-4"
+					onClick={() => setShowNewDemande(true)}
 				>
-					<Icon /> {label}
+					<PlusIcon /> Nouvelle demande
 				</button>
-			))}
 
-			<button className="sidebar-new-case mt-4" onClick={onNewCase}>
-				<PlusIcon /> Nouvelle demande
-			</button>
-
-			<div className="sidebar-bottom">
-				<button
-					className="sidebar-link"
-					onClick={() => navigate("/client/settings")}
-				>
-					<SettingsIcon /> Paramètres
-				</button>
-				<button
-					className="sidebar-link"
-					style={{ color: "#f87171" }}
-					onClick={handleLogout}
-				>
-					<LogoutIcon /> Se déconnecter
-				</button>
-			</div>
-		</aside>
+				<div className="sidebar-bottom">
+					<button
+						className="sidebar-link"
+						onClick={() => navigate("/client/settings")}
+					>
+						<SettingsIcon /> Paramètres
+					</button>
+					<button
+						className="sidebar-link"
+						style={{ color: "#f87171" }}
+						onClick={handleLogout}
+					>
+						<LogoutIcon /> Se déconnecter
+					</button>
+				</div>
+			</aside>
+			{showNewDemande && (
+				<NewDemandeModal
+					onClose={() => setShowNewDemande(false)}
+					onCreated={() => {
+						setShowNewDemande(false);
+					}}
+				/>
+			)}
+		</>
 	);
 }
