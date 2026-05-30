@@ -1,8 +1,8 @@
 import { apiFetch, getUserId, getToken, API_URL } from "../../commun/commun.jsx";
 
-export {apiFetch, getUserId, getToken, API_URL};
+export { apiFetch, getUserId, getToken, API_URL };
 
-export async function getClientBundle() {
+export async function getClientBundle(selectedDossierId = null) {
 	const idClient = getUserId();
 	if (!idClient) throw new Error("Non authentifié");
 
@@ -10,10 +10,14 @@ export async function getClientBundle() {
 
 	if (!Array.isArray(dossiers) || dossiers.length === 0) {
 		const client = await apiFetch(`/clients/${idClient}`);
-		return { hasDossier: false, client };
+		return { hasDossier: false, client, dossiers: [] };
 	}
 
-	const dossier = dossiers[0];
+	// Utiliser le dossier sélectionné, sinon le premier
+	const dossier =
+		selectedDossierId
+			? dossiers.find((d) => d.id_dossier === selectedDossierId) ?? dossiers[0]
+			: dossiers[0];
 
 	const [client, documents, demandes, factures] = await Promise.all([
 		apiFetch(`/clients/${idClient}`),
@@ -22,7 +26,15 @@ export async function getClientBundle() {
 		apiFetch(`/factures/dossier/${dossier.id_dossier}`),
 	]);
 
-	return { hasDossier: true, client, dossier, documents, demandes, factures };
+	return {
+		hasDossier: true,
+		client,
+		dossier,
+		dossiers, // tous les dossiers du client
+		documents,
+		demandes,
+		factures,
+	};
 }
 
 export async function updateClientProfile(id, data) {
@@ -39,9 +51,13 @@ export async function createDossier(id_client) {
 	});
 }
 
+export async function deleteDossier(id_dossier) {
+	return apiFetch(`/dossiers/delete/${id_dossier}`, { method: "DELETE" });
+}
+
 export async function uploadDocument(file, id_dossier) {
 	const formData = new FormData();
-	formData.append("fichier", file);
+	formData.append("file", file);
 	formData.append("id_dossier", id_dossier);
 
 	const response = await fetch(`${API_URL}/documents`, {
@@ -96,7 +112,7 @@ export async function loginUser(courriel, MDP) {
 }
 
 export async function registerClient(payload) {
-	return apiFetch(`/auth/create/Client`, {
+	return apiFetch(`/auth/createClient`, {
 		method: "POST",
 		body: JSON.stringify(payload),
 	});

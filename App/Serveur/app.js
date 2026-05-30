@@ -1,6 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { db , initializeDatabase } from "./db/db.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { db, initializeDatabase } from "./db/db.js";
+
+// Pour obtenir __dirname avec ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import des routes (contrôleurs)
 import adminRoutes from "./routes/administrateur.js";
@@ -16,13 +22,16 @@ import swaggerRouter from "./documentation/Swagger/swagger.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const clientDistPath = path.join(__dirname, "../Client/dist");
 
 // Middleware globaux
 app.use(cors());
 app.use(express.json());
 
-// ─── Montage des routes ───────────────────────────────────────────────────────
-// Pour ajouter un nouveau micro-service : importer sa route et l'ajouter ici
+// AJOUTER CETTE LIGNE : Servir les fichiers statiques du client
+app.use(express.static(clientDistPath));
+
+// ─── Montage des routes ──────────────────────────────────────────────────────
 app.use("/doc", swaggerRouter);
 app.use("/auth", authRoutes);
 app.use("/clients", clientRoutes);
@@ -33,15 +42,28 @@ app.use("/factures", factureRoutes);
 app.use("/documents", documentRoutes);
 app.use("/type-demandes", typeDemandeRoutes);
 app.use("/administrateurs", adminRoutes);
+
 // Route de base
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
 	res.json({ message: "API Immigration - Opérationnelle" });
 });
 
+// Fallback React Router (SPA): les routes frontend doivent retourner index.html
+app.get("/{*splat}", (req, res) => {
+	res.sendFile(path.join(clientDistPath, "index.html"));
+});
+
+// Route introuvable pour les autres methodes (POST/PUT/DELETE, etc.)
+app.all("/{*splat}", (req, res) => {
+	res.status(404).json({
+		error: "Route introuvable",
+	});
+});
 // Initialiser du serveur
 initializeDatabase().then(() => {
 	app.listen(PORT, () => {
-		console.log(`Serveur démarré sur le port ${PORT}`);
+		console.log(`Serveur démarré: http://localhost:${PORT}`);
+		console.log(`Documentation Swagger: http://localhost:${PORT}/doc`);
 	});
 });
 

@@ -1,0 +1,37 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Build Client
+        run: |
+          cd App/Client
+          npm install
+          npm run build
+          cd ../..
+
+      - name: Install Server dependencies
+        run: |
+          cd App/Serveur
+          npm install
+          cd ../..
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'immiportail'
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: .

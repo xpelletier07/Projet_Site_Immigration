@@ -20,15 +20,15 @@ Tâches:
 
     Client : 
     - [Xavier - DONE]  Faire le menu Client
-    - [ A trouver ]  La page de demande de changement de status (résidence) (client)
+    - [ Xavier - DONE ]  La page de demande de changement de status (résidence) (client)
     - [Xavier - Présent mais non fonctionnel]  Page de gestion de notre dossier + modification (accès restraint pour client, accès complet pour utilisateur) + suivie traitement demande
     - [Xavier - DONE] Dashboard Client
 
     Utilisateur:
-    - [Hichem]  Faire le menu Utilisateur+ menu lorsque personne est connecté
+    - [Hichem - DONE]  Faire le menu Utilisateur+ menu lorsque personne est connecté
     - [Eric]  Page de gestion des clients global  + modification
     - Accès à la page gestion de notre dossier (client) - 
-    - [Hichem] Page suivie de la demande + son changement
+    - [Hichem - DONE] Page suivie de la demande + son changement
     - [Eric] Dashboard Utilisateur
 
 

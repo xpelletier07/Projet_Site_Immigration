@@ -6,7 +6,7 @@ import {
 	updateClient,
 	deleteClient,
 } from "../controller/Client.js";
-import { verifyToken, verifyRole, verifyEmploye, verifyClientHasAccessToDossier } from "../api/authentification/middleware.js";
+import { verifyToken, verifyRole, verifyEmploye, verifyClientHasAccessToDossier, verifyClientOwnsProfile } from "../api/authentification/middleware.js";
 
 const router = Router();
 
@@ -14,10 +14,10 @@ const router = Router();
 router.get("/", verifyEmploye, getAllClients);
 
 // Un client peut consulter son propre profil ; un employé peut voir n'importe lequel
-router.get("/:id", verifyClientHasAccessToDossier, getClientById);
+router.get("/:id", verifyClientOwnsProfile, getClientById);
 
 // Modification du profil – client ou employé
-router.put("/update/:id", verifyClientHasAccessToDossier, updateClient);
+router.put("/update/:id", verifyClientOwnsProfile, updateClient);
 
 // Suppression – employés seulement
 router.delete("/delete/:id", verifyEmploye, deleteClient);

@@ -1,14 +1,58 @@
-import React from "react";
+import { React, useState, useEffect} from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { logout, getUserType } from "../commun/commun.jsx";
+import { isLoggedIn, logout, getUserType } from "../commun/commun.jsx";
 
 export default function Menu() {
 	const navigate = useNavigate();
-	const type = getUserType();
+	const [type, setType] = useState(getUserType());
+	const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+
+	useEffect(() => {
+		function syncAuth() {
+			setType(getUserType());
+			setLoggedIn(isLoggedIn());
+		}
+		window.addEventListener("storage", syncAuth);
+		const interval = setInterval(syncAuth, 300);
+		return () => {
+			window.removeEventListener("storage", syncAuth);
+			clearInterval(interval);
+		};
+	}, []);
 
 	function handleLogout() {
 		logout();
 		navigate("/login");
+	}
+
+	const links = [];
+
+	if (!loggedIn) {
+		links.push(
+			{ to: "/", label: "Accueil" },
+			{ to: "/login", label: "Connexion" },
+			{ to: "/register", label: "Inscription" },
+		);
+	} else if (type === "client") {
+		links.push(
+			{ to: "/client/dashboard", label: "Tableau de bord" },
+			{ to: "/client/my-case", label: "Mon dossier" },
+			{ to: "/client/documents", label: "Documents" },
+			{ to: "/client/files", label: "Mes demandes" },
+		);
+	} else if (type === "utilisateur") {
+		links.push(
+			{ to: "/utilisateur/dashboard", label: "Dashboard" },
+			{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
+			{ to: "/utilisateur/clients", label: "Clients" },
+		);
+	} else if (type === "admin") {
+		links.push(
+			{ to: "/admin/dashboardAdmin", label: "Dashboard Admin" },
+			{ to: "/utilisateur/dashboard", label: "Dashboard Utilisateur" },
+			{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
+			{ to: "/utilisateur/clients", label: "Clients" },
+		);
 	}
 
 	return (
@@ -16,54 +60,40 @@ export default function Menu() {
 			<span className="brand">ImmiPortail</span>
 
 			<nav>
-				<NavLink
-					to="/home"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					Home
-				</NavLink>
-				<NavLink
-					to="/client/dashboard"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					Dashboard
-				</NavLink>
-				<NavLink
-					to="/client/my-case"
-					className={({ isActive }) => (isActive ? "active" : "")}
-				>
-					My Case
-				</NavLink>
-				{type === "utilisateur" && (
+				{links.map((link) => (
 					<NavLink
-						to="/management"
+						key={link.to}
+						to={link.to}
 						className={({ isActive }) => (isActive ? "active" : "")}
 					>
-						Management
+						{link.label}
 					</NavLink>
-				)}
+				))}
 			</nav>
 
 			<div className="nav-right">
-				<button className="nav-icon-btn" title="Recherche">
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
+				{loggedIn ? (
+					<>
+						<div className="nav-avatar">
+							{type === "client"
+								? "C"
+								: type === "admin"
+									? "A"
+									: "U"}
+						</div>
+						<button className="sign-out-btn" onClick={handleLogout}>
+							Se déconnecter
+						</button>
+					</>
+				) : (
+					<NavLink
+						to="/login"
+						className="sign-out-btn"
+						style={{ color: "white", textDecoration: "none" }}
 					>
-						<circle cx="11" cy="11" r="8" />
-						<line x1="21" y1="21" x2="16.65" y2="16.65" />
-					</svg>
-				</button>
-				<div className="nav-avatar">
-					{getUserType() === "client" ? "C" : "U"}
-				</div>
-				<button className="sign-out-btn" onClick={handleLogout}>
-					Sign Out
-				</button>
+						Se connecter
+					</NavLink>
+				)}
 			</div>
 		</header>
 	);
