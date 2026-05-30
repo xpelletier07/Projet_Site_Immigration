@@ -114,6 +114,19 @@ export function verifyClientHasAccessToDossier(req, res, next) {
 	});
 }
 
+export function verifyClientOwnsProfile(req, res, next) {
+    verifyToken(req, res, () => {
+        if (req.user.type !== "client") {
+            return next(); 
+        }
+        const requestedId = parseInt(req.params.id);
+        if (req.user.id !== requestedId) {
+            return res.status(403).json({ error: "Accès interdit à ce profil." });
+        }
+        next();
+    });
+}
+
 // Middlewares spécifiques pour les permissions de routes
 export function verifyConnected(req, res, next) {
 	return verifyToken(req, res, next);
