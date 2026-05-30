@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { isLoggedIn } from "../commun/commun.jsx";
 
 import DashboardAdmin from "../Admin/pages/DashboardAdmin.jsx";
+import AdminUsers from "../Admin/pages/Adminusers.jsx"
 
 
 export default function AdminDashboardRouter() {
@@ -40,6 +41,10 @@ export default function AdminDashboardRouter() {
 			<Route
 				path="dashboardAdmin"
 				element={<DashboardAdmin />}
+			/>
+			<Route
+				path="utilisateurs"
+				element={<AdminUsers />}
 			/>
 			{/* Route additionnelle */}
                 {/*<Route path="documents" element={<Documents bundle={bundle} />} />*/}

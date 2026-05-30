@@ -247,7 +247,7 @@ export default function Dashboard() {
             {/* Actions de gestion */}
             <div className="db-card db-actions-card">
               <div className="db-actions-title">Actions de Gestion</div>
-              <button className="db-action-btn" onClick={() => navigate('/admin')}>
+              <button className="db-action-btn" onClick={() => navigate('/admin/utilisateurs')}>
                 <span>Gérer les Utilisateurs</span>
                 <UsersIcon />
               </button>

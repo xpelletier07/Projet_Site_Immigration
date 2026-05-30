@@ -49,15 +49,19 @@ export default function Menu() {
 	} else if (type === "admin") {
 		links.push(
 			{ to: "/admin/dashboardAdmin", label: "Dashboard Admin" },
-			{ to: "/utilisateur/dashboard", label: "Dashboard Utilisateur" },
+			{ to: "/admin/utilisateurs", label: "Gérer les Utilisateurs" },
+			{ to: "/utilisateur/clients", label: "Gérer les Clients" },
 			{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
-			{ to: "/utilisateur/clients", label: "Clients" },
+			{ to: "/utilisateur/dashboard", label: "Aperçu Utilisateur" },
+			
 		);
 	}
 
 	return (
 		<header className="top-nav">
-			<span className="brand">ImmiPortail</span>
+			<NavLink to="/" className="brand-btn">
+				<span className="brand">ImmiPortail</span>
+			</NavLink>
 
 			<nav>
 				{links.map((link) => (

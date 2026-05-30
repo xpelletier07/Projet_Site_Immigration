@@ -110,7 +110,7 @@ export default function DashBordUtilisateur() {
 									<h2 className="title is-5 mb-0">Dossiers récents</h2>
 									<button
 										className="button is-small"
-										onClick={() => navigate("/gestionclient")}
+										onClick={() => navigate("/utilisateur/clients")}
 									>
 										Voir tous
 									</button>
@@ -205,13 +205,13 @@ export default function DashBordUtilisateur() {
 								<h2 className="title is-5 mb-4">Actions rapides</h2>
 								<button
 									className="button is-fullwidth mb-2"
-									onClick={() => navigate("/gestionclient")}
+									onClick={() => navigate("/utilisateur/clients")}
 								>
 									Gérer les clients
 								</button>
 								<button
 									className="button is-fullwidth"
-									onClick={() => navigate("/gestionclient")}
+									onClick={() => navigate("/utilisateur/clients")}
 								>
 									Nouveau dossier
 								</button>

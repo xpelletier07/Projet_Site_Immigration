@@ -71,7 +71,7 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     setLoading(true)
     try {
-       console.log('Token:', sessionStorage.getItem('token'))
+      console.log('Token:', sessionStorage.getItem('token'))
         console.log('Type:', sessionStorage.getItem('type'))
 
       const [clients, utilisateurs, admins] = await Promise.all([
