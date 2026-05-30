@@ -75,7 +75,7 @@ export default function DetailsDossier() {
             try {
                 await apiFetch(`/dossiers/delete/${id_dossier}`, { method: "DELETE" });
                 alert("Dossier supprimé avec succès.");
-                navigate("/gestionclient");
+                navigate("/utilisateur/clients");
             } catch (err) {
                 console.error(`Erreur lors de la suppression du dossier ${id_dossier}`, err);
                 setError("Erreur lors de la suppression du dossier.");

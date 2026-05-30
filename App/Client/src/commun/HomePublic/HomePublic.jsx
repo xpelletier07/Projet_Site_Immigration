@@ -25,27 +25,12 @@ function HomePublic() {
                     </p>
                     <div className="sl-hero-actions">
                         <button className="btn-primary" onClick={() => {
-                            //Envoie normalement le client vers une page de connexion
-                            setTimeout(async () => {
-                                const result = await loginUser(
-                                    "marc@cabinet.com",
-                                    "MotDePasse456!"
-                                );
-
-                                setdata(result);
-
-                                context.settoken(data.token);
-
-                                console.log({
-                                    data: result,
-                                    token: result.token,
-                                });
-
-                                navigate("/gestionclient");
-                            }, 100);
+                            navigate("/login");
 
                         }}>Commencer ma demande</button>
-                        <button className="btn-outline-white">Suivre mon dossier</button>
+                        <button className="btn-outline-white" onClick={() => navigate("/login")}>
+                            Suivre mon dossier
+                        </button>
                     </div>
                 </div>
             </section>
@@ -119,8 +104,8 @@ function HomePublic() {
                     L'enregistrement de votre profil prend moins de 10 minutes et constitue la clé de voûte de votre future demande.
                 </p>
                 <button className="btn-primary" onClick={() => {
-                    navigate("/dashborduser");
-                }}>Commencer mon profil</button> {/*Envoie l'utilisateur vers une page d'inscription*/}
+                    navigate("/register");
+                }}>Commencer mon profil</button> 
                 <div className="sl-social-proof">
                     <div className="sl-avatars">
                         <div className="sl-mini-avatar">A</div>

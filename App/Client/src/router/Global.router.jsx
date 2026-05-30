@@ -16,7 +16,7 @@ function HomeRedirect() {
 	const type = getUserType();
 	if (type === "client") return <Navigate to="/client/dashboard" replace />;
 	if (type === "utilisateur") {
-		return <Navigate to="/utilisateur/suivi" replace />;
+		return <Navigate to="/utilisateur/dashboard" replace />;
 	}
 	if (type === "admin") {
 		return <Navigate to="/admin/dashboardAdmin" replace />;
@@ -29,13 +29,12 @@ function HomeRedirect() {
 export default function GlobalRouter() {
 	return (
 		<Routes>
-			<Route path="/" element={<HomeRedirect />} />
+			<Route path="/" element={<HomePublic />} />
 			<Route path="/home" element={<HomePublic />} />
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<Inscription />} />
 			<Route path="/client/*" element={<ClientDashboardRouter />} />
 			<Route path="/utilisateur/*" element={<UtilisateurRouter />} />
-
 			<Route path="/admin/*" element={<AdminDashboardRouter />} />
 
 			<Route path="*" element={<div>Page not found</div>} />
