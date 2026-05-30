@@ -81,8 +81,36 @@ export function verifyClientHasAccessToDossier(req, res, next) {
 			return next();
 		}
 		try {
-			const dossierId =
-				req.params.idDossier || req.params.id || req.body.id_dossier;
+			let dossierId = req.params.idDossier || req.body?.id_dossier;
+
+			// Routes like /documents/:id/* and /factures/:id use a resource id, not id_dossier.
+			if (!dossierId && req.params.id) {
+				if (req.baseUrl.includes("/documents")) {
+					const doc = await db("documents")
+						.select("id_dossier")
+						.where({ id_document: req.params.id })
+						.first();
+
+					if (!doc) {
+						return res.status(404).json({ error: "Document introuvable." });
+					}
+
+					dossierId = doc.id_dossier;
+				} else if (req.baseUrl.includes("/factures")) {
+					const facture = await db("facture")
+						.select("id_dossier")
+						.where({ id_facture: req.params.id })
+						.first();
+
+					if (!facture) {
+						return res.status(404).json({ error: "Facture introuvable." });
+					}
+
+					dossierId = facture.id_dossier;
+				} else {
+					dossierId = req.params.id;
+				}
+			}
 
 			if (!dossierId) {
 				return res

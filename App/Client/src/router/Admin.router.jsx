@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { isLoggedIn } from "../commun/commun.jsx";
+import { isLoggedIn, getUserType } from "../commun/commun.jsx";
 
 import DashboardAdmin from "../Admin/pages/DashboardAdmin.jsx";
 import AdminUsers from "../Admin/pages/Adminusers.jsx"
@@ -26,6 +26,7 @@ export default function AdminDashboardRouter() {
 		);
 
 	if (!isLoggedIn()) return <Navigate to="/login" replace />;
+	if (getUserType() !== "admin") return <Navigate to="/" replace />;
 
 	if (error)
 		return (
