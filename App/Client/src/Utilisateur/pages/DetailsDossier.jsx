@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../commun/commun.jsx";
 import { style } from "../components/DetailsDossiers/Details.css";
-import { uploadDocument } from "../../Client/services/client.service.jsx";
 
 const STATUS_OPTIONS = ["En cours d'examen", "Documents manquants", "En attente de paiement", "Approuvé", "Rejeté"];
 
@@ -19,9 +18,6 @@ export default function DetailsDossier() {
     const [factures, setFactures] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [file, setFile] = useState(null);
-    //const [typeDemande, setTypeDemande] = useState("");
-
-    //const Type_Demande = ["Résidence Permanente", "Travail Temporaire", "Études & Recherche", "Regroupement Familial"];
 
     useEffect(() => {
         async function fetchDossierDetails() {
@@ -72,14 +68,14 @@ export default function DetailsDossier() {
         fetchNotes();
         fetchFactures();
         fetchDocuments();
-    }, [idDossier, note, file]);
+    }, [idDossier, note, documents.length, factures.length]);
 
     async function handleDelete(id_dossier) {
         if (window.confirm("Êtes-vous sûr de vouloir supprimer ce dossier ? Cette action est irréversible.")) {
             try {
                 await apiFetch(`/dossiers/delete/${id_dossier}`, { method: "DELETE" });
                 alert("Dossier supprimé avec succès.");
-                navigate("/gestionclient");
+                navigate("/utilisateur/clients");
             } catch (err) {
                 console.error(`Erreur lors de la suppression du dossier ${id_dossier}`, err);
                 setError("Erreur lors de la suppression du dossier.");
@@ -87,70 +83,68 @@ export default function DetailsDossier() {
         }
     }
 
-    async function génererNote() {
+    async function générerNote() {
         try {
-            const res = await apiFetch("/notes", {
-                method: "POST", body: JSON.stringify({
-                    id_dossier: idDossier,
-                    note: note,
-                })
-            });
-            if (!res.ok) {
-                console.error(`Erreur lors de la notation du dossier ${idDossier}`, Array.isArray(res) ? res[0]?.message : "Erreur inconnue");
+            if (!note.trim()) {
+                alert("Le contenu de la note ne peut pas être vide.");
+                return;
             }
+
+            const nouvelleNote = {
+                "id_dossier": idDossier,
+                "note": note
+            };
+
+            await apiFetch("/notes", { method: "POST", body: JSON.stringify(nouvelleNote) });
+            alert("Note ajoutée avec succès.");
             setNote("");
         }
         catch (err) {
-            console.error(`Erreur lors de la notation du dossier ${idDossier}`, err);
+            console.error(`Erreur lors de la création de la note pour le dossier ${idDossier}`, err);
+            setError("Erreur lors de la création de la note.");
         }
     }
-
     async function générerFacture() {
         try {
-            var montants = 0;
-            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Travail Temporaire") {
-                montants = 350;
+            if (!dossierDetails?.typeDemandes[0]?.Type_Demande) {
+                alert("Impossible de générer une facture : type de demande inconnu.");
+                return;
             }
-            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Résidence Permanente") {
-                montants = 500;
-            }
-            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Études & Recherche") {
-                montants = 800;
-            }
-            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Regroupement Familial") {
-                montants = 400;
-            }
+
+            const montant = dossierDetails?.typeDemandes[0]?.Type_Demande === "Residence Permanente" ?
+                500 : // Montant fictif pour la résidence permanente 
+                dossierDetails?.typeDemandes[0]?.Type_Demande === "Travail Temporaire" ?
+                    300 : // Montant fictif pour le travail temporaire
+                    dossierDetails?.typeDemandes[0]?.Type_Demande === "Études & Recherche" ?
+                        200 : // Montant fictif pour les études et la recherche
+            dossierDetails?.typeDemandes[0]?.Type_Demande === "Regroupement Familial"
+                ? 400 // Montant fictif pour le regroupement familial
+                : 0; // Montant par défaut
 
             const facture = {
-                id_dossier: idDossier,
-                description: dossierDetails?.typeDemandes[0]?.Type_Demande || "Demande inconnue",
-                montant: montants,
-                date_emission: new Date().toISOString().split("T")[0],
-                date_echeance: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                statut: montants > 0 ? "en attente" : "approuvé"
+                "id_dossier": idDossier,
+                "description": dossierDetails?.typeDemandes[0]?.Type_Demande || "Demande inconnue",
+                "montant": montant,
+                "date_emission": new Date().toISOString().split("T")[0],
+                "date_echeance": new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+                "statut": "en attente"
             }
 
-            const res = await apiFetch("/factures",
-                {
-                    method: "POST",
-                    body: JSON.stringify(facture)
-                });
-            
-            if (!res.ok) {
-                const data = await Array.isArray(res) ? res : [res];
-                console.log(data[0].message || "Erreur lors de la génération de la facture");
-            }
-
-            const res1 = await apiFetch("/factures/dossier/" + idDossier);
-            const existingFactures = await Array.isArray(res1) ? res1 : [res1];
+            const existingFactures = await apiFetch(`/factures/dossier/${idDossier}`);
             if (existingFactures.length > 0) {
-                if (!window.confirm("Une facture existe déjà pour ce dossier. Voulez-vous en générer une nouvelle ?")) {
-                    return;
-                }
-                for (const f of existingFactures) {
-                    await apiFetch(`/factures/delete/${f.id_facture}`, { method: "DELETE" });
+                if (window.confirm("Une facture existe déjà pour ce dossier. Voulez-vous la remplacer ?")) {
+                    const factureExistante = existingFactures[0];
+                    await apiFetch(`/factures/update/${factureExistante.id_facture}`, { method: "PUT", body: JSON.stringify(facture) });
+                    alert("Facture mise à jour avec succès.");
+                    setFactures("");
                 }
             }
+            else {
+                await apiFetch("/factures", { method: "POST", body: JSON.stringify(facture) });
+                alert("Facture générée avec succès.");
+                setFactures("")
+            }
+
         }
         catch (err) {
             console.error(`Erreur lors de la génération de la facture pour le dossier ${idDossier}`, err);
@@ -164,30 +158,21 @@ export default function DetailsDossier() {
                 alert("Veuillez sélectionner un fichier à téléverser.");
                 return;
             }
-            await uploadDocument(file, idDossier);
-            alert("Document téléversé avec succès.");
-            setFile(null);
+            const formData = new FormData();
+            formData.append("fichier", file);
+            formData.append("id_dossier", dossierDetails?.id_dossier);
+
+            const res = await apiFetch("/documents", {
+                method: "POST",
+                body: formData,
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                console.log(data.error || "Erreur lors du téléversement du document");
+            }
         } catch (err) {
             console.error(`Erreur lors du téléversement du document pour le dossier ${idDossier}`, err);
             setError("Erreur lors du téléversement du document.");
-        }
-    }
-
-    async function téléchargerDocument(doc) {
-        try {
-            const res = await apiFetch(`/documents/${doc.id_document}/telecharger`, {
-                method: "GET",
-            });
-
-            if (!res.ok) {
-                const data = await Array.isArray(res) ? res : [res];
-                console.log(`Erreur lors du téléchargement du document ${doc.id_document}`, data[0].error || "Erreur inconnue");
-                alert("Erreur lors du téléchargement du document.");
-            }
-        }
-        catch (err) {
-            console.log(`Erreur lors du téléchargement du document ${doc.id_document}`, err);
-            alert("Erreur lors du téléchargement du document.");
         }
     }
 
@@ -235,10 +220,9 @@ export default function DetailsDossier() {
                             Aperçu du dossier : {clientDetails ? `${clientDetails.nom ?? ""} ${clientDetails.prenom ?? ""}` : `#${dossierDetails?.id_dossier ?? "—"}`}
                         </h1>
                     </div>
-                    {/*<div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                            <button className="btn-update-status">Mettre à jour le statut</button>
-                        </div>
-                        */}
+                    <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                        <button className="btn-update-status">Mettre à jour le statut</button>
+                    </div>
                 </div>
 
                 {/* ── Bento grid: 2 colonnes ── */}
@@ -323,12 +307,7 @@ export default function DetailsDossier() {
                                             </div>
                                         </div>
                                         <div style={{ display: "flex", gap: "0.25rem" }}>
-                                            <button
-                                                className="btn btn-outline btn-sm btn-icon"
-                                                onClick={() => téléchargerDocument(doc)}
-                                            >
-                                                ⬇️
-                                            </button>
+                                            <button className="btn-doc-action" title="Télécharger">⬇️</button>
                                         </div>
                                     </div>
                                 ))
@@ -361,7 +340,7 @@ export default function DetailsDossier() {
                                     onChange={(e) => setNote(e.target.value)}
                                 />
                                 <div style={{ position: "absolute", bottom: "0.75rem", right: "0.75rem" }}>
-                                    <button className="btn-post-note" onClick={génererNote}>Publier la note</button>
+                                    <button className="btn-post-note" onClick={générerNote}>Publier la note</button>
                                 </div>
                             </div>
                         </div>
@@ -378,14 +357,7 @@ export default function DetailsDossier() {
                             <button className="btn-action-danger" onClick={() => handleDelete(dossierDetails?.id_dossier)}>
                                 🗑️ Supprimer le dossier
                             </button>
-                            {/*<select className="status-select btn-action-ghost" value={typeDemande} onChange={(e) => setTypeDemande(e.target.value)}>
-                                <option value="">Type de demande</option>
-                                {Type_Demande.map((type) => (
-                                    <option key={type} value={type}>
-                                        {type}
-                                    </option>
-                                ))}
-                            </select>
+                        {/*
                             <hr className="status-divider" />
                             <span className="status-label">Modifier le statut du dossier</span>
                             <select
@@ -395,7 +367,7 @@ export default function DetailsDossier() {
                             >
                                 {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
                             </select>
-                            */}
+                        */}
                         </div>
 
                         {/* Application Progress */}
@@ -431,6 +403,7 @@ export default function DetailsDossier() {
                                 </div>
                                 {factures.map((f, i) => (
                                     <p key={i} className="regulatory-text">
+                                        #{f.id_facture}<br />
                                         Montant : {f.montant ?? "—"} $<br />
                                         Description : {f.description ?? "—"}<br />
                                         Statut : <em>{f.statut ?? "—"}</em><br />
@@ -454,7 +427,7 @@ export default function DetailsDossier() {
                         </div>
                     </div>
                 </div>
-            </main >
+            </main>
         </>
     );
 }
