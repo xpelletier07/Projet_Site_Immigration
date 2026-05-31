@@ -73,7 +73,7 @@ export function AjouterClientModal({ onClose }) {
                 className="modal-card"
                 ref={modalRef}
                 tabIndex={-1}
-                style={{ outline: "none" }}
+                style={{ outline: "none", zIndex: 10000, pointerEvents: 'auto' }}
             >
 
                 {/* Header */}
@@ -93,7 +93,7 @@ export function AjouterClientModal({ onClose }) {
 
                 {/* Body */}
                 <section className="modal-card-body">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
 
                         {/* Nom */}
                         <div className="field">
@@ -108,6 +108,7 @@ export function AjouterClientModal({ onClose }) {
                                     type="text"
                                     placeholder="Entrez le nom du client"
                                     autoFocus
+                                    value={nom}
                                     onChange={(e) => setNom(e.target.value)}
                                     aria-label="Nom"
                                     required
@@ -128,6 +129,7 @@ export function AjouterClientModal({ onClose }) {
                                     className="input"
                                     type="text"
                                     placeholder="Entrez le prénom du client"
+                                    value={prenom}
                                     onChange={(e) => setPrenom(e.target.value)}
                                     aria-label="Prénom"
                                     required
@@ -148,6 +150,7 @@ export function AjouterClientModal({ onClose }) {
                                     className="input"
                                     type="email"
                                     placeholder="Entrez l'email du client"
+                                    value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     aria-label="Email"
                                     required
@@ -168,6 +171,7 @@ export function AjouterClientModal({ onClose }) {
                                     className="input"
                                     type="text"
                                     placeholder="Entrez le numéro de téléphone du client"
+                                    value={telephone}
                                     onChange={(e) => setTelephone(e.target.value)}
                                     aria-label="Téléphone"
                                     required
@@ -185,6 +189,7 @@ export function AjouterClientModal({ onClose }) {
                                     className="input"
                                     type="password"
                                     placeholder="Entrez un mot de passe"
+                                    value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     aria-label="Mot de passe"
                                     required
@@ -199,6 +204,7 @@ export function AjouterClientModal({ onClose }) {
                 <footer className="modal-card-foot is-justify-content-flex-end">
 
                     <button
+                        type="button"
                         className="button is-danger"
                         onClick={onClose}
                         aria-label="Annuler"
@@ -207,6 +213,7 @@ export function AjouterClientModal({ onClose }) {
                     </button>
 
                     <button
+                        type="button"
                         className="button is-link"
                         aria-label="Sauvegarder"
                         onClick={handleSave}

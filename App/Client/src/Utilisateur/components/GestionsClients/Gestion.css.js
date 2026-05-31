@@ -294,4 +294,8 @@ export const style = `
     .col-actions { justify-content: flex-start; }
     .col-status  { justify-content: flex-start; }
   }
+  /* Debug helper: force modal above other elements to allow interaction */
+  .modal { z-index: 10000 !important; }
+  .modal-background { z-index: 9999 !important; pointer-events: auto !important; }
+  .modal-card { z-index: 10001 !important; pointer-events: auto !important; }
 `;

@@ -25,6 +25,10 @@ export function ModifierClientModal({ idClient, onClose }) {
                 const data = await apiFetch(`/clients/${idClient}`);
 
                 setClientData(data);
+                setNom(data.nom || "");
+                setPrenom(data.prenom || "");
+                setEmail(data.courriel || "");
+                setTelephone(data.telephone || "");
 
             } catch (err) {
                 console.error(err);
@@ -99,7 +103,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                 className="modal-card"
                 ref={modalRef}
                 tabIndex={-1}
-                style={{ outline: "none" }}
+                style={{ outline: "none", zIndex: 10000, pointerEvents: 'auto' }}
             >
 
                 {/* Header */}
@@ -129,7 +133,7 @@ export function ModifierClientModal({ idClient, onClose }) {
 
                         ) : (
 
-                            <form>
+                            <form onSubmit={(e) => e.preventDefault()}>
 
                                 {/* Nom */}
                                 <div className="field">
@@ -142,8 +146,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                                         <input
                                             className="input"
                                             type="text"
-                                            defaultValue={clientData.nom}
-                                            autoFocus
+                                            value={nom}
                                             onChange={(e) => setNom(e.target.value)}
                                         />
                                     </div>
@@ -161,7 +164,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                                         <input
                                             className="input"
                                             type="text"
-                                            defaultValue={clientData.prenom}
+                                            value={prenom}
                                             onChange={(e) => setPrenom(e.target.value)}
                                         />
                                     </div>
@@ -179,7 +182,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                                         <input
                                             className="input"
                                             type="email"
-                                            defaultValue={clientData.courriel}
+                                            value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
                                     </div>
@@ -197,7 +200,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                                         <input
                                             className="input"
                                             type="text"
-                                            defaultValue={clientData.telephone}
+                                            value={telephone}
                                             onChange={(e) => setTelephone(e.target.value)}
                                         />
                                     </div>
@@ -213,6 +216,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                                             className="input"
                                             type="password"
                                             placeholder="Entrez un nouveau mot de passe"
+                                            value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
                                     </div>
@@ -229,6 +233,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                 <footer className="modal-card-foot is-justify-content-flex-end">
 
                     <button
+                        type="button"
                         className="button"
                         onClick={onClose}
                     >
@@ -236,6 +241,7 @@ export function ModifierClientModal({ idClient, onClose }) {
                     </button>
 
                     <button
+                        type="button"
                         className="button is-link"
                         onClick={handleSave}
                     >
