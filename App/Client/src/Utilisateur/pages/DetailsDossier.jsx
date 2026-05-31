@@ -26,7 +26,6 @@ export default function DetailsDossier() {
                 const detailsforclient = await apiFetch(`/clients/${detailsfordossier.id_client}`)
 
                 setClientDetails(detailsforclient);
-                console.log("Détails du dossier récupérés :", detailsfordossier);
                 setDossierDetails(detailsfordossier);
             } catch (err) {
                 console.error(`Erreur lors de la récupération des détails pour le dossier ${idDossier}`, err);
