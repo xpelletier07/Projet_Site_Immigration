@@ -36,7 +36,6 @@ export default function GlobalRouter() {
 			<Route path="/client/*" element={<ClientDashboardRouter />} />
 			<Route path="/utilisateur/*" element={<UtilisateurRouter />} />
 			<Route path="/admin/*" element={<AdminDashboardRouter />} />
-
 			<Route path="*" element={<div>Page not found</div>} />
 		</Routes>
 	);

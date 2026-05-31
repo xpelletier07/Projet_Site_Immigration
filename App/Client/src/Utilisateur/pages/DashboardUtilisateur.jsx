@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
-import "../components/DashbordUtilisateur/Dashboard.css"
 
 export default function DashBordUtilisateur() {
 	const navigate = useNavigate();
@@ -63,8 +62,9 @@ export default function DashBordUtilisateur() {
 	const boxStyle = { background: "#fff", boxShadow: "none", border: "1px solid #e0e0e0" };
 
 	return (
+		<>
 		<div className="is-flex" style={{ background: "#fff" }}>
-			<SideBarUtilisateur />
+			{/*<SideBarUtilisateur />*/}
 
 			<div className="section" style={{ flex: 1 }}>
 				<div className="container is-fluid">
@@ -72,14 +72,14 @@ export default function DashBordUtilisateur() {
 					{/* ── Breadcrumb ── */}
 					<nav className="breadcrumb mb-2" aria-label="breadcrumbs">
 						<ul>
-							<li><a>Portail Employé</a></li>
+							<li><a className="has-text-black">Portail Employé</a></li>
 							<li className="is-active"><a>Dashboard</a></li>
 						</ul>
 					</nav>
-
+ 
 					{/* ── Titre ── */}
-					<h1 className="title is-3 mb-1">Dashboard Employé</h1>
-					<p className="subtitle is-6 mb-5">
+					<h1 className="title is-3 mb-1 has-text-black">Dashboard Employé</h1>
+					<p className="subtitle is-6 mb-5 has-text-black">
 						Bonjour. Voici le suivi des dossiers en cours.
 					</p>
 
@@ -92,8 +92,8 @@ export default function DashBordUtilisateur() {
 						].map(({ label, value }) => (
 							<div className="column" key={label}>
 								<div className="box has-text-centered" style={boxStyle}>
-									<p className="heading">{label}</p>
-									<p className="title is-2">{value}</p>
+									<p className="heading has-text-black">{label}</p>
+									<p className="title is-2 has-text-black">{value}</p>
 								</div>
 							</div>
 						))}
@@ -107,7 +107,7 @@ export default function DashBordUtilisateur() {
 							<div className="box" style={boxStyle}>
 
 								<div className="is-flex is-justify-content-space-between is-align-items-center mb-4">
-									<h2 className="title is-5 mb-0">Dossiers récents</h2>
+									<h2 className="title is-5 mb-0 has-text-black">Dossiers récents</h2>
 									<button
 										className="button is-small"
 										onClick={() => navigate("/utilisateur/clients")}
@@ -121,21 +121,20 @@ export default function DashBordUtilisateur() {
 										Chargement…
 									</progress>
 								) : (
-									<div className="table-container">
-										<table className="table is-fullwidth is-hoverable is-striped">
+									<div className="table container">
+										<table className="table is-fullwidth is-hoverableis-striped has-background-white">
 											<thead>
 												<tr>
-													<th>Client</th>
-													<th>Dossier</th>
-													<th>Type de demande</th>
-													<th>Statut</th>
-													<th></th>
+													<th className="has-text-black">Client</th>
+													<th className="has-text-black">Dossier</th>
+													<th className="has-text-black">Type de demande</th>
+													<th className="has-text-black">Statut</th>
 												</tr>
 											</thead>
 											<tbody>
 												{dossiers.length === 0 ? (
 													<tr>
-														<td colSpan={5} className="has-text-centered has-text-grey py-5">
+														<td colSpan={5} className="has-text-centered py-5 has-text-black">
 															Aucun dossier trouvé.
 														</td>
 													</tr>
@@ -148,25 +147,25 @@ export default function DashBordUtilisateur() {
 																style={{ cursor: "pointer" }}
 																onClick={() => navigate(`/utilisateur/dossier/${d.dossier.id_dossier}`)}
 															>
-																<td>
-																	<strong>
+																<td className="has-text-weight-bold">
+																	<strong className="has-text-black">
 																		{d.dossier.nom} {d.dossier.prenom}
 																	</strong>
 																</td>
-																<td className="has-text-grey">
+																<td className="has-text-black">
 																	#{d.dossier.id_dossier}
 																</td>
-																<td>
+																<td className="has-text-black">
 																	{d?.details?.typeDemandes?.[0]?.Type_Demande ?? (
-																		<span className="has-text-grey">—</span>
+																		<span>—</span>
 																	)}
 																</td>
-																<td>
-																	<span className="tag">
+																<td className="has-text-black">
+																	<span className="tag is-light is-small">
 																		{statut ?? "En cours"}
 																	</span>
 																</td>
-																<td className="has-text-grey">›</td>
+																<td>›</td>
 															</tr>
 														);
 													})
@@ -183,7 +182,7 @@ export default function DashBordUtilisateur() {
 
 							{/* Activité récente */}
 							<div className="box mb-4" style={boxStyle}>
-								<h2 className="title is-5 mb-4">Activité récente</h2>
+								<h2 className="title is-5 mb-4 has-text-black">Activité récente</h2>
 								{activities.length === 0 ? (
 									<p className="has-text-grey is-size-6">Aucune activité.</p>
 								) : (
@@ -200,9 +199,9 @@ export default function DashBordUtilisateur() {
 								)}
 							</div>
 
-							{/* Actions rapides */}
+							{/* Actions rapides
 							<div className="box mb-4" style={boxStyle}>
-								<h2 className="title is-5 mb-4">Actions rapides</h2>
+								<h2 className="title is-5 mb-4 has-text-black">Actions rapides</h2>
 								<button
 									className="button is-fullwidth mb-2"
 									onClick={() => navigate("/utilisateur/clients")}
@@ -216,17 +215,18 @@ export default function DashBordUtilisateur() {
 									Nouveau dossier
 								</button>
 							</div>
-
+							*/}
+							
 							{/* Note juridique */}
 							<div className="box" style={boxStyle}>
-								<p className="has-text-weight-bold mb-2">
+								<p className="has-text-weight-bold mb-2 has-text-black">
 									Mise à jour juridique
 								</p>
 								<p className="has-text-grey is-size-7">
 									Les nouvelles réglementations sur les visas 2024 sont en vigueur.
 									Consultez le guide mis à jour pour assurer la conformité des dossiers.
 								</p>
-								<button className="button is-small is-fullwidth mt-3">
+								<button className="button is-small is-fullwidth mt-3 is-info">
 									Lire le guide
 								</button>
 							</div>
@@ -237,5 +237,6 @@ export default function DashBordUtilisateur() {
 				</div>
 			</div>
 		</div>
+		</>
 	);
 }

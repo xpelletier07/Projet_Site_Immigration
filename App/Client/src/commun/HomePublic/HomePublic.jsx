@@ -1,16 +1,27 @@
-import { useContext, useState } from "react";
+//import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styles } from "./HomePublic.css.js"
 import { FooterAccueil } from "./HomeFooter.jsx";
+import { isLoggedIn } from "../commun.jsx";
 import { pathways, IconCpu, IconShield, IconHeadset } from "./OptionsDemande.jsx";
-import { loginUser } from "../../Utilisateur/services/utilisateur.service.jsx";
+//import { loginUser } from "../../Utilisateur/services/utilisateur.service.jsx";
 import { AuthContext } from "../../commun/AuthContext.jsx";
+
 
 function HomePublic() {
     const navigate = useNavigate();
-    const [data, setdata] = useState([]);
-    const context = useContext(AuthContext);
 
+    async function SuivreDemande(){
+    //Cette fonction est censée permettre à un utilisateur de suivre sa demande en entrant son numéro de dossier
+    if(!isLoggedIn()){
+        alert("Veuillez vous connecter pour suivre votre demande.");
+        navigate("/register");
+        return;
+    }
+    else{
+        navigate("/client/dashboard");
+    }
+}
     return (
         <>
             <style>{styles}</style>

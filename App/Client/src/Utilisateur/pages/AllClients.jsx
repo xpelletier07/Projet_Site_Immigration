@@ -1,31 +1,47 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import { style } from "../components/GestionsClients/Gestion.css.js";
 import { Footer } from "../components/Footer.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
 import { ModifierClientModal} from "../components/GestionsClients/ModifierClientModal.jsx";
+import { AjouterClientModal } from "../components/GestionsClients/AjouterClientModal.jsx";
 import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 
-export default function GestionsClients() {
-	const navigate = useNavigate();
-
+export default function AllClients() {
 	const [search, setSearch] = useState("");
-	const [statusFilter, setStatusFilter] = useState("Tous les statuts");
-	const [typeFilter, setTypeFilter] = useState("Tous les types");
 	const [clients, setClients] = useState([]);
 	const [isClick, setIsClick] = useState(0);
-	const [showModal, setShowModal] = useState(false);
-	//const [NewClientModal, setNewClientModal] = useState(false);
+	const [showModal1, setShowModal1] = useState(false);
+	const [NewClientModal1, setNewClientModal1] = useState(false);
 	const [selectedClientId, setSelectedClientId] = useState(null);
 
 	const nbpages = Math.ceil(clients.length / 10);
 	const editButtonRef = useRef(null);
-	//const newClientButtonRef = useRef(null);
+	const newClientButtonRef = useRef(null);
 
 	function Filtrer_wrap() {
 		const k = isClick * 10;
 		return clients.slice(k, k + 10);
 	}
+
+    async function créerDossier(id_client) {
+        try{
+            const response = await apiFetch(`/dossiers/create/`, {
+                method: "POST",
+                body: JSON.stringify({ id_client }),
+            });
+
+            const data = await Array.isArray(response) ? response : [response];
+            if (response.ok) {
+                alert("Dossier créé avec succès !");
+            } else {
+                alert(`Erreur lors de la création du dossier : ${data[0].message || response.statusText}`);
+            }
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
 
 	function numerotation() {
 		if (clients.length > 0) {
@@ -49,7 +65,7 @@ export default function GestionsClients() {
 	}
 
 	useEffect(() => {
-		if (showModal) {
+		if (showModal1 || NewClientModal1) {
 			document.documentElement.classList.add("is-clipped");
 		} else {
 			document.documentElement.classList.remove("is-clipped");
@@ -58,7 +74,7 @@ export default function GestionsClients() {
 		return () => {
 			document.documentElement.classList.remove("is-clipped");
 		};
-	}, [showModal]);
+	}, [showModal1, NewClientModal1]);
 
 	useEffect(() => {
 		if (isClick >= nbpages) {
@@ -67,13 +83,13 @@ export default function GestionsClients() {
 		}
 	}, [nbpages, isClick]);
 
-	async function handleDelete(id_dossier) {
-		if (window.confirm("Êtes-vous sûr de vouloir supprimer ce dossier ?")) {
-			await apiFetch(`/dossiers/delete/${id_dossier}`, {
+	async function handleDelete(id_client) {
+		if (window.confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
+			await apiFetch(`/clients/delete/${id_client}`, {
 				method: "DELETE",
 			}).then(() => {
 				setClients(
-					clients.filter((c) => c.dossier.id_dossier !== id_dossier),
+					clients.filter((c) => c.client.id_client !== id_client),
 				);
 			});
 		}
@@ -82,54 +98,17 @@ export default function GestionsClients() {
 	useEffect(() => {
 		async function fetchClients() {
 			try {
-				const listdossier = await apiFetch("/dossiers");
+				const res = await apiFetch("/clients");
 
-				const contenu = await Promise.all(
-					listdossier.map(async (e) => {
-						try {
-							const detailsfordossier = await apiFetch(
-								`/dossiers/${e.id_dossier}`,
-							);
-
-							return {
-								dossier: e,
-								details: detailsfordossier,
-							};
-						} catch (err) {
-							console.error(
-								`Erreur dossier ${e.id_dossier}`,
-								err,
-							);
-
-							return null;
-						}
-					}),
-				);
+                const data = await Array.isArray(res) ? res : [res];
 
 				/*const contenuValide = contenu.filter(
 					(c) => c && c.dossier && c.dossier.nom && c.dossier.prenom,
 				);*/
 
-				const contenufiltré = contenu.filter((c) => {
-					const matchNom = c.dossier.nom
-						.toLowerCase()
-						.includes(search.toLowerCase());
-					const matchDossier = c.dossier.id_dossier
-						.toString()
-						.includes(search.toLowerCase());
-					const matchStatus =
-						statusFilter === "Tous les statuts" ||
-						c?.details?.factures[0]?.statut === statusFilter ||
-						false;
-					const matchType =
-						typeFilter === "Tous les types" ||
-						c?.details?.typeDemandes[0]?.Type_Demande ===
-						typeFilter ||
-						false;
-
-					return (
-						(matchNom || matchDossier) && matchStatus && matchType
-					);
+				const contenufiltré = data.filter((c) => {
+					const matchNom = c.nom.toLowerCase().includes(search.toLowerCase());
+					return matchNom;
 				});
 
 				setClients(contenufiltré);
@@ -142,29 +121,12 @@ export default function GestionsClients() {
 		}
 
 		fetchClients();
-	}, [search, statusFilter, typeFilter, isClick, clients]);
+	}, [search]);
 
-	const TYPE_OPTIONS = [
-		"Tous les types",
-		"Études & Recherche",
-		"Regroupement familial",
-		"Travail Temporaire",
-		"Résidence permanente",
-	];
-
-	const STATUT = [
-		"Tous les statuts",
-		"en attente",
-		"en cours",
-		"approuvé",
-		"action Requise",
-	];
 
 	return (
 		<>
 			<style>{style}</style>
-
-
 			<div
 				style={{
 					minHeight: "100vh",
@@ -205,7 +167,7 @@ export default function GestionsClients() {
 									fontFamily: "'Public Sans', sans-serif",
 								}}
 							>
-								Gestion des Dossiers Clients
+								Gestion des Clients
 							</h1>
 							<p
 								style={{
@@ -215,20 +177,17 @@ export default function GestionsClients() {
 									lineHeight: 1.6,
 								}}
 							>
-								Accédez au registre complet des dossiers
-								d'immigration. Gérez les priorités, surveillez
-								l'activité récente et assurez le suivi des
-								engagements souverains.
+								Accédez à la liste complète de vos clients,
+                                créez de nouveaux dossiers et modifier les clients.
 							</p>
 						</div>
-						{/* AJOUTÉ : bouton Nouveau Client
+						{/* AJOUTÉ : bouton Nouveau Client */}
 						<button className="btn-new-client"
 							ref={newClientButtonRef}
-							onClick={() => setNewClientModal(true)}
+							onClick={() => setNewClientModal1(true)}
 						>
 							+ Nouveau Client
 						</button>
-						*/}
 					</div>
 
 					{/* Filter Panel */}
@@ -242,7 +201,7 @@ export default function GestionsClients() {
 									<input
 										className="input"
 										type="text"
-										placeholder="Rechercher par nom ou numéro de dossier..."
+										placeholder="Rechercher par nom de client"
 										value={search}
 										onChange={(e) =>
 											setSearch(e.target.value)
@@ -251,62 +210,7 @@ export default function GestionsClients() {
 									/>
 								</div>
 							</div>
-
-							{/* AJOUTÉ : filtre Type de demande */}
-							<div
-								className="column is-narrow"
-								style={{ minWidth: 200 }}
-							>
-								<span className="sl-filter-label">
-									Type de demande
-								</span>
-								<div className="select">
-									<select
-										value={typeFilter}
-										onChange={(e) =>
-											setTypeFilter(e.target.value)
-										}
-									>
-										{/* Tous les types de demande ici */}
-										{TYPE_OPTIONS.map((t) => (
-											<option key={t}>{t}</option>
-										))}
-									</select>
-								</div>
-							</div>
-
-							<div
-								className="column is-narrow"
-								style={{ minWidth: 200 }}
-							>
-								<span className="sl-filter-label">Statut</span>
-								<div className="select">
-									<select
-										value={statusFilter}
-										onChange={(e) =>
-											setStatusFilter(e.target.value)
-										}
-									>
-										{STATUT.map((s) => (
-											<option key={s}>{s}</option>
-										))}
-									</select>
-								</div>
-							</div>
-
-							{/*<div
-								className="column is-narrow"
-								style={{ paddingTop: "1.6rem" }}
-							>
-								<button className="sl-btn-filter">
-									<span style={{ fontSize: "1.1rem" }}>
-										☰
-									</span>
-									Filtrer
-								</button>
-							</div>
-							*/}
-						</div>
+                        </div>
 					</div>
 
 					{/* Ledger*/}
@@ -314,27 +218,17 @@ export default function GestionsClients() {
 						{/* Header row*/}
 						<div className="ledger-header">
 							<div>Identité du Client</div>
-							<div>N° de Dossier</div>
-							<div className="col-status">Statut</div>
+							<div>Téléphone</div>
+                            <div>Courriel</div>
+                            <div>Date de Création</div>
 							<div className="col-actions">Actions</div>
 						</div>
 
 						{/* Client rows */}
 						{Filtrer_wrap().map((client) => {
-							const tagClass =
-								client?.details?.factures[0]?.statut ===
-									"en cours"
-									? "en-cours"
-									: client?.details?.document
-										? "action"
-										: client?.details?.factures[0]
-											?.statut === "en attente"
-											? "attente"
-											: "approuve";
-
 							return (
 								<div
-									key={client.dossier.id_dossier}
+									key={client.id_client}
 									className="ledger-row"
 								>
 									{" "}
@@ -353,26 +247,26 @@ export default function GestionsClients() {
 												color: "white",
 											}}
 										>
-											{client.dossier.nom.charAt(0) +
-												client.dossier.prenom.charAt(0)}
+											{client.nom.charAt(0) +
+												client.prenom.charAt(0)}
 										</div>
 										<div>
 											<div className="client-name">
-												{client.dossier.nom}{" "}
-												{client.dossier.prenom}
+												{client.nom} {client.prenom}
 											</div>
 										</div>
 									</div>
-									{/* Dossier */}
-									<div className="dossier-num">
-										#{client.dossier.id_dossier}
+                                    {/* Téléphone */}
+                                    <div className="dossier-num">
+										{client.telephone}
 									</div>
-									{/* Status */}
-									<div className="col-status">
-										<span className={`sl-tag ${tagClass}`}>
-											{client?.details?.factures[0]
-												?.statut || "Action Requise"}
-										</span>
+									{/* Courriel */}
+									<div className="dossier-num">
+										{client.courriel}
+									</div>
+									{/* Date de Création */}
+									<div className="col-date">
+										{client.date_creation}
 									</div>
 									{/* Actions */}
 									{/* MODIFIÉ : ajout du bouton supprimer (btn-delete) entre btn-edit et btn-voir */}
@@ -383,9 +277,9 @@ export default function GestionsClients() {
 											title="Modifier"
 											onClick={() => {
 												setSelectedClientId(
-													client.dossier.id_client,
+													client.id_client,
 												);
-												setShowModal(true);
+												setShowModal1(true);
 											}}
 										>
 											✏️
@@ -395,7 +289,7 @@ export default function GestionsClients() {
 											title="Supprimer"
 											onClick={() =>
 												handleDelete(
-													client.dossier.id_dossier,
+													client.id_client,
 												)
 											}
 										>
@@ -403,13 +297,10 @@ export default function GestionsClients() {
 										</button>
 										<button
 											className="btn-voir"
-											onClick={() =>
-												navigate(
-													`/utilisateur/dossier/${client.dossier.id_dossier}`,
-												)
-											}
+                                            title="Créer Dossier"
+											onClick={() => créerDossier(client.id_client)}
 										>
-											Voir Dossier
+											Créer Dossier
 										</button>
 									</div>
 								</div>
@@ -432,7 +323,7 @@ export default function GestionsClients() {
 					{/* Pagination */}
 					<div className="pagination-area">
 						<span className="pagination-info">
-							Affichage de 10 sur {clients.length} dossiers de clients.
+							Affichage de 10 sur {clients.length} clients
 						</span>
 						<nav
 							className="pagination"
@@ -476,15 +367,25 @@ export default function GestionsClients() {
 						</nav>
 					</div>
 				</main>
-				{showModal && (
+				{showModal1 && (
 					<ModifierClientModal
 						idClient={selectedClientId}
 						onClose={() => {
-							setShowModal(false);
+							setShowModal1(false);
 							setSelectedClientId(null);
 
 							if (editButtonRef.current) {
 								editButtonRef.current.focus();
+							}
+						}}
+					/>
+				)}
+				{NewClientModal1 && (
+					<AjouterClientModal
+						onClose={() => {
+							setNewClientModal1(false); 
+							if (newClientButtonRef.current) {
+								newClientButtonRef.current.focus();
 							}
 						}}
 					/>

@@ -2,15 +2,12 @@ import { React } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastProvider } from "./common/Toast.jsx";
 import { RequireClient } from "./components/ProtectedRoute.jsx";
-
-
 import LoginPage from "./Auth/login.jsx";
 //import RegisterPage from "./pages/RegisterPage.jsx";
 import DashboardClient from "./Client/pages/DashboardClient.jsx";
 import MyCasePage from "./Client/pages/MyCaseClient.jsx";
 import DocumentsPage from "./Client/pages/DocumentsPage.jsx";
 import FilesPage from "./Client/pages/FilesPage.jsx";
-
 import "./assets/css/Global.css";
 
 export default function App() {

@@ -8,6 +8,7 @@ import SuiviUtilisateurPage from "../Utilisateur/pages/SuiviUtilisateur.jsx";
 import GestionDemandeUtilisateurPage from "../Utilisateur/pages/GestionDemandeUtilisateur.jsx";
 import ClientsUtilisateurPage from "../Utilisateur/pages/ClientsUtilisateur.jsx";
 import DetailsDossier from "../Utilisateur/pages/DetailsDossier.jsx";
+import AllClients from "../Utilisateur/pages/AllClients.jsx";
 
 export default function UtilisateurRouter() {
 	if (!isLoggedIn()) return <Navigate to="/login" replace />;
@@ -24,6 +25,7 @@ export default function UtilisateurRouter() {
 			<Route path="suivi" element={<SuiviUtilisateurPage />} />
 			<Route path="suivi/:idDemande" element={<GestionDemandeUtilisateurPage />} />
 			<Route path="clients" element={<ClientsUtilisateurPage />} />
+			<Route path="allclients" element={<AllClients />} />
 			<Route path="dossier/:idDossier" element={<DetailsDossier />} />
 			{/* <Route path="documents" element={<DocumentsUtilisateurPage />} /> */}
 			<Route path="*" element={<Navigate to="dashboard" replace />} />

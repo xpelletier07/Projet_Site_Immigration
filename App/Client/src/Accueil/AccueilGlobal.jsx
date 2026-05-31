@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+//import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styles } from "./ComponentsAccueilClient/AccueilGlobal.css.js";
 import { FooterAccueil } from "./ComponentsAccueilClient/FooterAccueil.jsx";
@@ -8,13 +8,11 @@ import {
 	IconShield,
 	IconHeadset,
 } from "./ComponentsAccueilClient/OptionsDemande.jsx";
-import { loginUser } from "../Utilisateur/services/utilisateur.service.jsx";
+//import { loginUser } from "../Utilisateur/services/utilisateur.service.jsx";
 import { AuthContext } from "../router/AuthContext.jsx";
 
 function AccueilGlobal() {
 	const navigate = useNavigate();
-	const [data, setdata] = useState([]);
-	const context = useContext(AuthContext);
 
 	return (
 		<>

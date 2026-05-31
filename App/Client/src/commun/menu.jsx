@@ -1,4 +1,4 @@
-import { React, useState, useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout, getUserType } from "../commun/commun.jsx";
 
@@ -43,8 +43,9 @@ export default function Menu() {
 	} else if (type === "utilisateur") {
 		links.push(
 			{ to: "/utilisateur/dashboard", label: "Dashboard" },
-			{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
-			{ to: "/utilisateur/clients", label: "Clients" },
+			//{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
+			{ to: "/utilisateur/clients", label: "Dossiers" },
+			{ to: "/utilisateur/allclients", label: "Clients" },
 		);
 	} else if (type === "admin") {
 		links.push(
@@ -76,7 +77,7 @@ export default function Menu() {
 			</nav>
 
 			<div className="nav-right">
-				{loggedIn ? (
+				{loggedIn && (
 					<>
 						<div className="nav-avatar">
 							{type === "client"
@@ -89,7 +90,9 @@ export default function Menu() {
 							Se déconnecter
 						</button>
 					</>
-				) : (
+				)
+				}
+				{/* (
 					<NavLink
 						to="/login"
 						className="sign-out-btn"
@@ -97,7 +100,7 @@ export default function Menu() {
 					>
 						Se connecter
 					</NavLink>
-				)}
+				)*/}
 			</div>
 		</header>
 	);
