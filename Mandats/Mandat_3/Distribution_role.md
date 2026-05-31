@@ -27,8 +27,13 @@ Tâches:
     Utilisateur:
     - [Hichem - DONE]  Faire le menu Utilisateur+ menu lorsque personne est connecté
     - [Eric]  Page de gestion des clients global  + modification
+<<<<<<< HEAD
+    - [Eric]Accès à la page gestion de notre dossier (client) - 
+    - [Hichem] Page suivie de la demande + son changement
+=======
     - Accès à la page gestion de notre dossier (client) - 
     - [Hichem - DONE] Page suivie de la demande + son changement
+>>>>>>> main
     - [Eric] Dashboard Utilisateur
 
 

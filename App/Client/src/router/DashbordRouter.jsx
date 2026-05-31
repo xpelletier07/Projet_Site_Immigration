@@ -1,0 +1,20 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "bulma/css/bulma.min.css";
+//import "@fortawesome/fontawesome-free/css/all.min.css";
+import { AuthContext } from "./AuthContext.jsx";
+import DashBordUtilisateur from "../Utilisateur/pages/DashBordUtilisateur.jsx";
+
+
+export function DashbordRouter() {
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<DashBordUtilisateur />} />
+        <Route path="/files" element={<div>Files</div>} />
+        <Route path="/clients" element={<div>Clients</div>} />
+        <Route path="/documents" element={<div>Documents</div>} />
+      </Routes>
+    </>
+  )
+}
