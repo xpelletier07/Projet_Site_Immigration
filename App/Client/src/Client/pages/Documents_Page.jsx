@@ -255,19 +255,19 @@ export default function DocumentsPage({ bundle, onSelectDossier, onRefresh }) {
 
 			{/* Modal confirmation suppression document */}
 			{confirmDelete && (
-				<div className="modal-overlay" onClick={() => setConfirmDelete(null)}>
-					<div className="modal" onClick={(e) => e.stopPropagation()}>
-						<div className="modal-header" style={{ background: "var(--danger)" }}>
-							<span className="modal-title">Confirmer la suppression</span>
-							<button className="modal-close" onClick={() => setConfirmDelete(null)}>✕</button>
+				<div className="app-modal-overlay" onClick={() => setConfirmDelete(null)}>
+					<div className="app-modal" onClick={(e) => e.stopPropagation()}>
+						<div className="app-modal-header" style={{ background: "var(--danger)" }}>
+							<span className="app-modal-title">Confirmer la suppression</span>
+							<button className="app-modal-close" onClick={() => setConfirmDelete(null)}>✕</button>
 						</div>
-						<div className="modal-body">
+						<div className="app-modal-body">
 							<p>Voulez-vous vraiment supprimer <strong>{confirmDelete.nom_document}</strong> ?</p>
 							<p style={{ color: "var(--muted)", fontSize: "0.85rem", marginTop: "8px" }}>
 								Cette action est irréversible.
 							</p>
 						</div>
-						<div className="modal-footer">
+						<div className="app-modal-footer">
 							<button className="btn btn-outline" onClick={() => setConfirmDelete(null)}>Annuler</button>
 							<button
 								className="btn"

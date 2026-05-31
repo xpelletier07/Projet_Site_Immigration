@@ -40,7 +40,7 @@ router.post(
 	addDocument,
 );
 
-// Suppression — employés seulement
-router.delete("/delete/:id", verifyEmploye, deleteDocument);
+// Suppression — client propriétaire ou employé/admin
+router.delete("/delete/:id", verifyClientHasAccessToDossier, deleteDocument);
 
 export default router;
