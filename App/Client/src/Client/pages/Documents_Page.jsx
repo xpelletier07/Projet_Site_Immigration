@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import Sidebar from "../components/SideBar.jsx";
 import { uploadDocument, deleteDocument } from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
-import { API_URL } from "../../commun/commun.jsx";
+import { API_URL, getToken } from "../../commun/commun.jsx";
 import DossierSelector from "../components/DossierSelector.jsx";
 
 const FileIcon = () => (
@@ -73,6 +73,45 @@ export default function DocumentsPage({ bundle, onSelectDossier, onRefresh }) {
 			await onRefresh(dossier.id_dossier);
 		} catch {
 			toast("Erreur lors de la suppression.", "error");
+		}
+	}
+
+	async function handleDownload(doc) {
+		try {
+			const token = getToken();
+			if (!token) {
+				toast("Token manquant, veuillez vous reconnecter.", "error");
+				return;
+			}
+
+			const response = await fetch(`${API_URL}/documents/${doc.id_document}/telecharger`, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!response.ok) {
+				const message = await response.text();
+				throw new Error(message || "Impossible de télécharger le document.");
+			}
+
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const disposition = response.headers.get("content-disposition");
+			const filenameMatch = disposition && disposition.match(/filename\*?="?([^";]+)"?/);
+			const filename = filenameMatch ? filenameMatch[1] : doc.nom_document || `document_${doc.id_document}`;
+
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = filename;
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Téléchargement échoué:", error);
+			toast(error.message || "Erreur lors du téléchargement.", "error");
 		}
 	}
 
@@ -194,15 +233,9 @@ export default function DocumentsPage({ bundle, onSelectDossier, onRefresh }) {
 										</div>
 										<div className="flex gap-2 items-center">
 											<span className="badge badge-success">✓ Vérifié</span>
-											<a
-												className="btn btn-outline btn-sm btn-icon"
-												href={`${API_URL}/documents/${doc.id_document}/telecharger`}
-												target="_blank"
-												rel="noreferrer"
-												title="Télécharger"
-											>
+											<button className="btn btn-outline btn-sm btn-icon" onClick={() => handleDownload(doc)} title="Télécharger">
 												<DlIcon />
-											</a>
+											</button>
 											<button
 												className="btn btn-sm btn-icon"
 												style={{ background: "var(--danger-bg)", color: "var(--danger)", border: "none" }}
