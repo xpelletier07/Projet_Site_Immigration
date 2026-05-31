@@ -5,7 +5,6 @@ import { Footer } from "../components/Footer.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
 import { ModifierClientModal} from "../components/GestionsClients/ModifierClientModal.jsx";
 import { AjouterClientModal } from "../components/GestionsClients/AjouterClientModal.jsx";
-import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 
 export default function AllClients() {
 	const [search, setSearch] = useState("");
@@ -24,24 +23,19 @@ export default function AllClients() {
 		return clients.slice(k, k + 10);
 	}
 
-    async function créerDossier(id_client) {
-        try{
-            const response = await apiFetch(`/dossiers/create/`, {
-                method: "POST",
-                body: JSON.stringify({ id_client }),
-            });
-
-            const data = await Array.isArray(response) ? response : [response];
-            if (response.ok) {
-                alert("Dossier créé avec succès !");
-            } else {
-                alert(`Erreur lors de la création du dossier : ${data[0].message || response.statusText}`);
-            }
-        }
-        catch(err){
-            console.error(err);
-        }
-    }
+	async function créerDossier(id_client) {
+		try {
+			await apiFetch(`/dossiers/create/`, {
+				method: "POST",
+				body: JSON.stringify({ id_client }),
+			});
+			alert("Dossier créé avec succès !");
+		} catch (err) {
+			console.error(err);
+			// apiFetch throws with server response text in err.message
+			alert(`Erreur lors de la création du dossier : ${err.message || err}`);
+		}
+	}
 
 	function numerotation() {
 		if (clients.length > 0) {
@@ -65,17 +59,11 @@ export default function AllClients() {
 	}
 
 	useEffect(() => {
-		if (showModal1) {
+		if (showModal1 || NewClientModal1) {
 			document.documentElement.classList.add("is-clipped");
 		} else {
 			document.documentElement.classList.remove("is-clipped");
 		}
-
-        if (NewClientModal1) {
-            document.documentElement.classList.add("is-clipped");
-        } else {
-            document.documentElement.classList.remove("is-clipped");
-        }
 
 		return () => {
 			document.documentElement.classList.remove("is-clipped");

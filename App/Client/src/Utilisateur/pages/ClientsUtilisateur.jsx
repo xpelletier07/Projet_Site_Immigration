@@ -4,7 +4,6 @@ import { style } from "../components/GestionsClients/Gestion.css.js";
 import { Footer } from "../components/Footer.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
 import { ModifierClientModal} from "../components/GestionsClients/ModifierClientModal.jsx";
-import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 
 export default function GestionsClients() {
 	const navigate = useNavigate();

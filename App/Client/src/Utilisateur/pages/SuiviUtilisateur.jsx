@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../commun/commun.jsx";
-import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 
 const STATUTS = ["En attente", "En traitement", "Approuve", "Refuse"];
 
@@ -110,8 +109,7 @@ export default function SuiviUtilisateurPage() {
 
 	return (
 		<div className="app-shell">
-			<div className="page-body">
-				<SideBarUtilisateur />
+			<div className="page-body" style={{ margin: "auto" }}>
 				<main className="main-content" style={{ maxWidth: "1400px" }}>
 					<div className="breadcrumb">
 						Portail Utilisateur <span className="breadcrumb-sep">›</span>

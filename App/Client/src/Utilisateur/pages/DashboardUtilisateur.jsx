@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 import { apiFetch } from "../../commun/commun.jsx";
 
 export default function DashBordUtilisateur() {
@@ -64,7 +63,6 @@ export default function DashBordUtilisateur() {
 	return (
 		<>
 		<div className="is-flex" style={{ background: "#fff" }}>
-			{/*<SideBarUtilisateur />*/}
 
 			<div className="section" style={{ flex: 1 }}>
 				<div className="container is-fluid">

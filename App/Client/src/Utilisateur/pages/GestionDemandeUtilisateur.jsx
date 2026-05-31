@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiFetch } from "../../commun/commun.jsx";
-import SideBarUtilisateur from "../components/SideBarUtilisateur.jsx";
 
 const STATUTS = ["En attente", "En traitement", "Approuve", "Refuse"];
 const STATUTS_FACTURE = ["A payer", "Payee", "En retard"];
@@ -185,8 +184,7 @@ export default function GestionDemandeUtilisateurPage() {
 	return (
 		<div className="app-shell">
 			<div className="page-body">
-				<SideBarUtilisateur />
-				<main className="main-content" style={{ maxWidth: "1100px" }}>
+				<main className="main-content" style={{ margin: "auto", maxWidth: "1100px" }}>
 					<div className="breadcrumb">
 						Portail Utilisateur <span className="breadcrumb-sep">›</span>
 						<span onClick={() => navigate("/utilisateur/suivi")} style={{ cursor: "pointer" }}>
