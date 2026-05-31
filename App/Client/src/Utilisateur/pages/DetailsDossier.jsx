@@ -79,7 +79,7 @@ export default function DetailsDossier() {
             try {
                 await apiFetch(`/dossiers/delete/${id_dossier}`, { method: "DELETE" });
                 alert("Dossier supprimé avec succès.");
-                navigate("/utilisateur/clients");
+                navigate("/gestionclient");
             } catch (err) {
                 console.error(`Erreur lors de la suppression du dossier ${id_dossier}`, err);
                 setError("Erreur lors de la suppression du dossier.");
@@ -107,27 +107,38 @@ export default function DetailsDossier() {
 
     async function générerFacture() {
         try {
-            var montant = 0;
-            if(dossierDetails?.typeDemandes[0]?.Type_Demande === "Travail Temporaire"){
-                montant = 350;
+            var montants = 0;
+            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Travail Temporaire") {
+                montants = 350;
             }
-            if(dossierDetails?.typeDemandes[0]?.Type_Demande === "Résidence Permanente"){
-                montant = 500;
+            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Résidence Permanente") {
+                montants = 500;
             }
-            if(dossierDetails?.typeDemandes[0]?.Type_Demande === "Études & Recherche"){
-                montant = 800;
+            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Études & Recherche") {
+                montants = 800;
             }
-            if(dossierDetails?.typeDemandes[0]?.Type_Demande === "Regroupement Familial"){
-                montant = 400;
+            if (dossierDetails?.typeDemandes[0]?.Type_Demande === "Regroupement Familial") {
+                montants = 400;
             }
 
             const facture = {
                 id_dossier: idDossier,
                 description: dossierDetails?.typeDemandes[0]?.Type_Demande || "Demande inconnue",
-                montant: montant,
+                montant: montants,
                 date_emission: new Date().toISOString().split("T")[0],
                 date_echeance: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                statut: montant > 0 ? "en attente" : "approuvé"
+                statut: montants > 0 ? "en attente" : "approuvé"
+            }
+
+            const res = await apiFetch("/factures",
+                {
+                    method: "POST",
+                    body: JSON.stringify(facture)
+                });
+            
+            if (!res.ok) {
+                const data = await Array.isArray(res) ? res : [res];
+                console.log(data[0].message || "Erreur lors de la génération de la facture");
             }
 
             const res1 = await apiFetch("/factures/dossier/" + idDossier);
@@ -139,11 +150,6 @@ export default function DetailsDossier() {
                 for (const f of existingFactures) {
                     await apiFetch(`/factures/delete/${f.id_facture}`, { method: "DELETE" });
                 }
-            }
-            const res = await apiFetch("/factures", { method: "POST", body: JSON.stringify(facture) });
-            if (!res.ok) {
-                const data = await Array.isArray(res) ? res : [res];
-                console.log(data[0].message || "Erreur lors de la génération de la facture");
             }
         }
         catch (err) {
@@ -167,7 +173,7 @@ export default function DetailsDossier() {
         }
     }
 
-    async function téléchargerDocument(doc){
+    async function téléchargerDocument(doc) {
         try {
             const res = await apiFetch(`/documents/${doc.id_document}/telecharger`, {
                 method: "GET",
@@ -185,148 +191,148 @@ export default function DetailsDossier() {
         }
     }
 
-        // Construction d'une timeline basée sur les données réelles
-        const TIMELINE = [
-            {
-                label: "Dossier reçu",
-                sub: dossierDetails?.date_creation
-                    ? new Date(dossierDetails.date_creation).toLocaleDateString("fr-CA")
-                    : "—",
-                done: true,
-            },
-            { label: "Examen préliminaire", sub: "En cours de vérification", done: dossierDetails?.documents?.length > 0 },
-            { label: "Décision finale", sub: "En attente des étapes précédentes", done: dossierDetails?.factures[0]?.statut === "approuvé" },
-        ];
+    // Construction d'une timeline basée sur les données réelles
+    const TIMELINE = [
+        {
+            label: "Dossier reçu",
+            sub: dossierDetails?.date_creation
+                ? new Date(dossierDetails.date_creation).toLocaleDateString("fr-CA")
+                : "—",
+            done: true,
+        },
+        { label: "Examen préliminaire", sub: "En cours de vérification", done: dossierDetails?.documents?.length > 0 },
+        { label: "Décision finale", sub: "En attente des étapes précédentes", done: dossierDetails?.factures[0]?.statut === "approuvé" },
+    ];
 
-        if (!dossierDetails || !clientDetails) {
-            return (
-                <main style={{ padding: "4rem", textAlign: "center", color: "#515f74" }}>
-                    Chargement du dossier…
-                </main>
-            );
-        }
-
-        if (error) {
-            alert(error);
-            setError(null);
-        }
-
+    if (!dossierDetails || !clientDetails) {
         return (
-            <>
-                <style>{style}</style>
+            <main style={{ padding: "4rem", textAlign: "center", color: "#515f74" }}>
+                Chargement du dossier…
+            </main>
+        );
+    }
 
-                <main style={{ padding: "2rem", maxWidth: 1300, margin: "0 auto" }}>
+    if (error) {
+        alert(error);
+        setError(null);
+    }
 
-                    {/* ── Header ── */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
-                        <div>
-                            <div className="sl-breadcrumb">
-                                <span style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>← Retour</span>
-                                <span className="sep">/</span>
-                                <span>Dossier #{dossierDetails?.id_dossier ?? "—"}</span>
-                            </div>
-                            <h1 className="page-title">
-                                Aperçu du dossier : {clientDetails ? `${clientDetails.nom ?? ""} ${clientDetails.prenom ?? ""}` : `#${dossierDetails?.id_dossier ?? "—"}`}
-                            </h1>
+    return (
+        <>
+            <style>{style}</style>
+
+            <main style={{ padding: "2rem", maxWidth: 1300, margin: "0 auto" }}>
+
+                {/* ── Header ── */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+                    <div>
+                        <div className="sl-breadcrumb">
+                            <span style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>← Retour</span>
+                            <span className="sep">/</span>
+                            <span>Dossier #{dossierDetails?.id_dossier ?? "—"}</span>
                         </div>
-                        {/*<div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                        <h1 className="page-title">
+                            Aperçu du dossier : {clientDetails ? `${clientDetails.nom ?? ""} ${clientDetails.prenom ?? ""}` : `#${dossierDetails?.id_dossier ?? "—"}`}
+                        </h1>
+                    </div>
+                    {/*<div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
                             <button className="btn-update-status">Mettre à jour le statut</button>
                         </div>
                         */}
-                    </div>
+                </div>
 
-                    {/* ── Bento grid: 2 colonnes ── */}
-                    <div className="columns is-variable is-5" style={{ alignItems: "flex-start" }}>
+                {/* ── Bento grid: 2 colonnes ── */}
+                <div className="columns is-variable is-5" style={{ alignItems: "flex-start" }}>
 
-                        {/* ── LEFT COLUMN ── */}
-                        <div className="column is-8">
+                    {/* ── LEFT COLUMN ── */}
+                    <div className="column is-8">
 
-                            {/* Client Information */}
-                            <div className="sl-card">
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                                    <span className="sl-card-title">Informations du client</span>
-                                    <button style={{ background: "none", border: "none", cursor: "pointer", color: "var(--outline)", fontSize: "1.2rem" }} title="Modifier">✏️</button>
-                                </div>
-
-                                <div className="columns is-multiline">
-                                    {[
-                                        { label: "Nom complet", value: clientDetails ? `${clientDetails.nom ?? ""} ${clientDetails.prenom ?? ""}` : "—" },
-                                        { label: "Adresse courriel", value: clientDetails?.courriel ?? "—" },
-                                        { label: "Numéro de téléphone", value: clientDetails?.telephone ?? "—" },
-                                    ].map(({ label, value }) => (
-                                        <div className="column is-one-third" key={label}>
-                                            <span className="info-label">{label}</span>
-                                            <span className="info-value">{value}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <hr className="info-divider" />
-
-                                <div className="columns is-multiline">
-                                    <div className="column is-one-third">
-                                        <span className="info-label">Type de demande</span>
-                                        <span className="badge-type">{dossierDetails?.typeDemandes[0]?.Type_Demande ?? "—"}</span>
-                                    </div>
-                                    <div className="column is-one-third">
-                                        <span className="info-label">Date de soumission</span>
-                                        <span className="info-value">
-                                            {dossierDetails?.date_creation
-                                                ? new Date(dossierDetails.date_creation).toLocaleDateString("fr-CA")
-                                                : "—"}
-                                        </span>
-                                    </div>
-                                    <div className="column is-one-third">
-                                        <span className="info-label">Niveau de priorité</span>
-                                        <span className="priority-high">⚡ {dossierDetails?.dossier?.priorite ?? "Normal"}</span>
-                                    </div>
-                                </div>
+                        {/* Client Information */}
+                        <div className="sl-card">
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                                <span className="sl-card-title">Informations du client</span>
+                                <button style={{ background: "none", border: "none", cursor: "pointer", color: "var(--outline)", fontSize: "1.2rem" }} title="Modifier">✏️</button>
                             </div>
 
-                            {/* Verification Documents */}
-                            <div className="sl-card-gray">
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                                    <span className="sl-card-title">Documents de vérification</span>
-                                    <label className="btn-upload">
-                                        Téléverser le document
-                                        <input type="file" id="fileInput"
-                                            style={{ display: "none" }}
-                                            onChange={(e) => setFile(e.target.files[0])} />
-                                    </label>
-                                    <button htmlFor="fileInput" className="btn-upload" onClick={téléverserDocument}>
-                                        {file ? (
-                                            <span style={{ fontSize: "1.2rem" }}>{file.name} ⬆️</span>
-                                        ) : (
-                                            <span style={{ fontSize: "1.2rem" }}>⬆️</span>
-                                        )}
-                                    </button>
-                                </div>
+                            <div className="columns is-multiline">
+                                {[
+                                    { label: "Nom complet", value: clientDetails ? `${clientDetails.nom ?? ""} ${clientDetails.prenom ?? ""}` : "—" },
+                                    { label: "Adresse courriel", value: clientDetails?.courriel ?? "—" },
+                                    { label: "Numéro de téléphone", value: clientDetails?.telephone ?? "—" },
+                                ].map(({ label, value }) => (
+                                    <div className="column is-one-third" key={label}>
+                                        <span className="info-label">{label}</span>
+                                        <span className="info-value">{value}</span>
+                                    </div>
+                                ))}
+                            </div>
 
-                                {dossierDetails?.documents?.length === 0 ? (
-                                    <p style={{ color: "var(--outline)", fontSize: "0.9rem" }}>Aucun document attaché.</p>
-                                ) : (
-                                    documents.map((doc) => (
-                                        <div className="doc-item" key={doc.id_document ?? doc.nom_fichier}>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                                                <div className="doc-icon">📄</div>
-                                                <div>
-                                                    <div className="doc-name">{doc.nom_fichier ?? doc.nom ?? "Document"}</div>
-                                                    <div className="doc-meta">{doc.date_telechargement
-                                                        ? new Date(doc.date_telechargement).toLocaleDateString("fr-CA")
-                                                        : ""}</div>
-                                                </div>
-                                            </div>
-                                            <div style={{ display: "flex", gap: "0.25rem" }}>
-                                                <button
-                                                    className="btn btn-outline btn-sm btn-icon"
-                                                    onClick={() => téléchargerDocument(doc)}
-                                                >
-                                                    ⬇️
-                                                </button>
+                            <hr className="info-divider" />
+
+                            <div className="columns is-multiline">
+                                <div className="column is-one-third">
+                                    <span className="info-label">Type de demande</span>
+                                    <span className="badge-type">{dossierDetails?.typeDemandes[0]?.Type_Demande ?? "—"}</span>
+                                </div>
+                                <div className="column is-one-third">
+                                    <span className="info-label">Date de soumission</span>
+                                    <span className="info-value">
+                                        {dossierDetails?.date_creation
+                                            ? new Date(dossierDetails.date_creation).toLocaleDateString("fr-CA")
+                                            : "—"}
+                                    </span>
+                                </div>
+                                <div className="column is-one-third">
+                                    <span className="info-label">Niveau de priorité</span>
+                                    <span className="priority-high">⚡ {dossierDetails?.dossier?.priorite ?? "Normal"}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Verification Documents */}
+                        <div className="sl-card-gray">
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                                <span className="sl-card-title">Documents de vérification</span>
+                                <label className="btn-upload">
+                                    Téléverser le document
+                                    <input type="file" id="fileInput"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => setFile(e.target.files[0])} />
+                                </label>
+                                <button htmlFor="fileInput" className="btn-upload" onClick={téléverserDocument}>
+                                    {file ? (
+                                        <span style={{ fontSize: "1.2rem" }}>{file.name} ⬆️</span>
+                                    ) : (
+                                        <span style={{ fontSize: "1.2rem" }}>⬆️</span>
+                                    )}
+                                </button>
+                            </div>
+
+                            {dossierDetails?.documents?.length === 0 ? (
+                                <p style={{ color: "var(--outline)", fontSize: "0.9rem" }}>Aucun document attaché.</p>
+                            ) : (
+                                documents.map((doc) => (
+                                    <div className="doc-item" key={doc.id_document ?? doc.nom_fichier}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                                            <div className="doc-icon">📄</div>
+                                            <div>
+                                                <div className="doc-name">{doc.nom_fichier ?? doc.nom ?? "Document"}</div>
+                                                <div className="doc-meta">{doc.date_telechargement
+                                                    ? new Date(doc.date_telechargement).toLocaleDateString("fr-CA")
+                                                    : ""}</div>
                                             </div>
                                         </div>
-                                    ))
-                                )}
+                                        <div style={{ display: "flex", gap: "0.25rem" }}>
+                                            <button
+                                                className="btn btn-outline btn-sm btn-icon"
+                                                onClick={() => téléchargerDocument(doc)}
+                                            >
+                                                ⬇️
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
 
                         {/* Case Notes */}
@@ -425,10 +431,10 @@ export default function DetailsDossier() {
                                 </div>
                                 {factures.map((f, i) => (
                                     <p key={i} className="regulatory-text">
-                                        Montant : {f.montant ?? "—"} $<br/>
-                                        Description : {f.description ?? "—"}<br/>
-                                        Statut : <em>{f.statut ?? "—"}</em><br/>
-                                        Date d'émission : {f.date_emission ? new Date(f.date_emission).toLocaleDateString("fr-CA") : "—"}<br/>
+                                        Montant : {f.montant ?? "—"} $<br />
+                                        Description : {f.description ?? "—"}<br />
+                                        Statut : <em>{f.statut ?? "—"}</em><br />
+                                        Date d'émission : {f.date_emission ? new Date(f.date_emission).toLocaleDateString("fr-CA") : "—"}<br />
                                         Date d'échéance : {f.date_echeance ? new Date(f.date_echeance).toLocaleDateString("fr-CA") : "—"}
                                     </p>
                                 ))}

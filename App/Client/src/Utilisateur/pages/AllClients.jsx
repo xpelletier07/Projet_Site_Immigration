@@ -65,11 +65,17 @@ export default function AllClients() {
 	}
 
 	useEffect(() => {
-		if (showModal1 || NewClientModal1) {
+		if (showModal1) {
 			document.documentElement.classList.add("is-clipped");
 		} else {
 			document.documentElement.classList.remove("is-clipped");
 		}
+
+        if (NewClientModal1) {
+            document.documentElement.classList.add("is-clipped");
+        } else {
+            document.documentElement.classList.remove("is-clipped");
+        }
 
 		return () => {
 			document.documentElement.classList.remove("is-clipped");
@@ -121,7 +127,7 @@ export default function AllClients() {
 		}
 
 		fetchClients();
-	}, [search]);
+	}, [search, isClick, clients]);
 
 
 	return (
@@ -178,7 +184,7 @@ export default function AllClients() {
 								}}
 							>
 								Accédez à la liste complète de vos clients,
-                                créez de nouveaux dossiers et modifier les clients.
+                                créez de nouveaux dossiers et modifiez leurs informations.
 							</p>
 						</div>
 						{/* AJOUTÉ : bouton Nouveau Client */}

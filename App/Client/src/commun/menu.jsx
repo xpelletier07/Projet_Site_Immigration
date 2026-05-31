@@ -43,7 +43,7 @@ export default function Menu() {
 	} else if (type === "utilisateur") {
 		links.push(
 			{ to: "/utilisateur/dashboard", label: "Dashboard" },
-			//{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
+			{ to: "/utilisateur/suivi", label: "Suivi des demandes" },
 			{ to: "/utilisateur/clients", label: "Dossiers" },
 			{ to: "/utilisateur/allclients", label: "Clients" },
 		);
