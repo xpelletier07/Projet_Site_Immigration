@@ -317,7 +317,7 @@ export default function AllClients() {
 					{/* Pagination */}
 					<div className="pagination-area">
 						<span className="pagination-info">
-							Affichage de 10 sur {clients.length} clients
+							Affichage de {clients.length <= 10 ? clients.length : 10} sur {clients.length} clients
 						</span>
 						<nav
 							className="pagination"

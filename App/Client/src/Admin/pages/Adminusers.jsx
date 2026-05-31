@@ -222,7 +222,7 @@ export default function AdminUsers() {
         {/* Header */}
         <div className="au-header">
           <div>
-            <button className="au-back-btn" onClick={() => navigate('/dashboard')}>
+            <button className="au-back-btn" onClick={() => navigate('/admin/dashboardAdmin')}>
               <ArrowIcon /> Retour au dashboard
             </button>
             <h1 className="au-title">Gestion des utilisateurs</h1>
