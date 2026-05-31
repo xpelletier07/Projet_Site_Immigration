@@ -297,5 +297,19 @@ export const style = `
   /* Debug helper: force modal above other elements to allow interaction */
   .modal { z-index: 10000 !important; }
   .modal-background { z-index: 9999 !important; pointer-events: auto !important; }
-  .modal-card { z-index: 10001 !important; pointer-events: auto !important; }
+  .modal-card { z-index: 10001 !important;}
+
+  .modal.is-active {
+  display: flex !important;
+  z-index: 99999 !important;
+}
+
+.modal-card {
+  position: relative !important;
+  z-index: 100000 !important;
+}
+
+.modal-background {
+  z-index: 99998 !important;
+}
 `;

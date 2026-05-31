@@ -90,32 +90,24 @@ export default function AllClients() {
 	}
 
 	useEffect(() => {
-		async function fetchClients() {
-			try {
-				const res = await apiFetch("/clients");
+    async function fetchClients() {
+        try {
+            const res = await apiFetch("/clients");
 
-                const data = await Array.isArray(res) ? res : [res];
+            const data = Array.isArray(res) ? res : [res];
 
-				/*const contenuValide = contenu.filter(
-					(c) => c && c.dossier && c.dossier.nom && c.dossier.prenom,
-				);*/
+            const contenuFiltre = data.filter((c) =>
+                c.nom.toLowerCase().includes(search.toLowerCase())
+            );
 
-				const contenufiltré = data.filter((c) => {
-					const matchNom = c.nom.toLowerCase().includes(search.toLowerCase());
-					return matchNom;
-				});
+            setClients(contenuFiltre);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
-				setClients(contenufiltré);
-			} catch (err) {
-				console.error(
-					"Erreur lors de la récupération des clients :",
-					err,
-				);
-			}
-		}
-
-		fetchClients();
-	}, [search, isClick, clients]);
+    fetchClients();
+}, [search]);
 
 
 	return (
