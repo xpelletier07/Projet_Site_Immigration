@@ -5,31 +5,11 @@ import {
 } from "../services/client.service.jsx";
 import { useToast } from "../../commun/Toast.jsx";
 
-export default function NewDemandeModal({
-	onClose,
-	onCreated,
-}) {
-	const [dossierId, setDossierId] = useState(null);
-	const [type, setType] = useState("Résidence permanente");
-	const [loading, setLoading] = useState(false);
-
+export default function NewDemandeModal({ dossierId, onClose, onCreated }) {
 	const toast = useToast();
-
-	useEffect(() => {
-		async function loadDossier() {
-			try {
-				const bundle = await getClientBundle();
-
-				if (bundle?.dossier?.id_dossier) {
-					setDossierId(bundle.dossier.id_dossier);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		}
-
-		loadDossier();
-	}, []);
+	const [type, setType] = useState("Résidence permanente");
+	const [description, setDescription] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const types = [
 		"Résidence permanente",
@@ -45,59 +25,36 @@ export default function NewDemandeModal({
 			toast("Aucun dossier actif.", "error");
 			return;
 		}
-
 		setLoading(true);
-
 		try {
-			await createTypeDemande(dossierId, type);
-
+			await createTypeDemande(dossierId, type, description.trim());
 			toast(`Demande "${type}" soumise !`, "success");
-
-			if (onCreated) {
-				onCreated();
-			}
-		} catch (error) {
-			console.error(error);
-			toast("Erreur lors de la création de la demande.", "error");
+			onCreated();
+		} catch {
+			toast("Erreur lors de la création.", "error");
 		} finally {
 			setLoading(false);
 		}
 	}
 
 	return (
-		<div
-			className="app-modal-overlay"
-			onClick={onClose}
-		>
-			<div
-				className="app-modal"
-				onClick={(e) => e.stopPropagation()}
-			>
+		<div className="app-modal-overlay" onClick={onClose}>
+			<div className="app-modal" onClick={(e) => e.stopPropagation()}>
 				<div className="app-modal-header">
 					<span className="app-modal-title">
 						Nouvelle demande d'immigration
 					</span>
-
-					<button
-						className="app-modal-close"
-						onClick={onClose}
-					>
+					<button className="app-modal-close" onClick={onClose}>
 						✕
 					</button>
 				</div>
-
 				<div className="app-modal-body">
 					<div className="form-group">
-						<label className="form-label">
-							Type de demande
-						</label>
-
+						<label className="form-label">Type de demande</label>
 						<select
 							className="form-input"
 							value={type}
-							onChange={(e) =>
-								setType(e.target.value)
-							}
+							onChange={(e) => setType(e.target.value)}
 						>
 							{types.map((t) => (
 								<option key={t} value={t}>
@@ -106,29 +63,31 @@ export default function NewDemandeModal({
 							))}
 						</select>
 					</div>
-
+					<div className="form-group">
+						<label className="form-label">Description de votre demande</label>
+						<textarea
+							className="form-input"
+							rows={4}
+							placeholder="Ex: Renouvellement de permis de travail avec changement d'employeur"
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+						/>
+					</div>
 					<div className="info-box">
-						ℹ️ Un agent vous sera assigné sous
-						24-48 heures ouvrables.
+						ℹ️ Un agent vous sera assigné sous 24-48 heures
+						ouvrables.
 					</div>
 				</div>
-
 				<div className="app-modal-footer">
-					<button
-						className="btn btn-outline"
-						onClick={onClose}
-					>
+					<button className="btn btn-outline" onClick={onClose}>
 						Annuler
 					</button>
-
 					<button
 						className="btn btn-primary"
 						onClick={handleCreate}
 						disabled={loading}
 					>
-						{loading
-							? "Envoi..."
-							: "Soumettre"}
+						{loading ? "Envoi..." : "Soumettre"}
 					</button>
 				</div>
 			</div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import NewDemandeModal from "./NewDemandeModal.jsx";
 
+
 const DashIcon = () => (
 	<svg
 		width="16"
@@ -148,20 +149,26 @@ export default function Sidebar({ onNewCase }) {
 					</button>
 				))}
 
+				{
+				/*
 				<button
 					className="sidebar-new-case mt-4"
 					onClick={() => setShowNewDemande(true)}
 				>
 					<PlusIcon /> Nouvelle demande
 				</button>
+				*/
+				}
 
 				<div className="sidebar-bottom">
+					{/*
 					<button
 						className="sidebar-link"
 						onClick={() => navigate("/client/settings")}
 					>
 						<SettingsIcon /> Paramètres
 					</button>
+					*/}
 					<button
 						className="sidebar-link"
 						style={{ color: "#f87171" }}
@@ -171,14 +178,15 @@ export default function Sidebar({ onNewCase }) {
 					</button>
 				</div>
 			</aside>
-			{showNewDemande && (
+			{/*showNewDemande && (
 				<NewDemandeModal
+					dossierId={null}
 					onClose={() => setShowNewDemande(false)}
 					onCreated={() => {
 						setShowNewDemande(false);
 					}}
 				/>
-			)}
+			)*/}
 		</>
 	);
 }
