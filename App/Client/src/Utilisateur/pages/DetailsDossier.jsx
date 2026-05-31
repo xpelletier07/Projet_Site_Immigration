@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../commun/commun.jsx";
 import { style } from "../components/DetailsDossiers/Details.css";
-<<<<<<< HEAD
 import { uploadDocument } from "../../Client/services/client.service.jsx";
 
 const STATUS_OPTIONS = ["En cours d'examen", "Documents manquants", "En attente de paiement", "Approuvé", "Rejeté"];
@@ -13,16 +12,6 @@ export default function DetailsDossier() {
     const navigate = useNavigate();
     //const [status, setStatus] = useState("En cours d'examen");
     const { idDossier } = useParams();
-=======
-
-const STATUS_OPTIONS = ["En cours d'examen", "Documents manquants", "En attente de paiement", "Approuvé", "Rejeté"];
-
-export function DetailsDossier() {
-    const [note, setNote] = useState("");
-    const navigate = useNavigate();
-    const [status, setStatus] = useState("En cours d'examen");
-    const { id } = useParams();
->>>>>>> 396d5fa8b5fce60eb6e6776714200f939a6f3d33
     const [error, setError] = useState(null);
     const [dossierDetails, setDossierDetails] = useState(null);
     const [clientDetails, setClientDetails] = useState(null);
