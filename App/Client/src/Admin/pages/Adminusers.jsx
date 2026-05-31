@@ -71,17 +71,11 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     setLoading(true)
     try {
-      console.log('Token:', sessionStorage.getItem('token'))
-        console.log('Type:', sessionStorage.getItem('type'))
-
       const [clients, utilisateurs, admins] = await Promise.all([
         apiFetch('/clients'),
         apiFetch('/utilisateurs'),
         apiFetch('/administrateurs').catch(() => []),
       ])
-        console.log('clients:', clients)
-        console.log('utilisateurs:', utilisateurs)
-        console.log('admins:', admins)
 
       const all = [
         ...(Array.isArray(clients)      ? clients.map(u => ({ ...u, role: 'client', id: u.id_client }))           : []),

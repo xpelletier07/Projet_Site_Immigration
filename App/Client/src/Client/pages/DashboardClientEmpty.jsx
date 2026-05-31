@@ -15,7 +15,6 @@ export default function DashboardClientEmpty() {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 alert("Ouverture assistant nouvelle demande");
             })
             .catch((err) => console.error(err));

@@ -251,10 +251,12 @@ export default function Dashboard() {
                 <span>Gérer les Utilisateurs</span>
                 <UsersIcon />
               </button>
-              <button className="db-action-btn">
+              {
+              /*<button className="db-action-btn">
                 <span>Permissions de Rôle</span>
                 <RoleIcon />
-              </button>
+              </button>*/
+              }
             </div>
 
           </div>
